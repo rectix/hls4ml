@@ -110,6 +110,9 @@ void myproject(
   //core networks
   input_t L[N_EDGES][latent_dim];
   input_t P[N_NODES][latent_dim];
+  #pragma HLS ARRAY_PARTITION variable=L complete dim=0
+  #pragma HLS ARRAY_PARTITION variable=P complete dim=0
+
   for(int i = 0; i < N_ITERS; i++){
     //concatenations for after each core layer
     input_t Cn[N_NODES][2*latent_dim];
@@ -124,48 +127,46 @@ void myproject(
     for(int j = 0; j < N_EDGES; j++){
       ap_uint<16> r = receivers[j];
       ap_uint<16> s = senders[j];
-      input_t l_logits[1][4*latent_dim];
+      input_t l_logits[4*latent_dim];
       #pragma HLS ARRAY_PARTITION variable=l_logits complete dim=0
-      nnet::merge<input_t, 2*latent_dim, 2*latent_dim>(Ce[j], Cn[r], l_logits[0]);
-      input_t l[1][6*latent_dim];
+      nnet::merge<input_t, 2*latent_dim, 2*latent_dim>(Ce[j], Cn[r], l_logits);
+      input_t l[6*latent_dim];
       #pragma HLS ARRAY_PARTITION variable=l complete dim=0
-      nnet::merge<input_t, 4*latent_dim, 2*latent_dim>(l_logits[0], Cn[s], l[0]);
+      nnet::merge<input_t, 4*latent_dim, 2*latent_dim>(l_logits, Cn[s], l);
       
       std::cout<<"Core Edge Network Dense Batch"<<std::endl;
-      input_t L0_logits[1][latent_dim];
+      input_t L0_logits[latent_dim];
       #pragma HLS ARRAY_PARTITION variable=L0_logits complete dim=0
-      nnet::dense_batch<input_t, input_t, dense_config5>(l, L0_logits, w5, b5);
-      input_t L0[1][latent_dim];
+      nnet::dense_large<input_t, input_t, dense_config5>(l, L0_logits, w5, b5);
+      input_t L0[latent_dim];
       #pragma HLS ARRAY_PARTITION variable=L0 complete dim=0
-      nnet::relu_batch<input_t, input_t, relu_config3>(L0_logits, L0);
+      nnet::relu<input_t, input_t, relu_config3>(L0_logits, L0);
       
-      input_t L_logits[1][latent_dim];
+      input_t L_logits[latent_dim];
       #pragma HLS ARRAY_PARTITION variable=L_logits complete dim=0
-      nnet::dense_batch<input_t, input_t, dense_config6>(L0, L_logits, w6, b6);
+      nnet::dense_large<input_t, input_t, dense_config6>(L0, L_logits, w6, b6);
       
-      #pragma HLS ARRAY_PARTITION variable=L[j] complete dim=0
-      nnet::relu<input_t, input_t, relu_config3>(L_logits[0], L[j]);
+      nnet::relu<input_t, input_t, relu_config3>(L_logits, L[j]);
     }
     
     //core node updates
     for(int j = 0; j < N_NODES; j++){
-      input_t p[1][3*latent_dim];
+      input_t p[3*latent_dim];
       #pragma HLS ARRAY_PARTITION variable=p complete dim=0
-      nnet::merge<input_t, latent_dim, 2*latent_dim>(L[j], Cn[j], p[0]);
+      nnet::merge<input_t, latent_dim, 2*latent_dim>(L[j], Cn[j], p);
       
-      input_t P0_logits[1][latent_dim];
+      input_t P0_logits[latent_dim];
       #pragma HLS ARRAY_PARTITION variable=P0_logits complete dim=0
-      nnet::dense_batch<input_t, input_t, dense_config7>(p, P0_logits, w7, b7);
-      input_t P0[1][latent_dim];
+      nnet::dense_large<input_t, input_t, dense_config7>(p, P0_logits, w7, b7);
+      input_t P0[latent_dim];
       #pragma HLS ARRAY_PARTITION variable=P0 complete dim=0
-      nnet::relu_batch<input_t, input_t, relu_config3>(P0_logits, P0);
+      nnet::relu<input_t, input_t, relu_config3>(P0_logits, P0);
       
-      input_t P_logits[1][latent_dim];
+      input_t P_logits[latent_dim];
       #pragma HLS ARRAY_PARTITION variable=P_logits complete dim=0
-      nnet::dense_batch<input_t, input_t, dense_config6>(P0, P_logits, w8, b8);
+      nnet::dense_large<input_t, input_t, dense_config6>(P0, P_logits, w8, b8);
       
-      #pragma HLS ARRAY_PARTITION variable=P[j] complete dim=0
-      nnet::relu<input_t, input_t, relu_config3>(P_logits[0], P[j]);
+      nnet::relu<input_t, input_t, relu_config3>(P_logits, P[j]);
     }
   }
   
