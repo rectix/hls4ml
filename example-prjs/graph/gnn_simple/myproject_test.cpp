@@ -16,8 +16,8 @@ int main(int argc, char **argv)
   //hls-fpga-machine-learning insert data
   input_t      N_str[N_NODES][N_FEATURES];
   input_t      E_str[N_EDGES][E_FEATURES];
-  ap_uint<16>  receivers_str[N_EDGES][1];
-  ap_uint<16>  senders_str[N_EDGES][1];
+  index_t      receivers_str[N_EDGES][1];
+  index_t      senders_str[N_EDGES][1];
   result_t     e_expected[N_EDGES][1];
 
   std::ifstream Nin("tb_input_node_features.dat");
@@ -46,22 +46,24 @@ int main(int argc, char **argv)
 
   std::ifstream rin("tb_receivers.dat");
   int num_r;
-  std::vector<ap_uint<16>> r_in;
+  std::vector<index_t> r_in;
   while (rin >> num_r){
     r_in.push_back(num_r);
   }
   for(int i = 0; i < N_EDGES; i++){
     receivers_str[i][0] = r_in[i];
+    std::cout << "r input = " << r_in[i] << std::endl;
   }
 
   std::ifstream sin("tb_senders.dat");
   int num_s;
-  std::vector<ap_uint<16>> s_in;
+  std::vector<index_t> s_in;
   while (sin >> num_s){
     s_in.push_back(num_s);
   }
   for(int i = 0; i < N_EDGES; i++){
     senders_str[i][0] = s_in[i];
+    std::cout << "s input = " << s_in[i] << std::endl;
   }
 
   std::ifstream ein("tb_output_edge_predictions.dat");
