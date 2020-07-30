@@ -1,0 +1,82 @@
+INFO: [SIM 2] *************** CSIM start ***************
+INFO: [SIM 4] CSIM will launch GCC as the compiler.
+   Compiling ../../../../myproject_test.cpp in debug mode
+   Compiling ../../../../myproject.cpp in debug mode
+   Generating csim.exe
+Node Encoding Network Dense Batch
+3
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+12
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+Edge Encoding Network Dense Batch
+4
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+12
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+Concatenations after each core layer
+Core Edge Network Dense Batch
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+Core Edge Network Dense Batch
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+Core Edge Network Dense Batch
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+Core Edge Network Dense Batch
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+Core Node Network Dense Batch
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+Core Node Network Dense Batch
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+Core Node Network Dense Batch
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+Core Node Network Dense Batch
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+Edge Decoding Network Dense Batch
+12
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+12
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+Edge Output Network Dense Batch
+12
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+12
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+e = 
+0.5 (expected 0.999023, -49.9511 percent difference)
+0.5 (expected 0, inf percent difference)
+0.5 (expected 0, inf percent difference)
+0.5 (expected 0.999023, -49.9511 percent difference)
+
+INFO: [SIM 1] CSim done with 0 errors.
+INFO: [SIM 3] *************** CSIM finish ***************

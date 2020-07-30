@@ -1,51 +1,106 @@
-INFO: [HLS 200-10] Running 'C:/Xilinx/Vivado_HLS/2016.4/bin/unwrapped/win64.o/vivado_hls.exe'
-INFO: [HLS 200-10] For user 'Owner' on host 'desktop-sccnv31' (Windows NT_amd64 version 6.2) on Mon Jul 20 14:10:00 -0700 2020
-INFO: [HLS 200-10] In directory 'C:/Users/Owner/Desktop/Graph_Nets/graph/gnn_simple_22'
-INFO: [HLS 200-10] Opening project 'C:/Users/Owner/Desktop/Graph_Nets/graph/gnn_simple_22/gnn_simple_22'.
-INFO: [HLS 200-10] Opening solution 'C:/Users/Owner/Desktop/Graph_Nets/graph/gnn_simple_22/gnn_simple_22/solution1'.
-INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
-INFO: [HLS 200-10] Setting target device to 'xc7k160tfbg484-2'
+
+****** Vivado(TM) HLS - High-Level Synthesis from C, C++ and SystemC v2019.2 (64-bit)
+  **** SW Build 2708876 on Wed Nov  6 21:39:14 MST 2019
+  **** IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
+    ** Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
+
+source /xilinx/Vivado/2019.2/scripts/vivado_hls/hls.tcl -notrace
+INFO: [HLS 200-10] Running '/xilinx/Vivado/2019.2/bin/unwrapped/lnx64.o/vivado_hls'
+INFO: [HLS 200-10] For user 'vrazavim' on host 'prp-gpu-1.t2.ucsd.edu' (Linux_x86_64 version 3.10.0-1127.8.2.el7.x86_64) on Mon Jul 27 18:12:04 PDT 2020
+INFO: [HLS 200-10] On os "CentOS Linux release 7.8.2003 (Core)"
+INFO: [HLS 200-10] In directory '/scratch/data/vrazavim/hls4ml/example-prjs/graph/gnn_simple_22'
+Sourcing Tcl script 'build_prj.tcl'
+INFO: [HLS 200-10] Creating and opening project '/scratch/data/vrazavim/hls4ml/example-prjs/graph/gnn_simple_22/myproject_prj'.
+INFO: [HLS 200-10] Adding design file 'myproject.cpp' to the project
+INFO: [HLS 200-10] Adding test bench file 'myproject_test.cpp' to the project
+INFO: [HLS 200-10] Adding test bench file 'weights' to the project
+INFO: [HLS 200-10] Adding test bench file 'tb_data' to the project
+INFO: [HLS 200-10] Creating and opening solution '/scratch/data/vrazavim/hls4ml/example-prjs/graph/gnn_simple_22/myproject_prj/solution1'.
+INFO: [XFORM 203-101] Allowed max sub elements number after partition is 4096.
+INFO: [HLS 200-10] Setting target device to 'xcku115-flvb2104-2-i'
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 5ns.
+***** C SIMULATION *****
 INFO: [SIM 211-2] *************** CSIM start ***************
-WARNING: [SIM 211-51] HLS only supports CLANG compiler in Linux.
 INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
-   Compiling ../../../../../myproject.cpp in debug mode
+   Compiling ../../../../myproject_test.cpp in debug mode
+   Compiling ../../../../myproject.cpp in debug mode
    Generating csim.exe
 Node Encoding Network Dense Batch
 3
-dense_large_rf_gt_nin_rem0
-dense_large_rf_gt_nin_rem0
-dense_large_rf_gt_nin_rem0
-dense_large_rf_gt_nin_rem0
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
 12
-dense_large_rf_gt_nin
-dense_large_rf_gt_nin
-dense_large_rf_gt_nin
-dense_large_rf_gt_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
 Edge Encoding Network Dense Batch
 4
-dense_large_rf_gt_nin
-dense_large_rf_gt_nin
-dense_large_rf_gt_nin
-dense_large_rf_gt_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
 12
-dense_large_rf_gt_nin
-dense_large_rf_gt_nin
-dense_large_rf_gt_nin
-dense_large_rf_gt_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+Concatenations after each core layer
 Core Edge Network Dense Batch
-72
-Assertion failed: (multiplier_limit % nout == 0 || rufactor >= nin) && "The current Reuse Factor is not allowed", file ../../../../../nnet_dense_large.h, line 46
-@E Simulation failed: Function 'main' returns nonzero value '3'.
-ERROR: [SIM 211-100] 'csim_design' failed: nonzero return value.
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+Core Edge Network Dense Batch
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+Core Edge Network Dense Batch
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+Core Edge Network Dense Batch
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+Core Node Network Dense Batch
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+Core Node Network Dense Batch
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+Core Node Network Dense Batch
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+Core Node Network Dense Batch
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+Edge Decoding Network Dense Batch
+12
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+12
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+Edge Output Network Dense Batch
+12
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+12
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+dense_large_rf_leq_nin
+e = 
+0.5 (expected 0.999023, -49.9511 percent difference)
+0.5 (expected 0, inf percent difference)
+0.5 (expected 0, inf percent difference)
+0.5 (expected 0.999023, -49.9511 percent difference)
+
+INFO: [SIM 211-1] CSim done with 0 errors.
 INFO: [SIM 211-3] *************** CSIM finish ***************
-4
-    while executing
-"source C:/Users/Owner/Desktop/Graph_Nets/graph/gnn_simple_22/gnn_simple_22/solution1/csim.tcl"
-    invoked from within
-"hls::main C:/Users/Owner/Desktop/Graph_Nets/graph/gnn_simple_22/gnn_simple_22/solution1/csim.tcl"
-    ("uplevel" body line 1)
-    invoked from within
-"uplevel 1 hls::main {*}$args"
-    (procedure "hls_proc" line 5)
-    invoked from within
-"hls_proc $argv"
+***** C SIMULATION COMPLETED IN 0h0m6s *****
+INFO: [Common 17-206] Exiting vivado_hls at Mon Jul 27 18:12:13 2020...
