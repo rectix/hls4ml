@@ -51,8 +51,8 @@ Output (128,1)
 void myproject(
 	       input_t      N[N_NODES][N_FEATURES],
 	       input_t      E[N_EDGES][E_FEATURES],
-           ap_uint<16>  receivers[N_EDGES][1],
-           ap_uint<16>  senders[N_EDGES][1],
+               index_t      receivers[N_EDGES][1],
+               index_t      senders[N_EDGES][1],
 	       result_t     e[N_EDGES][1],
 	       unsigned short &const_size_in,
 	       unsigned short &const_size_out)
@@ -126,8 +126,10 @@ void myproject(
     
     //core edge updates
     for(int j = 0; j < N_EDGES; j++){
-      ap_uint<16> r = receivers[j];
-      ap_uint<16> s = senders[j];
+      index_t r = receivers[j][0];
+      index_t s = senders[j][0];
+      std::cout << "r = " << r  << std::endl;
+      std::cout << "s = " << s  << std::endl;
       input_t l_logits[4*latent_dim];
       #pragma HLS ARRAY_PARTITION variable=l_logits complete dim=0
       nnet::merge<input_t, 2*latent_dim, 2*latent_dim>(Ce[j], Cn[r], l_logits);
