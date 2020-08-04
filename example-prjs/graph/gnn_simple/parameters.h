@@ -19,7 +19,7 @@ typedef ap_fixed<16,6> result_t;
 typedef ap_uint<16> index_t;
 #define REUSE 1
 #define N_ITERS 1
-#define latent_dim 32
+#define latent_dim 4
 #define N_FEATURES 3
 #define E_FEATURES 4
 //2x2 example:
@@ -38,8 +38,8 @@ typedef ap_uint<16> index_t;
 //#define N_NODES 2714
 //#define N_EDGES 24758
 //graph_nets simple example:
-#define N_NODES 100
-#define N_EDGES 130
+#define N_NODES 9
+#define N_EDGES 2
 
 //hls-fpga-machine-learning insert layer-config
 struct dense_config1 : nnet::dense_config {
