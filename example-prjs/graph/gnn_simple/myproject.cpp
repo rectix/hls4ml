@@ -112,9 +112,22 @@ void myproject(
   input_t P[N_NODES][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=L complete dim=0
   #pragma HLS ARRAY_PARTITION variable=P complete dim=0
-  
+  /*
+  for(int i = 0; i < N_EDGES; i++){
+    for(int j = 0; i < latent_dim; j++){
+      L[i][j] = Re[i][j];
+    }
+  }
+  for(int i = 0; i < N_NODES; i++){
+    for(int j = 0; j < latent_dim; j++){
+      P[i][j] = Rn[i][j];
+    }
+  }
+  */
+
   for(int i = 0; i < N_ITERS; i++){
     //concatenations for after each core layer
+    /*
     std::cout<<"Concatenations after each core layer"<<std::endl;
     input_t Cn[N_NODES][2*latent_dim];
     #pragma HLS ARRAY_PARTITION variable=Cn complete dim=0
@@ -123,19 +136,19 @@ void myproject(
     input_t Ce[N_EDGES][2*latent_dim];
     #pragma HLS ARRAY_PARTITION variable=Ce complete dim=0
     nnet::merge2d<input_t, N_EDGES, latent_dim, latent_dim>(Re, Re, Ce);
-    
+    */
     //core edge updates
     for(int j = 0; j < N_EDGES; j++){
       index_t r = receivers[j][0];
       index_t s = senders[j][0];
       std::cout << "r = " << r  << std::endl;
       std::cout << "s = " << s  << std::endl;
-      input_t l_logits[4*latent_dim];
+      input_t l_logits[2*latent_dim];
       #pragma HLS ARRAY_PARTITION variable=l_logits complete dim=0
-      nnet::merge<input_t, 2*latent_dim, 2*latent_dim>(Ce[j], Cn[r], l_logits);
-      input_t l[6*latent_dim];
+      nnet::merge<input_t, latent_dim, latent_dim>(Re[j], Rn[r], l_logits);
+      input_t l[3*latent_dim];
       #pragma HLS ARRAY_PARTITION variable=l complete dim=0
-      nnet::merge<input_t, 4*latent_dim, 2*latent_dim>(l_logits, Cn[s], l);
+      nnet::merge<input_t, 2*latent_dim, latent_dim>(l_logits, Rn[s], l);
       
       std::cout<<"Core Edge Network Dense Batch"<<std::endl;
       input_t L0_logits[latent_dim];
@@ -154,9 +167,9 @@ void myproject(
     
     //core node updates
     for(int j = 0; j < N_NODES; j++){
-      input_t p[3*latent_dim];
+      input_t p[2*latent_dim];
       #pragma HLS ARRAY_PARTITION variable=p complete dim=0
-      nnet::merge<input_t, latent_dim, 2*latent_dim>(L[j], Cn[j], p);
+      nnet::merge<input_t, latent_dim, latent_dim>(L[j], Rn[j], p);
       
       std::cout<<"Core Node Network Dense Batch"<<std::endl;
       input_t P0_logits[latent_dim];

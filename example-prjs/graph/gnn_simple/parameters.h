@@ -38,8 +38,8 @@ typedef ap_uint<16> index_t;
 //#define N_NODES 2714
 //#define N_EDGES 24758
 //graph_nets simple example:
-#define N_NODES 9
-#define N_EDGES 2
+#define N_NODES 130
+#define N_EDGES 226
 
 //hls-fpga-machine-learning insert layer-config
 struct dense_config1 : nnet::dense_config {
