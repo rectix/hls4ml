@@ -21,7 +21,7 @@ int main(int argc, char **argv)
   result_t     e_expected[N_EDGES][1];
 
   std::ifstream Nin("tb_input_node_features.dat");
-  int num_n;
+  float num_n;
   std::vector<input_t> N_in;
   while (Nin >> num_n){
     N_in.push_back(num_n);
@@ -29,11 +29,12 @@ int main(int argc, char **argv)
   for(int i = 0; i < N_NODES; i++){
     for(int j = 0; j < N_FEATURES; j++){
       N_str[i][j] = N_in[i*N_FEATURES + j];
+      //std::cout << "N input = " << N_in[i*N_FEATURES + j] << std::endl;
     }
   }
 
   std::ifstream Ein("tb_input_edge_features.dat");
-  int num_e;
+  float num_e;
   std::vector<input_t> E_in;
   while (Ein >> num_e){
     E_in.push_back(num_e);
@@ -41,6 +42,7 @@ int main(int argc, char **argv)
   for(int i = 0; i < N_EDGES; i++){
     for(int j = 0; j < E_FEATURES; j++){
       E_str[i][j] = E_in[i*E_FEATURES + j];
+      //std::cout << "E input = " << E_in[i*E_FEATURES + j] << std::endl;
     }
   }
 
@@ -52,7 +54,7 @@ int main(int argc, char **argv)
   }
   for(int i = 0; i < N_EDGES; i++){
     receivers_str[i][0] = r_in[i];
-    std::cout << "r input = " << r_in[i] << std::endl;
+    //std::cout << "r input = " << r_in[i] << std::endl;
   }
 
   std::ifstream sin("tb_senders.dat");
@@ -63,17 +65,18 @@ int main(int argc, char **argv)
   }
   for(int i = 0; i < N_EDGES; i++){
     senders_str[i][0] = s_in[i];
-    std::cout << "s input = " << s_in[i] << std::endl;
+    //std::cout << "s input = " << s_in[i] << std::endl;
   }
 
   std::ifstream ein("tb_output_edge_predictions.dat");
-  int num_out;
-  std::vector<result_t> e_in;
+  float num_out;
+  std::vector<input_t> e_in;
   while (ein >> num_out){
     e_in.push_back(num_out);
   }
   for(int i = 0; i < N_EDGES; i++){
     e_expected[i][0] = e_in[i];
+    //std::cout << "e expected = " << e_in[i] << std::endl;
   }
 
   result_t e_str[N_EDGES][1];
