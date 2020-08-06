@@ -112,7 +112,7 @@ struct relu_config2 : nnet::activ_config {
 
 struct dense_config5 : nnet::dense_config {
   static const unsigned n_batch = 1;
-  static const unsigned n_in = 6*latent_dim;
+  static const unsigned n_in = 3*latent_dim;
   static const unsigned n_out = latent_dim;
   static const unsigned io_type = nnet::io_parallel;
   static const unsigned reuse_factor = REUSE;
@@ -146,7 +146,7 @@ struct dense_config6 : nnet::dense_config {
 
 struct dense_config7 : nnet::dense_config {
   static const unsigned n_batch = 1;
-  static const unsigned n_in = 3*latent_dim;
+  static const unsigned n_in = 2*latent_dim;
   static const unsigned n_out = latent_dim;
   static const unsigned io_type = nnet::io_parallel;
   static const unsigned reuse_factor = REUSE;
