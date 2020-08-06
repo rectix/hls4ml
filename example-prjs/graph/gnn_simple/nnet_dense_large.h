@@ -281,13 +281,10 @@ void dense_large(
 
     if (CONFIG_T::reuse_factor <= CONFIG_T::n_in) {
         dense_large_rf_leq_nin<data_T, res_T, CONFIG_T>(data, res, weights, biases);
-        std::cout<<"dense_large_rf_leq_nin"<<std::endl;
     } else if (CONFIG_T::reuse_factor % CONFIG_T::n_in == 0) {
         dense_large_rf_gt_nin_rem0<data_T, res_T, CONFIG_T>(data, res, weights, biases);
-        std::cout<<"dense_large_rf_gt_nin_rem0"<<std::endl;
     } else {
         dense_large_rf_gt_nin<data_T, res_T, CONFIG_T>(data, res, weights, biases);
-        std::cout<<"dense_large_rf_gt_nin"<<std::endl;
     }
 }
 /// GNN Dense-Batch addition
@@ -298,7 +295,6 @@ void dense_batch(
         typename CONFIG_T::weight_t  weights[CONFIG_T::n_in*CONFIG_T::n_out],//W1->12
         typename CONFIG_T::bias_t    biases[CONFIG_T::n_out])//->b1->4
 {
-	std::cout<<CONFIG_T::n_in<<std::endl;//1->3
 	data_T data_temp[CONFIG_T::n_in];//1->3
     res_T res_temp[CONFIG_T::n_out];//1->4
     //New Test to reduce latency

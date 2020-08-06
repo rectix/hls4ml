@@ -17,7 +17,7 @@ typedef ap_fixed<16,6> bias_default_t;
 typedef ap_fixed<16,6> input_t;
 typedef ap_fixed<16,6> result_t;
 typedef ap_uint<16> index_t;
-#define REUSE 1
+#define REUSE 4
 #define N_ITERS 1
 #define latent_dim 4
 #define N_FEATURES 3
