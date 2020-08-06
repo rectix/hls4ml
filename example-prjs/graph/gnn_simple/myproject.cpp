@@ -71,7 +71,6 @@ void myproject(
   const_size_out = N_EDGES*1;
 
   //encode nodes features
-  std::cout<<"Node Encoding Network Dense Batch"<<std::endl;
   input_t Rn0_logits[N_NODES][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=Rn0_logits complete dim=0
   nnet::dense_batch<input_t, input_t, dense_config1>(N, Rn0_logits, encoder_node_w0, encoder_node_b0);
@@ -86,10 +85,7 @@ void myproject(
   #pragma HLS ARRAY_PARTITION variable=Rn complete dim=0
   nnet::relu_batch<input_t, input_t, relu_config1>(Rn_logits, Rn);
   
-  
-  
   //encode edge features
-  std::cout<<"Edge Encoding Network Dense Batch"<<std::endl;
   input_t Re0_logits[N_EDGES][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=Re0_logits complete dim=0
   nnet::dense_batch<input_t, input_t, dense_config3>(E, Re0_logits, encoder_edge_w0, encoder_edge_b0);
@@ -104,45 +100,18 @@ void myproject(
   #pragma HLS ARRAY_PARTITION variable=Re complete dim=0
   nnet::relu_batch<input_t, input_t, relu_config2>(Re_logits, Re);
   
-  
-  
-  //consider simplifying redundant layers down the line
   //core networks
   input_t L[N_EDGES][latent_dim];
   input_t P[N_NODES][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=L complete dim=0
   #pragma HLS ARRAY_PARTITION variable=P complete dim=0
-  /*
-  for(int i = 0; i < N_EDGES; i++){
-    for(int j = 0; i < latent_dim; j++){
-      L[i][j] = Re[i][j];
-    }
-  }
-  for(int i = 0; i < N_NODES; i++){
-    for(int j = 0; j < latent_dim; j++){
-      P[i][j] = Rn[i][j];
-    }
-  }
-  */
 
   for(int i = 0; i < N_ITERS; i++){
-    //concatenations for after each core layer
-    /*
-    std::cout<<"Concatenations after each core layer"<<std::endl;
-    input_t Cn[N_NODES][2*latent_dim];
-    #pragma HLS ARRAY_PARTITION variable=Cn complete dim=0
-    nnet::merge2d<input_t, N_NODES, latent_dim, latent_dim>(Rn, Rn, Cn);
-    
-    input_t Ce[N_EDGES][2*latent_dim];
-    #pragma HLS ARRAY_PARTITION variable=Ce complete dim=0
-    nnet::merge2d<input_t, N_EDGES, latent_dim, latent_dim>(Re, Re, Ce);
-    */
+
     //core edge updates
     for(int j = 0; j < N_EDGES; j++){
       index_t r = receivers[j][0];
       index_t s = senders[j][0];
-      std::cout << "r = " << r  << std::endl;
-      std::cout << "s = " << s  << std::endl;
       input_t l_logits[2*latent_dim];
       #pragma HLS ARRAY_PARTITION variable=l_logits complete dim=0
       nnet::merge<input_t, latent_dim, latent_dim>(Re[j], Rn[r], l_logits);
@@ -150,7 +119,6 @@ void myproject(
       #pragma HLS ARRAY_PARTITION variable=l complete dim=0
       nnet::merge<input_t, 2*latent_dim, latent_dim>(l_logits, Rn[s], l);
       
-      std::cout<<"Core Edge Network Dense Batch"<<std::endl;
       input_t L0_logits[latent_dim];
       #pragma HLS ARRAY_PARTITION variable=L0_logits complete dim=0
       nnet::dense_large<input_t, input_t, dense_config5>(l, L0_logits, core_edge_w0, core_edge_b0);
@@ -171,7 +139,6 @@ void myproject(
       #pragma HLS ARRAY_PARTITION variable=p complete dim=0
       nnet::merge<input_t, latent_dim, latent_dim>(L[j], Rn[j], p);
       
-      std::cout<<"Core Node Network Dense Batch"<<std::endl;
       input_t P0_logits[latent_dim];
       #pragma HLS ARRAY_PARTITION variable=P0_logits complete dim=0
       nnet::dense_large<input_t, input_t, dense_config7>(p, P0_logits, core_node_w0, core_node_b0);
@@ -188,7 +155,6 @@ void myproject(
   }
   
   //decode edge features
-  std::cout<<"Edge Decoding Network Dense Batch"<<std::endl;
   input_t Ro0_logits[N_EDGES][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=Ro0_logits complete dim=0
   nnet::dense_batch<input_t, input_t, dense_config4>(L, Ro0_logits, decoder_edge_w0, decoder_edge_b0);
@@ -203,8 +169,6 @@ void myproject(
   #pragma HLS ARRAY_PARTITION variable=Ro complete dim=0
   nnet::relu_batch<input_t, input_t, relu_config2>(Ro_logits, Ro);
   
-  //output
-  std::cout<<"Edge Output Network Dense Batch"<<std::endl;
   input_t e0_logits[N_EDGES][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=e0_logits complete dim=0
   nnet::dense_batch<input_t, input_t, dense_config4>(Ro, e0_logits, decoder_edge_w2, decoder_edge_b2);
