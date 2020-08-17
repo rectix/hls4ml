@@ -110,7 +110,7 @@ void myproject(
 
     //core edge updates
     for(int j = 0; j < N_EDGES; j++){
-      //#pragma HLS PIPELINE
+      #pragma HLS PIPELINE
       #pragma HLS UNROLL
       index_t r = receivers[j][0];
       index_t s = senders[j][0];
@@ -137,7 +137,7 @@ void myproject(
     
     //core node updates
     for(int j = 0; j < N_NODES; j++){
-      //#pragma HLS PIPELINE
+      #pragma HLS PIPELINE
       #pragma HLS UNROLL
       input_t p[2*latent_dim];
       #pragma HLS ARRAY_PARTITION variable=p complete dim=0
