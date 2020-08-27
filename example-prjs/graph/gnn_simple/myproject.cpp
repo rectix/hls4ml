@@ -116,10 +116,14 @@ void myproject(
   input_t P[N_NODES][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=L complete dim=0
   #pragma HLS ARRAY_PARTITION variable=P complete dim=0
-
+  
   for(int i = 0; i < N_ITERS; i++){
 
     //core edge updates
+    nnet::IN_edge_module<input_t, index_t, input_t, graph_config3>(Re, Rn, receivers, senders, L, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1);
+    //core node updates
+    nnet::IN_node_module<input_t, input_t, graph_config4>(Rn, L, P, core_node_w0, core_node_b0, core_node_w1, core_node_b1);
+    /*
     for(int j = 0; j < N_EDGES; j++){
       #pragma HLS PIPELINE //II=REUSE
       #pragma HLS UNROLL
@@ -167,9 +171,18 @@ void myproject(
       
       nnet::relu<input_t, input_t, relu_config3>(P_logits, P[j]);
     }
+    */
   }
-  
+
   //decode edge features
+  input_t Ro[N_EDGES][latent_dim];
+  #pragma HLS ARRAY_PARTITION variable=Ro complete dim=0
+  nnet::graph_independent<input_t, input_t, graph_config5>(L, Ro, decoder_edge_w0, decoder_edge_b0, decoder_edge_w1, decoder_edge_b1);
+
+  input_t e_logits[N_EDGES][1];
+  #pragma HLS ARRAY_PARTITION variable=e_logits complete dim=0
+  nnet::graph_independent<input_t, input_t, graph_config6>(Ro, e_logits, decoder_edge_w2, decoder_edge_b2, decoder_edge_w3, decoder_edge_b3);
+  /*
   input_t Ro0_logits[N_EDGES][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=Ro0_logits complete dim=0
   nnet::dense_batch<input_t, input_t, dense_config4>(L, Ro0_logits, decoder_edge_w0, decoder_edge_b0);
@@ -196,6 +209,6 @@ void myproject(
   input_t e_logits[N_EDGES][1];
   #pragma HLS ARRAY_PARTITION variable=e_logits complete dim=0
   nnet::relu_batch<input_t, input_t, relu_config4>(e1_logits, e_logits);
-  
+  */
   nnet::sigmoid_batch<input_t, input_t, sigmoid_config1>(e_logits, e);
 }

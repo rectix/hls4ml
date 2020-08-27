@@ -35,9 +35,6 @@ namespace nnet {
     // Internal data type definitions
     typedef float bias_t;
     typedef float weight_t;
-    typedef ap_fixed<16,6> input_t;
-    typedef ap_fixed<16,6> result_t;
-    typedef ap_uint<16> index_t;
     
     // Layer Sizes
     static const unsigned n_node = 10;
@@ -52,24 +49,24 @@ namespace nnet {
     static const unsigned reuse_factor = 1;
     static const unsigned n_zeros = 0;
   };
-  /*
-  template<class data_T, class data_T, class res_T, typename CONFIG_T>
+
+  template<class data_T, class index_T, class res_T, typename CONFIG_T>
     void IN_edge_module(
 			data_T    Re[CONFIG_T::n_edge][CONFIG_T::n_hidden],
 			data_T    Rn[CONFIG_T::n_node][CONFIG_T::n_hidden],
-			index_t   receivers[CONFIG_T::n_edge][1],
-			index_t   senders[CONFIG_T::n_edge][1],
+			index_T    receivers[CONFIG_T::n_edge][1],
+			index_T    senders[CONFIG_T::n_edge][1],
 			res_T     L[CONFIG_T::n_edge][CONFIG_T::n_hidden],
-			typename CONFIG_T::weight_t  core_edge_w0[3*CONFIG_T::n_hidden*CONFIG_T::n_hidden],
-			typename CONFIG_T::bias_t    core_edge_b0[CONFIG_T::n_hidden],
-			typename CONFIG_T::weight_t  core_edge_w1[CONFIG_T::n_hidden*CONFIG_T::n_hidden],
-			typename CONFIG_T::bias_t    core_edge_b1[CONFIG_T::n_hidden])
+			typename CONFIG_T::dense_config1::weight_t  core_edge_w0[3*CONFIG_T::n_hidden*CONFIG_T::n_hidden],
+			typename CONFIG_T::dense_config1::bias_t    core_edge_b0[CONFIG_T::n_hidden],
+			typename CONFIG_T::dense_config2::weight_t  core_edge_w1[CONFIG_T::n_hidden*CONFIG_T::n_hidden],
+			typename CONFIG_T::dense_config2::bias_t    core_edge_b1[CONFIG_T::n_hidden])
   {
     for(int i = 0; i < CONFIG_T::n_edge; i++) {
       #pragma HLS PIPELINE
       #pragma HLS UNROLL
-      index_t r = receivers[i][0];
-      index_t s = senders[i][0];
+      data_T r = receivers[i][0];
+      data_T s = senders[i][0];
       data_T l_logits[2*CONFIG_T::n_hidden];
       #pragma HLS ARRAY_PARTITION variable=l_logits complete dim=0
       nnet::merge<data_T, CONFIG_T::n_hidden, CONFIG_T::n_hidden>(Re[i], Rn[r], l_logits);
@@ -77,29 +74,29 @@ namespace nnet {
       #pragma HLS ARRAY_PARTITION variable=l complete dim=0
       nnet::merge<data_T, 2*CONFIG_T::n_hidden, CONFIG_T::n_hidden>(l_logits, Rn[s], l);
 
-      data_T L0_logits[CONFIG_T::n_hidden];
+      data_T L0_logits[CONFIG_T::dense_config1::n_out];
       #pragma HLS ARRAY_PARTITION variable=L0_logits complete dim=0
-      nnet::dense_large<data_T, data_T, CONFIG_T::dense_config1>(l, L0_logits, core_edge_w0, core_edge_b0); //compare to dense_config5
-      data_T L0[CONFIG_T::n_hidden];
+      nnet::dense_large<data_T, data_T, typename CONFIG_T::dense_config1>(l, L0_logits, core_edge_w0, core_edge_b0); //compare to dense_config5
+      data_T L0[CONFIG_T::relu_config1::n_in];
       #pragma HLS ARRAY_PARTITION variable=L0 complete dim=0
-      nnet::relu<data_T, data_T, CONFIG_T::relu_config1>(L0_logits, L0); //compare to relu_config3
+      nnet::relu<data_T, data_T, typename CONFIG_T::relu_config1>(L0_logits, L0); //compare to relu_config3
 
-      data_T L_logits[CONFIG_T::n_hidden];
+      data_T L_logits[CONFIG_T::dense_config2::n_out];
       #pragma HLS ARRAY_PARTITION variable=L_logits complete dim=0
-      nnet::dense_large<data_T, data_T, CONFIG_T::dense_config2>(L0, L_logits, core_edge_w1, core_edge_b1); //compare to dense_config6
-      nnet::relu<data_T, res_T, CONFIG_T::relu_config1>(L_logits, L[i]); //relu_config3
+      nnet::dense_large<data_T, data_T, typename CONFIG_T::dense_config2>(L0, L_logits, core_edge_w1, core_edge_b1); //compare to dense_config6
+      nnet::relu<data_T, res_T, typename CONFIG_T::relu_config2>(L_logits, L[i]); //relu_config3
     }
   }
 
-  template<class data_T, class data_T, class res_T, typename CONFIG_T>
+  template<class data_T, class res_T, typename CONFIG_T>
     void IN_node_module(
 			data_T    Rn[CONFIG_T::n_node][CONFIG_T::n_hidden],
 			data_T    L[CONFIG_T::n_edge][CONFIG_T::n_hidden],
 			res_T     P[CONFIG_T::n_node][CONFIG_T::n_hidden],
-			typename CONFIG_T::weight_t  core_node_w0[2*CONFIG_T::n_hidden*CONFIG_T::n_hidden],
-			typename CONFIG_T::bias_t    core_node_b0[CONFIG_T::n_hidden],
-			typename CONFIG_T::weight_t  core_node_w1[CONFIG_T::n_hidden*CONFIG_T::n_hidden_,
-			typename CONFIG_T::bias_t    core_node_b1[CONFIG_T::n_hidden])
+			typename CONFIG_T::dense_config1::weight_t  core_node_w0[2*CONFIG_T::n_hidden*CONFIG_T::n_hidden],
+			typename CONFIG_T::dense_config1::bias_t    core_node_b0[CONFIG_T::n_hidden],
+			typename CONFIG_T::dense_config2::weight_t  core_node_w1[CONFIG_T::n_hidden*CONFIG_T::n_hidden],
+			typename CONFIG_T::dense_config2::bias_t    core_node_b1[CONFIG_T::n_hidden])
   {
     for(int i = 0; i < CONFIG_T::n_node; i++){
       #pragma HLS PIPELINE
@@ -108,20 +105,20 @@ namespace nnet {
       #pragma HLS ARRAY_PARTITION variable=p complete dim=0
       nnet::merge<data_T, CONFIG_T::n_hidden, CONFIG_T::n_hidden>(L[i], Rn[i], p);
       
-      data_T P0_logits[CONFIG_T::n_hidden];
+      data_T P0_logits[CONFIG_T::dense_config1::n_out];
       #pragma HLS ARRAY_PARTITION variable=P0_logits complete dim=0
-      nnet::dense_large<data_T, data_T, CONFIG_T::dense_config1>(p, P0_logits, core_node_w0, core_node_b0); //dense_config7
-      data_T P0[CONFIG_T::n_hidden];
+      nnet::dense_large<data_T, data_T, typename CONFIG_T::dense_config1>(p, P0_logits, core_node_w0, core_node_b0); //dense_config7
+      data_T P0[CONFIG_T::relu_config1::n_in];
       #pragma HLS ARRAY_PARTITION variable=P0 complete dim=0
-      nnet::relu<data_T, data_T, CONFIG_T::relu_config1>(P0_logits, P0); //relu_config3
+      nnet::relu<data_T, data_T, typename CONFIG_T::relu_config1>(P0_logits, P0); //relu_config3
       
-      data_T P_logits[CONFIG_T::n_hidden];
+      data_T P_logits[CONFIG_T::dense_config2::n_out];
       #pragma HLS ARRAY_PARTITION variable=P_logits complete dim=0
-      nnet::dense_large<data_T, data_T, CONFIG_T::dense_config2>(P0, P_logits, core_node_w1, core_node_b1); //dense_config6
-      nnet::relu<dataT, res_T, CONFIG_T::relu_config1>(P_logits, P[i]); //relu_config3
+      nnet::dense_large<data_T, data_T, typename CONFIG_T::dense_config2>(P0, P_logits, core_node_w1, core_node_b1); //dense_config6
+      nnet::relu<data_T, res_T, typename CONFIG_T::relu_config1>(P_logits, P[i]); //relu_config3
     }
   }
-  */
+
   template<class data_T, class res_T, typename CONFIG_T>
     void graph_independent(
 			   data_T    X[CONFIG_T::dense_config1::n_batch][CONFIG_T::dense_config1::n_in],
