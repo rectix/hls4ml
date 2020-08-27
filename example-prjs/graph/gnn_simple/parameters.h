@@ -42,6 +42,89 @@ typedef ap_uint<16> index_t;
 #define N_EDGES 20
 
 //hls-fpga-machine-learning insert layer-config
+
+struct graph_config1 : nnet::graph_config {
+ struct dense_config1 : nnet::dense_config {
+    static const unsigned n_batch = N_NODES;
+    static const unsigned n_in = N_FEATURES;
+    static const unsigned n_out = latent_dim;
+    static const unsigned io_type = nnet::io_parallel;
+    static const unsigned reuse_factor = REUSE;
+    static const unsigned n_zeros = 0;
+    static const bool store_weights_in_bram = false;
+    typedef accum_default_t accum_t;
+    typedef bias_default_t bias_t;
+    typedef weight_default_t weight_t;
+  };
+  struct relu_config1 : nnet::activ_config {
+    static const unsigned n_batch = N_NODES;
+    static const unsigned n_in = latent_dim;
+    static const unsigned table_size = 1024;
+    static const unsigned io_type = nnet::io_parallel;
+    static const unsigned reuse_factor = REUSE;
+  };
+  struct dense_config2 : nnet::dense_config {
+    static const unsigned n_batch = N_NODES;
+    static const unsigned n_in = latent_dim;
+    static const unsigned n_out = latent_dim;
+    static const unsigned io_type = nnet::io_parallel;
+    static const unsigned reuse_factor = REUSE;
+    static const unsigned n_zeros = 0;
+    static const bool store_weights_in_bram = false;
+    typedef accum_default_t accum_t;
+    typedef bias_default_t bias_t;
+    typedef weight_default_t weight_t;
+  };
+  struct relu_config2 : nnet::activ_config {
+    static const unsigned n_batch = N_NODES;
+    static const unsigned n_in = latent_dim;
+    static const unsigned table_size = 1024;
+    static const unsigned io_type = nnet::io_parallel;
+    static const unsigned reuse_factor = REUSE;
+  };
+};
+
+struct graph_config2 : nnet::graph_config {
+  struct dense_config1 : nnet::dense_config {
+    static const unsigned n_batch = N_EDGES;
+    static const unsigned n_in = E_FEATURES;
+    static const unsigned n_out = latent_dim;
+    static const unsigned io_type = nnet::io_parallel;
+    static const unsigned reuse_factor = REUSE;
+    static const unsigned n_zeros = 0;
+    static const bool store_weights_in_bram = false;
+    typedef accum_default_t accum_t;
+    typedef bias_default_t bias_t;
+    typedef weight_default_t weight_t;
+  };
+  struct relu_config1 : nnet::activ_config {
+    static const unsigned n_batch = N_EDGES;
+    static const unsigned n_in = latent_dim;
+    static const unsigned table_size = 1024;
+    static const unsigned io_type = nnet::io_parallel;
+    static const unsigned reuse_factor = REUSE;
+  };
+  struct dense_config2 : nnet::dense_config {
+    static const unsigned n_batch = N_EDGES;
+    static const unsigned n_in = latent_dim;
+    static const unsigned n_out = latent_dim;
+    static const unsigned io_type = nnet::io_parallel;
+    static const unsigned reuse_factor = REUSE;
+    static const unsigned n_zeros = 0;
+    static const bool store_weights_in_bram = false;
+    typedef accum_default_t accum_t;
+    typedef bias_default_t bias_t;
+    typedef weight_default_t weight_t;
+  };
+  struct relu_config2 : nnet::activ_config {
+    static const unsigned n_batch = N_EDGES;
+    static const unsigned n_in = latent_dim;
+    static const unsigned table_size = 1024;
+    static const unsigned io_type = nnet::io_parallel;
+    static const unsigned reuse_factor = REUSE;
+  };
+};
+
 struct dense_config1 : nnet::dense_config {
   static const unsigned n_batch = N_NODES;
   static const unsigned n_in = N_FEATURES;
@@ -109,7 +192,21 @@ struct relu_config2 : nnet::activ_config {
   static const unsigned io_type = nnet::io_parallel;
   static const unsigned reuse_factor = REUSE;
 };
+/*
+struct graph_config1 : nnet::graph_config {
+  dense_config1 dense_configa;
+  relu_config1 relu_configa;
+  dense_config2 dense_configb;
+  relu_config1 relu_configb;
+};
 
+struct graph_config2 : nnet::graph_config {
+  dense_config3 dense_configa;
+  relu_config2 relu_configa;
+  dense_config4 dense_configb;
+  relu_config2 relu_configb;
+};
+*/
 struct dense_config5 : nnet::dense_config {
   static const unsigned n_batch = 1;
   static const unsigned n_in = 3*latent_dim;

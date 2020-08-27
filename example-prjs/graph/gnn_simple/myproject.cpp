@@ -6,6 +6,7 @@
 #include "nnet_activation.h"
 #include "nnet_dense_large.h"
 #include "nnet_common.h"
+#include "nnet_graph.h"
 
 //insert weights from training
 #include "weights/encoder_node_w0.h"
@@ -69,7 +70,7 @@ void myproject(
 
   const_size_in	= N_NODES*N_FEATURES+N_EDGES*E_FEATURES+2*N_EDGES*1;
   const_size_out = N_EDGES*1;
-
+  /*
   //encode nodes features
   input_t Rn0_logits[N_NODES][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=Rn0_logits complete dim=0
@@ -84,7 +85,12 @@ void myproject(
   input_t Rn[N_NODES][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=Rn complete dim=0
   nnet::relu_batch<input_t, input_t, relu_config1>(Rn_logits, Rn);
-  
+  */
+
+  input_t Rn[N_NODES][latent_dim];
+  #pragma HLS ARRAY_PARTITION variable=Rn complete dim=0
+  nnet::graph_independent<input_t, input_t, graph_config1>(N, Rn, encoder_node_w0, encoder_node_b0, encoder_node_w1, encoder_node_b1);
+  /*
   //encode edge features
   input_t Re0_logits[N_EDGES][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=Re0_logits complete dim=0
@@ -99,7 +105,12 @@ void myproject(
   input_t Re[N_EDGES][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=Re complete dim=0
   nnet::relu_batch<input_t, input_t, relu_config2>(Re_logits, Re);
-  
+  */
+
+  input_t Re[N_EDGES][latent_dim];
+  #pragma HLS ARRAY_PARTITION variable=Re complete dim=0
+  nnet::graph_independent<input_t, input_t, graph_config2>(E, Re, encoder_edge_w0, encoder_edge_b0, encoder_edge_w1, encoder_edge_b1);
+
   //core networks
   input_t L[N_EDGES][latent_dim];
   input_t P[N_NODES][latent_dim];
@@ -110,7 +121,7 @@ void myproject(
 
     //core edge updates
     for(int j = 0; j < N_EDGES; j++){
-      #pragma HLS PIPELINE
+      #pragma HLS PIPELINE //II=REUSE
       #pragma HLS UNROLL
       index_t r = receivers[j][0];
       index_t s = senders[j][0];
@@ -137,7 +148,7 @@ void myproject(
     
     //core node updates
     for(int j = 0; j < N_NODES; j++){
-      #pragma HLS PIPELINE
+      #pragma HLS PIPELINE //II=REUSE
       #pragma HLS UNROLL
       input_t p[2*latent_dim];
       #pragma HLS ARRAY_PARTITION variable=p complete dim=0
