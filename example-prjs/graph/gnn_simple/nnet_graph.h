@@ -63,7 +63,7 @@ namespace nnet {
 			typename CONFIG_T::dense_config2::bias_t    core_edge_b1[CONFIG_T::n_hidden])
   {
     for(int i = 0; i < CONFIG_T::n_edge; i++) {
-      #pragma HLS PIPELINE
+      #pragma HLS PIPELINE II=CONFIG_T::dense_config1::reuse_factor
       #pragma HLS UNROLL
       data_T r = receivers[i][0];
       data_T s = senders[i][0];
@@ -76,15 +76,15 @@ namespace nnet {
 
       data_T L0_logits[CONFIG_T::dense_config1::n_out];
       #pragma HLS ARRAY_PARTITION variable=L0_logits complete dim=0
-      nnet::dense_large<data_T, data_T, typename CONFIG_T::dense_config1>(l, L0_logits, core_edge_w0, core_edge_b0); //compare to dense_config5
+      nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(l, L0_logits, core_edge_w0, core_edge_b0);
       data_T L0[CONFIG_T::relu_config1::n_in];
       #pragma HLS ARRAY_PARTITION variable=L0 complete dim=0
-      nnet::relu<data_T, data_T, typename CONFIG_T::relu_config1>(L0_logits, L0); //compare to relu_config3
+      nnet::relu<data_T, data_T, typename CONFIG_T::relu_config1>(L0_logits, L0);
 
       data_T L_logits[CONFIG_T::dense_config2::n_out];
       #pragma HLS ARRAY_PARTITION variable=L_logits complete dim=0
-      nnet::dense_large<data_T, data_T, typename CONFIG_T::dense_config2>(L0, L_logits, core_edge_w1, core_edge_b1); //compare to dense_config6
-      nnet::relu<data_T, res_T, typename CONFIG_T::relu_config2>(L_logits, L[i]); //relu_config3
+      nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config2>(L0, L_logits, core_edge_w1, core_edge_b1);
+      nnet::relu<data_T, res_T, typename CONFIG_T::relu_config2>(L_logits, L[i]);
     }
   }
 
@@ -99,7 +99,7 @@ namespace nnet {
 			typename CONFIG_T::dense_config2::bias_t    core_node_b1[CONFIG_T::n_hidden])
   {
     for(int i = 0; i < CONFIG_T::n_node; i++){
-      #pragma HLS PIPELINE
+      #pragma HLS PIPELINE II=CONFIG_T::dense_config1::reuse_factor
       #pragma HLS UNROLL
       data_T p[2*CONFIG_T::n_hidden];
       #pragma HLS ARRAY_PARTITION variable=p complete dim=0
@@ -107,15 +107,15 @@ namespace nnet {
       
       data_T P0_logits[CONFIG_T::dense_config1::n_out];
       #pragma HLS ARRAY_PARTITION variable=P0_logits complete dim=0
-      nnet::dense_large<data_T, data_T, typename CONFIG_T::dense_config1>(p, P0_logits, core_node_w0, core_node_b0); //dense_config7
+      nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(p, P0_logits, core_node_w0, core_node_b0);
       data_T P0[CONFIG_T::relu_config1::n_in];
       #pragma HLS ARRAY_PARTITION variable=P0 complete dim=0
-      nnet::relu<data_T, data_T, typename CONFIG_T::relu_config1>(P0_logits, P0); //relu_config3
+      nnet::relu<data_T, data_T, typename CONFIG_T::relu_config1>(P0_logits, P0);
       
       data_T P_logits[CONFIG_T::dense_config2::n_out];
       #pragma HLS ARRAY_PARTITION variable=P_logits complete dim=0
-      nnet::dense_large<data_T, data_T, typename CONFIG_T::dense_config2>(P0, P_logits, core_node_w1, core_node_b1); //dense_config6
-      nnet::relu<data_T, res_T, typename CONFIG_T::relu_config1>(P_logits, P[i]); //relu_config3
+      nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config2>(P0, P_logits, core_node_w1, core_node_b1);
+      nnet::relu<data_T, res_T, typename CONFIG_T::relu_config1>(P_logits, P[i]);
     }
   }
 
@@ -130,15 +130,15 @@ namespace nnet {
   {
     data_T R0_logits[CONFIG_T::dense_config1::n_batch][CONFIG_T::dense_config1::n_out];
     #pragma HLS ARRAY_PARTITION variable=R0_logits complete dim=0
-    nnet::dense_batch<data_T, data_T, typename CONFIG_T::dense_config1>(X, R0_logits, w0, b0); //dense_config4 CONFIG_T::dense_config1
+    nnet::dense_batch<data_T, data_T, typename CONFIG_T::dense_config1>(X, R0_logits, w0, b0);
     data_T R0[CONFIG_T::relu_config1::n_batch][CONFIG_T::relu_config1::n_in];
     #pragma HLS ARRAY_PARTITION variable=R0 complete dim=0
-    nnet::relu_batch<data_T, data_T, typename CONFIG_T::relu_config1>(R0_logits, R0); //relu_config2 CONFIG_T::relu_config1
+    nnet::relu_batch<data_T, data_T, typename CONFIG_T::relu_config1>(R0_logits, R0);
 
     data_T R_logits[CONFIG_T::dense_config2::n_batch][CONFIG_T::dense_config2::n_out];
     #pragma HLS ARRAY_PARTITION variable=R_logits complete dim=0
-    nnet::dense_batch<data_T, data_T, typename CONFIG_T::dense_config2>(R0, R_logits, w1, b1); //dense_config4 CONFIG_T::dense_config2
-    nnet::relu_batch<data_T, res_T, typename CONFIG_T::relu_config2>(R_logits, R); //relu_config_2 CONFIG_T::relu_config2
+    nnet::dense_batch<data_T, data_T, typename CONFIG_T::dense_config2>(R0, R_logits, w1, b1);
+    nnet::relu_batch<data_T, res_T, typename CONFIG_T::relu_config2>(R_logits, R);
   }
 
   template<class data_T, class res_T, typename CONFIG_T>
