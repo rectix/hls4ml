@@ -38,8 +38,8 @@ typedef ap_uint<16> index_t;
 //#define N_NODES 2714
 //#define N_EDGES 24758
 //graph_nets simple example:
-#define N_NODES 10
-#define N_EDGES 20
+#define N_NODES 130
+#define N_EDGES 224
 
 //hls-fpga-machine-learning insert layer-config
 
@@ -124,75 +124,7 @@ struct graph_config2 : nnet::graph_config {
     static const unsigned reuse_factor = REUSE;
   };
 };
-/*
-struct dense_config1 : nnet::dense_config {
-  static const unsigned n_batch = N_NODES;
-  static const unsigned n_in = N_FEATURES;
-  static const unsigned n_out = latent_dim;
-  static const unsigned io_type = nnet::io_parallel;
-  static const unsigned reuse_factor = REUSE;
-  static const unsigned n_zeros = 0;
-  static const bool store_weights_in_bram = false;
-  typedef accum_default_t accum_t;
-  typedef bias_default_t bias_t;
-  typedef weight_default_t weight_t;
-};
 
-struct relu_config1 : nnet::activ_config {
-  static const unsigned n_batch = N_NODES;
-  static const unsigned n_in = latent_dim;
-  static const unsigned table_size = 1024;
-  static const unsigned io_type = nnet::io_parallel;
-  static const unsigned reuse_factor = REUSE;
-};
-
-struct dense_config2 : nnet::dense_config {
-  static const unsigned n_batch = N_NODES;
-  static const unsigned n_in = latent_dim;
-  static const unsigned n_out = latent_dim;
-  static const unsigned io_type = nnet::io_parallel;
-  static const unsigned reuse_factor = REUSE;
-  static const unsigned n_zeros = 0;
-  static const bool store_weights_in_bram = false;
-  typedef accum_default_t accum_t;
-  typedef bias_default_t bias_t;
-  typedef weight_default_t weight_t;
-};
-
-struct dense_config3 : nnet::dense_config {
-  static const unsigned n_batch = N_EDGES;
-  static const unsigned n_in = E_FEATURES;
-  static const unsigned n_out = latent_dim;
-  static const unsigned io_type = nnet::io_parallel;
-  static const unsigned reuse_factor = REUSE;
-  static const unsigned n_zeros = 0;
-  static const bool store_weights_in_bram = false;
-  typedef accum_default_t accum_t;
-  typedef bias_default_t bias_t;
-  typedef weight_default_t weight_t;
-};
-
-struct dense_config4 : nnet::dense_config {
-  static const unsigned n_batch = N_EDGES;
-  static const unsigned n_in = latent_dim;
-  static const unsigned n_out = latent_dim;
-  static const unsigned io_type = nnet::io_parallel;
-  static const unsigned reuse_factor = REUSE;
-  static const unsigned n_zeros = 0;
-  static const bool store_weights_in_bram = false;
-  typedef accum_default_t accum_t;
-  typedef bias_default_t bias_t;
-  typedef weight_default_t weight_t;
-};
-
-struct relu_config2 : nnet::activ_config {
-  static const unsigned n_batch = N_EDGES;
-  static const unsigned n_in = latent_dim;
-  static const unsigned table_size = 1024;
-  static const unsigned io_type = nnet::io_parallel;
-  static const unsigned reuse_factor = REUSE;
-};
-*/
 struct graph_config3 : nnet::graph_config {
   static const unsigned n_edge = N_EDGES;
   static const unsigned n_node = N_NODES;
@@ -274,54 +206,7 @@ struct graph_config4 : nnet::graph_config {
     static const unsigned reuse_factor = REUSE;
   };
 };
-/*
-struct dense_config5 : nnet::dense_config {
-  static const unsigned n_batch = 1;
-  static const unsigned n_in = 3*latent_dim;
-  static const unsigned n_out = latent_dim;
-  static const unsigned io_type = nnet::io_parallel;
-  static const unsigned reuse_factor = REUSE;
-  static const unsigned n_zeros = 0;
-  static const bool store_weights_in_bram = false;
-  typedef accum_default_t accum_t;
-  typedef bias_default_t bias_t;
-  typedef weight_default_t weight_t;
-};
 
-struct relu_config3 : nnet::activ_config {
-  static const unsigned n_batch = 1;
-  static const unsigned n_in = latent_dim;
-  static const unsigned table_size = 1024;
-  static const unsigned io_type = nnet::io_parallel;
-  static const unsigned reuse_factor = REUSE;
-};
-
-struct dense_config6 : nnet::dense_config {
-  static const unsigned n_batch = 1;
-  static const unsigned n_in = latent_dim;
-  static const unsigned n_out = latent_dim;
-  static const unsigned io_type = nnet::io_parallel;
-  static const unsigned reuse_factor = REUSE;
-  static const unsigned n_zeros = 0;
-  static const bool store_weights_in_bram = false;
-  typedef accum_default_t accum_t;
-  typedef bias_default_t bias_t;
-  typedef weight_default_t weight_t;
-};
-
-struct dense_config7 : nnet::dense_config {
-  static const unsigned n_batch = 1;
-  static const unsigned n_in = 2*latent_dim;
-  static const unsigned n_out = latent_dim;
-  static const unsigned io_type = nnet::io_parallel;
-  static const unsigned reuse_factor = REUSE;
-  static const unsigned n_zeros = 0;
-  static const bool store_weights_in_bram = false;
-  typedef accum_default_t accum_t;
-  typedef bias_default_t bias_t;
-  typedef weight_default_t weight_t;
-};
-*/
 struct graph_config5 : nnet::graph_config {
   struct dense_config1 : nnet::dense_config {
     static const unsigned n_batch = N_EDGES;
@@ -403,28 +288,7 @@ struct graph_config6 : nnet::graph_config {
     static const unsigned reuse_factor = REUSE;
   };
 };
-/*
-struct dense_config8 : nnet::dense_config {
-  static const unsigned n_batch = N_EDGES;
-  static const unsigned n_in = latent_dim;
-  static const unsigned n_out = 1;
-  static const unsigned io_type = nnet::io_parallel;
-  static const unsigned reuse_factor = REUSE;
-  static const unsigned n_zeros = 0;
-  static const bool store_weights_in_bram = false;
-  typedef accum_default_t accum_t;
-  typedef bias_default_t bias_t;
-  typedef weight_default_t weight_t;
-};
 
-struct relu_config4 : nnet::activ_config {
-  static const unsigned n_batch = N_EDGES;
-  static const unsigned n_in = 1;
-  static const unsigned table_size = 1024;
-  static const unsigned io_type = nnet::io_parallel;
-  static const unsigned reuse_factor = REUSE;
-};
-*/
 struct sigmoid_config1 : nnet::activ_config {
   static const unsigned n_batch = N_EDGES;
   static const unsigned n_in = 1;
