@@ -62,13 +62,13 @@ namespace nnet {
 			typename CONFIG_T::dense_config2::weight_t  core_edge_w1[CONFIG_T::n_hidden*CONFIG_T::n_hidden],
 			typename CONFIG_T::dense_config2::bias_t    core_edge_b1[CONFIG_T::n_hidden])
   {
+    #pragma HLS STREAM variable=receivers
+    #pragma HLS STREAM variable=senders
     for(int i = 0; i < CONFIG_T::n_edge; i++) {
       #pragma HLS PIPELINE II=CONFIG_T::dense_config1::reuse_factor
       #pragma HLS UNROLL
       index_T r = receivers[i][0];
-      #pragma HLS STREAM variable=r
       index_T s = senders[i][0];
-      #pragma HLS STREAM variable=s
       data_T l_logits[2*CONFIG_T::n_hidden];
       #pragma HLS ARRAY_PARTITION variable=l_logits complete dim=0
       nnet::merge<data_T, CONFIG_T::n_hidden, CONFIG_T::n_hidden>(Re[i], Rn[r], l_logits);
