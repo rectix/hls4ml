@@ -38,13 +38,15 @@ typedef ap_uint<16> index_t;
 //#define N_NODES 2714
 //#define N_EDGES 24758
 //graph_nets simple example:
-#define N_NODES 130
-#define N_EDGES 224
+#define N_NODES 70
+#define N_EDGES 90
 
 //hls-fpga-machine-learning insert layer-config
 
 struct graph_config1 : nnet::graph_config {
- struct dense_config1 : nnet::dense_config {
+  static const bool stream = true;
+
+  struct dense_config1 : nnet::dense_config {
     static const unsigned n_batch = N_NODES;
     static const unsigned n_in = N_FEATURES;
     static const unsigned n_out = latent_dim;
@@ -85,6 +87,8 @@ struct graph_config1 : nnet::graph_config {
 };
 
 struct graph_config2 : nnet::graph_config {
+  static const bool stream = true;
+
   struct dense_config1 : nnet::dense_config {
     static const unsigned n_batch = N_EDGES;
     static const unsigned n_in = E_FEATURES;
@@ -129,6 +133,7 @@ struct graph_config3 : nnet::graph_config {
   static const unsigned n_edge = N_EDGES;
   static const unsigned n_node = N_NODES;
   static const unsigned n_hidden = latent_dim;
+  static const bool stream = true;
 
   struct dense_config1 : nnet::dense_config {
     static const unsigned n_in = 3*n_hidden;
@@ -208,6 +213,8 @@ struct graph_config4 : nnet::graph_config {
 };
 
 struct graph_config5 : nnet::graph_config {
+  static const bool stream = false;
+
   struct dense_config1 : nnet::dense_config {
     static const unsigned n_batch = N_EDGES;
     static const unsigned n_in = latent_dim;
@@ -249,6 +256,8 @@ struct graph_config5 : nnet::graph_config {
 };
 
 struct graph_config6 : nnet::graph_config {
+  static const bool stream = false;
+
   struct dense_config1 : nnet::dense_config {
     static const unsigned n_batch = N_EDGES;
     static const unsigned n_in = latent_dim;

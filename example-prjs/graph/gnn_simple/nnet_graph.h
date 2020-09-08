@@ -62,8 +62,10 @@ namespace nnet {
 			typename CONFIG_T::dense_config2::weight_t  core_edge_w1[CONFIG_T::n_hidden*CONFIG_T::n_hidden],
 			typename CONFIG_T::dense_config2::bias_t    core_edge_b1[CONFIG_T::n_hidden])
   {
-    #pragma HLS STREAM variable=receivers
-    #pragma HLS STREAM variable=senders
+    if(CONFIG_T::stream){
+      #pragma HLS STREAM variable=receivers
+      #pragma HLS STREAM variable=senders
+    }
     for(int i = 0; i < CONFIG_T::n_edge; i++) {
       #pragma HLS PIPELINE II=CONFIG_T::dense_config1::reuse_factor
       #pragma HLS UNROLL
@@ -130,6 +132,9 @@ namespace nnet {
 			   typename CONFIG_T::dense_config2::weight_t  w1[CONFIG_T::dense_config2::n_in*CONFIG_T::dense_config2::n_out],
 			   typename CONFIG_T::dense_config2::bias_t    b1[CONFIG_T::dense_config2::n_out])
   {
+    if(CONFIG_T::stream){
+      #pragma HLS STREAM variable=X
+    }
     data_T R0_logits[CONFIG_T::dense_config1::n_batch][CONFIG_T::dense_config1::n_out];
     #pragma HLS ARRAY_PARTITION variable=R0_logits complete dim=0
     nnet::dense_batch<data_T, data_T, typename CONFIG_T::dense_config1>(X, R0_logits, w0, b0);
