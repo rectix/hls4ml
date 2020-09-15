@@ -6,6 +6,7 @@
 #include "nnet_activation.h"
 #include "nnet_dense_large.h"
 #include "nnet_common.h"
+#include "nnet_helpers.h"
 #include "nnet_graph.h"
 
 //insert weights from training
@@ -70,6 +71,17 @@ void myproject(
 
   const_size_in	= N_NODES*N_FEATURES+N_EDGES*E_FEATURES+2*N_EDGES*1;
   const_size_out = N_EDGES*1;
+
+#ifndef __SYNTHESIS__
+  static bool loaded_weights = false;
+ if (!loaded_weights) {
+   //hls-fpga-machine-learning insert load weights                                                                           
+   nnet::load_weights_from_txt<model_default_t, 96>(encoder_node_w0, "encoder_node_w0.txt");
+   nnet::load_weights_from_txt<model_default_t, 1024>(encoder_node_w1, "encoder_node_w1.txt");
+
+   loaded_weights = true;
+ }
+#endif
   
   //encode nodes features
   input_t Rn[N_NODES][latent_dim];

@@ -14,6 +14,7 @@
 typedef ap_fixed<16,6> accum_default_t;
 typedef ap_fixed<16,6> weight_default_t;
 typedef ap_fixed<16,6> bias_default_t;
+typedef ap_fixed<16,6> model_default_t;
 typedef ap_fixed<16,6> input_t;
 typedef ap_fixed<16,6> result_t;
 typedef ap_uint<16> index_t;
