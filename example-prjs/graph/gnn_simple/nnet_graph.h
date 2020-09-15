@@ -62,7 +62,7 @@ namespace nnet {
 			typename CONFIG_T::dense_config2::weight_t  core_edge_w1[CONFIG_T::n_hidden*CONFIG_T::n_hidden],
 			typename CONFIG_T::dense_config2::bias_t    core_edge_b1[CONFIG_T::n_hidden])
   {
-    if(CONFIG_T::stream){
+    if(CONFIG_T::io_stream){
       #pragma HLS STREAM variable=receivers
       #pragma HLS STREAM variable=senders
     }
@@ -132,7 +132,7 @@ namespace nnet {
 			   typename CONFIG_T::dense_config2::weight_t  w1[CONFIG_T::dense_config2::n_in*CONFIG_T::dense_config2::n_out],
 			   typename CONFIG_T::dense_config2::bias_t    b1[CONFIG_T::dense_config2::n_out])
   {
-    if(CONFIG_T::stream){
+    if(CONFIG_T::io_stream){
       #pragma HLS STREAM variable=X
     }
     data_T R0_logits[CONFIG_T::dense_config1::n_batch][CONFIG_T::dense_config1::n_out];
@@ -142,10 +142,14 @@ namespace nnet {
     #pragma HLS ARRAY_PARTITION variable=R0 complete dim=0
     nnet::relu_batch<data_T, data_T, typename CONFIG_T::relu_config1>(R0_logits, R0);
 
-    data_T R_logits[CONFIG_T::dense_config2::n_batch][CONFIG_T::dense_config2::n_out];
-    #pragma HLS ARRAY_PARTITION variable=R_logits complete dim=0
-    nnet::dense_batch<data_T, data_T, typename CONFIG_T::dense_config2>(R0, R_logits, w1, b1);
-    nnet::relu_batch<data_T, res_T, typename CONFIG_T::relu_config2>(R_logits, R);
+    if(CONFIG_T::activate_final){
+        data_T R_logits[CONFIG_T::dense_config2::n_batch][CONFIG_T::dense_config2::n_out];
+        #pragma HLS ARRAY_PARTITION variable=R_logits complete dim=0
+        nnet::dense_batch<data_T, data_T, typename CONFIG_T::dense_config2>(R0, R_logits, w1, b1);
+        nnet::relu_batch<data_T, res_T, typename CONFIG_T::relu_config2>(R_logits, R);
+    }else{
+      nnet::dense_batch<data_T, data_T, typename CONFIG_T::dense_config2>(R0, R, w1, b1);
+    }
   }
 
   template<class data_T, class res_T, typename CONFIG_T>

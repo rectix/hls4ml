@@ -30,7 +30,8 @@ typedef ap_uint<16> index_t;
 //hls-fpga-machine-learning insert layer-config
 
 struct graph_config1 : nnet::graph_config {
-  static const bool stream = true;
+  static const bool io_stream = true;
+  static const bool activate_final = true;
 
   struct dense_config1 : nnet::dense_config {
     static const unsigned n_batch = N_NODES;
@@ -73,7 +74,8 @@ struct graph_config1 : nnet::graph_config {
 };
 
 struct graph_config2 : nnet::graph_config {
-  static const bool stream = true;
+  static const bool io_stream = true;
+  static const bool activate_final = true;
 
   struct dense_config1 : nnet::dense_config {
     static const unsigned n_batch = N_EDGES;
@@ -119,7 +121,7 @@ struct graph_config3 : nnet::graph_config {
   static const unsigned n_edge = N_EDGES;
   static const unsigned n_node = N_NODES;
   static const unsigned n_hidden = latent_dim;
-  static const bool stream = true;
+  static const bool io_stream = true;
 
   struct dense_config1 : nnet::dense_config {
     static const unsigned n_in = 3*n_hidden;
@@ -199,7 +201,8 @@ struct graph_config4 : nnet::graph_config {
 };
 
 struct graph_config5 : nnet::graph_config {
-  static const bool stream = false;
+  static const bool io_stream = false;
+  static const bool activate_final = true;
 
   struct dense_config1 : nnet::dense_config {
     static const unsigned n_batch = N_EDGES;
@@ -242,7 +245,8 @@ struct graph_config5 : nnet::graph_config {
 };
 
 struct graph_config6 : nnet::graph_config {
-  static const bool stream = false;
+  static const bool io_stream = false;
+  static const bool activate_final = false;
 
   struct dense_config1 : nnet::dense_config {
     static const unsigned n_batch = N_EDGES;
