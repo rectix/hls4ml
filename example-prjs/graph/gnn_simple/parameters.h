@@ -22,21 +22,6 @@ typedef ap_uint<16> index_t;
 #define latent_dim 32
 #define N_FEATURES 3
 #define E_FEATURES 4
-//2x2 example:
-//#define N_NODES 4
-//#define N_EDGES 4
-//3x3 example:
-//#define N_NODES 9
-//#define N_EDGES 18
-//4x4 example:
-//#define N_NODES 16
-//#define N_EDGES 48
-//5x5 example:
-//#define N_NODES 25
-//#define N_EDGES 100
-//ExatrkX by-hand example:
-//#define N_NODES 2714
-//#define N_EDGES 24758
 //graph_nets simple example:
 #define N_NODES 190
 #define N_EDGES 442
