@@ -19,27 +19,12 @@ typedef ap_fixed<16,6> result_t;
 typedef ap_uint<16> index_t;
 #define REUSE 4
 #define N_ITERS 1
-#define latent_dim 4
+#define latent_dim 32
 #define N_FEATURES 3
 #define E_FEATURES 4
-//2x2 example:
-//#define N_NODES 4
-//#define N_EDGES 4
-//3x3 example:
-//#define N_NODES 9
-//#define N_EDGES 18
-//4x4 example:
-//#define N_NODES 16
-//#define N_EDGES 48
-//5x5 example:
-//#define N_NODES 25
-//#define N_EDGES 100
-//ExatrkX by-hand example:
-//#define N_NODES 2714
-//#define N_EDGES 24758
 //graph_nets simple example:
-#define N_NODES 70
-#define N_EDGES 90
+#define N_NODES 442
+#define N_EDGES 570
 
 //hls-fpga-machine-learning insert layer-config
 
