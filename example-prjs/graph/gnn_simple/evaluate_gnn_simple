@@ -217,8 +217,7 @@ if __name__ == "__main__":
     print('input nodes shape:', nodes.shape)
     print('input edges shape:', edges.shape)
     print()
-    #print('YEEEEEEEEEEEEEEEEEEEE, THIS IS WHAT YOU NEED TO LOOK AT:') #HLS
-    #print()#HLS
+
     #print('ENCODING NODES')#HLS
     n = nodes.dot(encoder_node_weights[0])
     #print('nodes', nodes.shape)#HLS
@@ -252,6 +251,10 @@ if __name__ == "__main__":
 
     print('nodes shape after encoder:', n.shape)
     print('edges shape after encoder:', e.shape)
+    print()
+    print('Rn = ', n)
+    print()
+    print('Re = ', e)
     print()
 
     n0 = n
@@ -313,8 +316,6 @@ if __name__ == "__main__":
         #print('n after', n.shape)#HLS
         #print('e after', e.shape)#HLS
         #print() #HLS
-
-    #print('END IMPORTANT PART') #HLS
 
     print('nodes shape after core update:', n.shape)
     print('edges shape after core update:', e.shape)
