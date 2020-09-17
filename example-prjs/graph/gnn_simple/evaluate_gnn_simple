@@ -370,16 +370,17 @@ if __name__ == "__main__":
     np.savetxt('tb_senders.dat',senders.reshape((1,-1)),delimiter=' ',fmt='%d')
     np.savetxt('tb_output_edge_predictions.dat',predict.reshape((1,-1)),delimiter=' ',fmt='%f')
 
-    encoder_node_weights_t = [np.array(encoder_node_weights[0]).T.tolist(), np.array(encoder_node_weights[1]).T.tolist()]
-    encoder_node_biases_t = [np.array(encoder_node_biases[0]).T.tolist(), np.array(encoder_node_biases[1]).T.tolist()]
-    encoder_edge_weights_t = [np.array(encoder_edge_weights[0]).T.tolist(), np.array(encoder_edge_weights[1]).T.tolist()]
-    encoder_edge_biases_t = [np.array(encoder_edge_biases[0]).T.tolist(), np.array(encoder_edge_biases[1]).T.tolist()]
-    core_edge_weights_t = [np.array(core_edge_weights[0]).T.tolist(), np.array(core_edge_weights[1]).T.tolist()]
-    core_edge_biases_t = [np.array(core_edge_biases[0]).T.tolist(), np.array(core_edge_biases[1]).T.tolist()]
-    core_node_weights_t = [np.array(core_node_weights[0]).T.tolist(), np.array(core_node_weights[1]).T.tolist()]
-    core_node_biases_t = [np.array(core_node_biases[0]).T.tolist(), np.array(core_node_biases[1]).T.tolist()]
-    decoder_edge_weights_t = [np.array(decoder_edge_weights[0]).T.tolist(), np.array(decoder_edge_weights[1]).T.tolist(), np.array(decoder_edge_weights[2]).T.tolist(), np.array(decoder_edge_weights[3]).T.tolist()]
-    decoder_edge_biases_t = [np.array(decoder_edge_biases[0]).T.tolist(), np.array(decoder_edge_biases[1]).T.tolist(), np.array(decoder_edge_biases[2]).T.tolist(), np.array(decoder_edge_biases[3]).T.tolist()]
+    encoder_node_weights_t = [encoder_node_weights[0].T, encoder_node_weights[1].T]
+    encoder_node_biases_t = [encoder_node_biases[0].T, encoder_node_biases[1].T]
+    encoder_edge_weights_t = [encoder_edge_weights[0].T, encoder_edge_weights[1].T]
+    encoder_edge_biases_t = [encoder_edge_biases[0].T, encoder_edge_biases[1].T]
+    core_edge_weights_t = [core_edge_weights[0].T, core_edge_weights[1].T]
+    core_edge_biases_t = [core_edge_biases[0].T, core_edge_biases[1].T]
+    core_node_weights_t = [core_node_weights[0].T, core_node_weights[1].T]
+    core_node_biases_t = [core_node_biases[0].T, core_node_biases[1].T]
+    decoder_edge_weights_t = [decoder_edge_weights[0].T, decoder_edge_weights[1].T, decoder_edge_weights[2].T, decoder_edge_weights[3].T]
+    decoder_edge_biases_t = [decoder_edge_biases[0].T, decoder_edge_biases[1].T, decoder_edge_biases[2].T, decoder_edge_biases[3].T]
+
 
     import hls4ml
     # save the weights for use in hls4ml
