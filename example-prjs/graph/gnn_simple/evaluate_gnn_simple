@@ -39,7 +39,7 @@ if __name__ == "__main__":
         input_ckpt = os.path.join(config['segment_training']['output_dir'],
                                   config['segment_training']['prod_name'])
 
-    file_names = [os.path.join(file_dir, "event000001000_g000000000_INPUT.npz")]
+    file_names = [os.path.join(file_dir, "event000001099_g000000000_INPUT.npz")]
     true_features = ['pt', 'particle_id', 'nhits']
     batch_size = 1
 
@@ -362,7 +362,7 @@ if __name__ == "__main__":
     print('predicted edge weights by hand:')
     print(' shape:', e.shape)
     print(' values:', e)
-        
+    
     # save the input and output graphs for use in test bench
     np.savetxt('tb_input_node_features.dat',nodes.reshape((1,-1)),delimiter=' ',fmt='%f')
     np.savetxt('tb_input_edge_features.dat',edges.reshape((1,-1)),delimiter=' ',fmt='%f')
