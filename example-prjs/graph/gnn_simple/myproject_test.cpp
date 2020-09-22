@@ -98,6 +98,15 @@ int main(int argc, char **argv)
     }
   }
   std::cout << std::endl;
+
+  std::ofstream eout;
+  eout.open("../../../../tb_output_edge_labels.dat");
+  for(int i = 0; i < N_EDGES; i++){
+    eout << e_str[i][0] << " ";
+    //std::cout << "writing e[" << i << "] \n";
+  }
+  //std::cout << "done writing to file" << std::endl;
+  eout.close();
   
   return 0;
 }
