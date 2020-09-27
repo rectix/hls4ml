@@ -46,6 +46,7 @@ namespace nnet {
     
     // Resource reuse info
     static const unsigned io_type = io_parallel;
+    static const unsigned io_stream = false;
     static const unsigned reuse_factor = 1;
     static const unsigned n_zeros = 0;
   };
@@ -66,8 +67,8 @@ namespace nnet {
       #pragma HLS STREAM variable=receivers
       #pragma HLS STREAM variable=senders
     }
-    for(int i = 0; i < CONFIG_T::n_edge; i++) {
-      #pragma HLS PIPELINE II=CONFIG_T::dense_config1::reuse_factor
+    #pragma HLS PIPELINE II=CONFIG_T::reuse_factor*CONFIG_T::n_edge
+    IN_edge_loop: for(int i = 0; i < CONFIG_T::n_edge; i++) {
       #pragma HLS UNROLL
       index_T r = receivers[i][0];
       index_T s = senders[i][0];
@@ -102,8 +103,8 @@ namespace nnet {
 			typename CONFIG_T::dense_config2::weight_t  core_node_w1[CONFIG_T::n_hidden*CONFIG_T::n_hidden],
 			typename CONFIG_T::dense_config2::bias_t    core_node_b1[CONFIG_T::n_hidden])
   {
-    for(int i = 0; i < CONFIG_T::n_node; i++){
-      #pragma HLS PIPELINE II=CONFIG_T::dense_config1::reuse_factor
+    #pragma HLS PIPELINE II=CONFIG_T::reuse_factor*CONFIG_T::n_node
+    IN_node_loop: for(int i = 0; i < CONFIG_T::n_node; i++){
       #pragma HLS UNROLL
       data_T p[2*CONFIG_T::n_hidden];
       #pragma HLS ARRAY_PARTITION variable=p complete dim=0
@@ -135,6 +136,7 @@ namespace nnet {
     if(CONFIG_T::io_stream){
       #pragma HLS STREAM variable=X
     }
+    #pragma HLS PIPELINE II=CONFIG_T::reuse_factor*CONFIG_T::dense_config2::n_batch
     data_T R0_logits[CONFIG_T::dense_config1::n_batch][CONFIG_T::dense_config1::n_out];
     #pragma HLS ARRAY_PARTITION variable=R0_logits complete dim=0
     nnet::dense_batch<data_T, data_T, typename CONFIG_T::dense_config1>(X, R0_logits, w0, b0);
