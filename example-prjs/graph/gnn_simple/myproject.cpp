@@ -109,24 +109,42 @@ void myproject(
   input_t Rn[N_NODES][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=Rn complete dim=0
   nnet::graph_independent<input_t, input_t, graph_config1>(N, Rn, encoder_node_w0, encoder_node_b0, encoder_node_w1, encoder_node_b1);
-
+  /*
+  for(int i = 0; i < N_NODES; i++){
+    std::cout << "Rn[" << i << "] = [";
+    for(int j = 0; j < latent_dim; j++){
+      std::cout << Rn[i][j] << ", ";
+    }
+    std::cout << "]" << std::endl;
+  }
+  */
   //encode edge features
   input_t Re[N_EDGES][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=Re complete dim=0
   nnet::graph_independent<input_t, input_t, graph_config2>(E, Re, encoder_edge_w0, encoder_edge_b0, encoder_edge_w1, encoder_edge_b1);
-
+  /*
+  for(int i = 0; i < N_EDGES; i++){
+    std::cout << "Re[" << i << "] = [";
+    for(int j = 0; j < latent_dim; j++){
+      std::cout << Re[i][j] << ", ";
+    }
+    std::cout << "]" << std::endl;
+  }
+  */
   //core networks
   input_t L[N_EDGES][latent_dim];
+  input_T Q[N_NODES][latent_dim];
   input_t P[N_NODES][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=L complete dim=0
+  #pragma HLS ARRAY_PARTITION variable=Q complete dim=0
   #pragma HLS ARRAY_PARTITION variable=P complete dim=0
   
   for(int i = 0; i < N_ITERS; i++){
 
     //core edge updates
-    nnet::IN_edge_module<input_t, index_t, input_t, graph_config3>(Re, Rn, receivers, senders, L, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1);
+    nnet::IN_edge_module<input_t, index_t, input_t, graph_config3>(Re, Rn, receivers, senders, L, Q, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1);
     //core node updates
-    nnet::IN_node_module<input_t, input_t, graph_config4>(Rn, L, P, core_node_w0, core_node_b0, core_node_w1, core_node_b1);
+    nnet::IN_node_module<input_t, input_t, graph_config4>(Rn, Q, P, core_node_w0, core_node_b0, core_node_w1, core_node_b1);
 
   }
 

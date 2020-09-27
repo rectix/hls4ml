@@ -25,13 +25,13 @@ typedef ap_uint<16> index_t;
 #define N_FEATURES 3
 #define E_FEATURES 4
 //graph_nets simple example:
-#define N_NODES 10
-#define N_EDGES 20
+#define N_NODES 120
+#define N_EDGES 290
 
 //hls-fpga-machine-learning insert layer-config
 
 struct graph_config1 : nnet::graph_config {
-  static const bool io_stream = false;
+  static const bool io_stream = true;
   static const bool activate_final = true;
   static const unsigned reuse_factor = REUSE_GRAPH;
 
@@ -74,7 +74,7 @@ struct graph_config1 : nnet::graph_config {
 };
 
 struct graph_config2 : nnet::graph_config {
-  static const bool io_stream = false;
+  static const bool io_stream = true;
   static const bool activate_final = true;
   static const unsigned reuse_factor = REUSE_GRAPH;
 
@@ -120,7 +120,7 @@ struct graph_config3 : nnet::graph_config {
   static const unsigned n_edge = N_EDGES;
   static const unsigned n_node = N_NODES;
   static const unsigned n_hidden = latent_dim;
-  static const bool io_stream = false;
+  static const bool io_stream = true;
   static const unsigned reuse_factor = REUSE_GRAPH;
 
 
