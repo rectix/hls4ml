@@ -20,12 +20,12 @@ typedef ap_fixed<16,6> result_t;
 typedef ap_uint<16> index_t;
 #define REUSE 4
 #define N_ITERS 1
-#define latent_dim 32
+#define latent_dim 4
 #define N_FEATURES 3
 #define E_FEATURES 4
 //graph_nets simple example:
-#define N_NODES 122
-#define N_EDGES 196
+#define N_NODES 10
+#define N_EDGES 20
 
 //hls-fpga-machine-learning insert layer-config
 
