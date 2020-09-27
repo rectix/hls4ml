@@ -133,7 +133,7 @@ void myproject(
   */
   //core networks
   input_t L[N_EDGES][latent_dim];
-  input_T Q[N_NODES][latent_dim];
+  input_t Q[N_NODES][latent_dim];
   input_t P[N_NODES][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=L complete dim=0
   #pragma HLS ARRAY_PARTITION variable=Q complete dim=0
