@@ -51,11 +51,11 @@ Output (128,1)
 */
 
 void myproject(
-	       input_t      N[N_NODES][N_FEATURES],
-	       input_t      E[N_EDGES][E_FEATURES],
-               index_t      receivers[N_EDGES][1],
-               index_t      senders[N_EDGES][1],
-	       result_t     e[N_EDGES][1],
+	       input_t      N[N_NODES_MAX][N_FEATURES],
+	       input_t      E[N_EDGES_MAX][E_FEATURES],
+               index_t      receivers[N_EDGES_MAX][1],
+               index_t      senders[N_EDGES_MAX][1],
+	       result_t     e[N_EDGES_MAX][1],
 	       unsigned short &const_size_in,
 	       unsigned short &const_size_out)
 {
@@ -69,8 +69,8 @@ void myproject(
 #pragma HLS INTERFACE ap_vld port=N,E,receivers,senders,e
 #pragma HLS DATAFLOW
 
-  const_size_in	= N_NODES*N_FEATURES+N_EDGES*E_FEATURES+2*N_EDGES*1;
-  const_size_out = N_EDGES*1;
+  const_size_in	= N_NODES_MAX*N_FEATURES+N_EDGES_MAX*E_FEATURES+2*N_EDGES_MAX*1;
+  const_size_out = N_EDGES_MAX*1;
 
 #ifndef __SYNTHESIS__
   static bool loaded_weights = false;
@@ -106,7 +106,7 @@ void myproject(
 #endif
   
   //encode nodes features
-  input_t Rn[N_NODES][latent_dim];
+  input_t Rn[N_NODES_MAX][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=Rn complete dim=0
   nnet::graph_independent<input_t, input_t, graph_config1>(N, Rn, encoder_node_w0, encoder_node_b0, encoder_node_w1, encoder_node_b1);
   /*
@@ -119,7 +119,7 @@ void myproject(
   }
   */
   //encode edge features
-  input_t Re[N_EDGES][latent_dim];
+  input_t Re[N_EDGES_MAX][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=Re complete dim=0
   nnet::graph_independent<input_t, input_t, graph_config2>(E, Re, encoder_edge_w0, encoder_edge_b0, encoder_edge_w1, encoder_edge_b1);
   /*
@@ -132,9 +132,9 @@ void myproject(
   }
   */
   //core networks
-  input_t L[N_EDGES][latent_dim];
-  input_t Q[N_NODES][latent_dim];
-  input_t P[N_NODES][latent_dim];
+  input_t L[N_EDGES_MAX][latent_dim];
+  input_t Q[N_NODES_MAX][latent_dim];
+  input_t P[N_NODES_MAX][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=L complete dim=0
   #pragma HLS ARRAY_PARTITION variable=Q complete dim=0
   #pragma HLS ARRAY_PARTITION variable=P complete dim=0
@@ -149,11 +149,11 @@ void myproject(
   }
 
   //decode edge features
-  input_t Ro[N_EDGES][latent_dim];
+  input_t Ro[N_EDGES_MAX][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=Ro complete dim=0
   nnet::graph_independent<input_t, input_t, graph_config5>(L, Ro, decoder_edge_w0, decoder_edge_b0, decoder_edge_w1, decoder_edge_b1);
 
-  input_t e_logits[N_EDGES][1];
+  input_t e_logits[N_EDGES_MAX][1];
   #pragma HLS ARRAY_PARTITION variable=e_logits complete dim=0
   nnet::graph_independent<input_t, input_t, graph_config6>(Ro, e_logits, decoder_edge_w2, decoder_edge_b2, decoder_edge_w3, decoder_edge_b3);
 
