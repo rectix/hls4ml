@@ -121,8 +121,9 @@ target = np.array(tgt)
 print("result shape: ", result.shape)
 print("target shape: ", target.shape)
 
-fpr, tpr, thresholds = roc_curve(result, target)
-roc_auc = roc_auc_score(result, target)
+fpr, tpr, thresholds = roc_curve(target, result)
+#roc_auc = roc_auc_score(result, target)
+roc_auc = auc(fpr, tpr)
 print("AUC = ", roc_auc)
 
 plt.plot(fpr, tpr, label='ROC curve (area = %0.3f)' % roc_auc)
