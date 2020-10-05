@@ -18,7 +18,7 @@ typedef ap_fixed<16,6> model_default_t;
 typedef ap_fixed<16,6> input_t;
 typedef ap_fixed<16,6> result_t;
 typedef ap_uint<16> index_t;
-#define REUSE_GRAPH 16
+#define REUSE_GRAPH 1
 #define REUSE_DENSE 1
 #define N_ITERS 1
 #define latent_dim 4
@@ -26,7 +26,7 @@ typedef ap_uint<16> index_t;
 #define E_FEATURES 4
 //graph_nets simple example:
 #define N_NODES_MAX 112
-#define N_EDGES_MAX 57
+#define N_EDGES_MAX 148
 #define N_NODES 28
 #define N_EDGES 46
 

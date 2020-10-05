@@ -65,9 +65,9 @@ add_files -tb myproject_test.cpp -cflags "-std=c++0x"
 add_files -tb weights
 add_files -tb tb_data
 if {$opt(reset)} {
-  open_solution -reset "solution1"
+  open_solution -reset "solution_rf1"
 } else {
-  open_solution "solution1"
+  open_solution "solution_rf1"
 }
 catch {config_array_partition -maximum_size 4096}
 set_part {xcku115-flvb2104-2-i}
