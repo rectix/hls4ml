@@ -16,15 +16,39 @@ import argparse
 import sys
 from shutil import copyfile
 
+from tempfile import mkstemp
+from shutil import move, copymode
+from os import fdopen, remove
+
+import re
+
+def replace(file_path, pattern, subst):
+    #Create temp file
+    fh, abs_path = mkstemp()
+    with fdopen(fh,'w') as new_file:
+        with open(file_path) as old_file:
+            for line in old_file:
+                new_file.write(re.sub(pattern,subst,line))
+                               
+    #Copy the file permissions from the old file to the new file
+    copymode(file_path, abs_path)
+    #Remove original file
+    remove(file_path)
+    #Move new file
+    move(abs_path, file_path)
+
+bit = 12
+runCsim = True
+
+for f in ['parameters.h']+glob.glob('weights/*.h'):
+    replace(f,r'ap_fixed<[0-9]{1,2},6>','ap_fixed<%i,6>'%bit)
+
 res = []
 prd = []
 tgt = []
 
-runCsim = True
-bit = 16
-
 os.makedirs('./tb_data_%i'%bit, exist_ok=True)
-for i in range(10): #90623
+for i in range(20): #90623
     if runCsim and not os.path.isfile('./tb_data_%i/tb_output_edge_predictions_%05d.dat'%(bit,i)):
         copyfile('/scratch/data/vrazavim/exatrkx-neurips19/gnn-tracking/tb_input_edge_features_%05d.dat'%i, './tb_input_edge_features.dat')
         copyfile('/scratch/data/vrazavim/exatrkx-neurips19/gnn-tracking/tb_input_node_features_%05d.dat'%i, './tb_input_node_features.dat')
