@@ -1,15 +1,15 @@
-//Numpy array shape [4]
-//Min -0.016418345466
-//Max 0.206275993242
+//Numpy array shape [8]
+//Min -0.045575334516
+//Max 0.218452679851
 //Number of zeros 0
 
 #ifndef ENCODER_EDGE_B1_H_
 #define ENCODER_EDGE_B1_H_
 
 #ifndef __SYNTHESIS__
-ap_fixed<16,6> encoder_edge_b1[4];
+ap_fixed<16,6> encoder_edge_b1[8];
 #else
-ap_fixed<16,6> encoder_edge_b1[4] = {-0.002199, 0.206276, -0.016418, 0.049240};
+ap_fixed<16,6> encoder_edge_b1[8] = {-0.045575, 0.005791, -0.001564, -0.035313, 0.005364, 0.218453, 0.005808, 0.001280};
 #endif
 
 #endif
