@@ -37,8 +37,8 @@ def replace(file_path, pattern, subst):
     #Move new file
     move(abs_path, file_path)
 
-bit = 12
-runCsim = True
+bit = 8
+runCsim = False
 
 for f in ['parameters.h']+glob.glob('weights/*.h'):
     replace(f,r'ap_fixed<[0-9]{1,2},6>','ap_fixed<%i,6>'%bit)
@@ -47,10 +47,8 @@ res = []
 prd = []
 tgt = []
 
-runCsim = True
-
 os.makedirs('./tb_data_%i'%bit, exist_ok=True)
-for i in range(20): #90623
+for i in range(1000): #90623
     if runCsim and not os.path.isfile('./tb_data_%i/tb_output_edge_predictions_%05d.dat'%(bit,i)):
         copyfile('/scratch/data/vrazavim/exatrkx-neurips19/gnn-tracking/tb_input_edge_features_%05d.dat'%i, './tb_input_edge_features.dat')
         copyfile('/scratch/data/vrazavim/exatrkx-neurips19/gnn-tracking/tb_input_node_features_%05d.dat'%i, './tb_input_node_features.dat')
