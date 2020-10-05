@@ -100,3 +100,8 @@ plt.title('ROC curve')
 plt.legend(loc="lower right")
 plt.savefig('python_roc.pdf')
 
+plt.figure()
+plt.scatter(prdctn,result,marker='.')
+plt.xlabel('python')
+plt.ylabel('csim')
+plt.savefig('scatter.pdf')
