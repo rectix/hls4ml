@@ -20,40 +20,45 @@ res = []
 prd = []
 tgt = []
 
-runCsim = True
-
+runCsim = False
 
 os.makedirs('./tb_data', exist_ok=True)
-
-if runCsim:
-    for i in range(100): #90623
-        copyfile('/scratch/data/vrazavim/exatrkx-neurips19/gnn-tracking/tb_input_edge_features_'+'%05d.dat'%i, './tb_input_edge_features.dat')
-        copyfile('/scratch/data/vrazavim/exatrkx-neurips19/gnn-tracking/tb_input_node_features_'+'%05d.dat'%i, './tb_input_node_features.dat')
-        copyfile('/scratch/data/vrazavim/exatrkx-neurips19/gnn-tracking/tb_output_edge_predictions_'+'%05d.dat'%i, './tb_output_edge_predictions.dat')
-        copyfile('/scratch/data/vrazavim/exatrkx-neurips19/gnn-tracking/tb_output_edge_targets_'+'%05d.dat'%i, './tb_output_edge_targets.dat')
-        copyfile('/scratch/data/vrazavim/exatrkx-neurips19/gnn-tracking/tb_receivers_'+'%05d.dat'%i, './tb_receivers.dat')
-        copyfile('/scratch/data/vrazavim/exatrkx-neurips19/gnn-tracking/tb_senders_'+'%05d.dat'%i, './tb_senders.dat')
+for i in range(10): #90623
+    if runCsim:
+        copyfile('/scratch/data/vrazavim/exatrkx-neurips19/gnn-tracking/tb_input_edge_features_%05d.dat'%i, './tb_input_edge_features.dat')
+        copyfile('/scratch/data/vrazavim/exatrkx-neurips19/gnn-tracking/tb_input_node_features_%05d.dat'%i, './tb_input_node_features.dat')
+        copyfile('/scratch/data/vrazavim/exatrkx-neurips19/gnn-tracking/tb_output_edge_predictions_%05d.dat'%i, './tb_output_edge_predictions.dat')
+        copyfile('/scratch/data/vrazavim/exatrkx-neurips19/gnn-tracking/tb_output_edge_targets_%05d.dat'%i, './tb_output_edge_targets.dat')
+        copyfile('/scratch/data/vrazavim/exatrkx-neurips19/gnn-tracking/tb_receivers_%05d.dat'%i, './tb_receivers.dat')
+        copyfile('/scratch/data/vrazavim/exatrkx-neurips19/gnn-tracking/tb_senders_%05d.dat'%i, './tb_senders.dat')
         os.system('source /xilinx/Vivado/2019.2/settings64.sh; vivado_hls -f build_prj.tcl')
-        copyfile('./myproject_prj/solution_roc/csim/build/tb_output_edge_labels.dat', './tb_data/tb_output_edge_labels_'+'%05d.dat'%i)
-        with open('./tb_data/tb_output_edge_labels_'+'%05d.dat'%i, 'r') as res_file:
-            for line in res_file.readlines():
-                res_list = [float(x) for x in line.split(' ') if x.strip()]
-            res = res + res_list
+        copyfile('./myproject_prj/solution_roc/csim/build/tb_output_edge_labels.dat', './tb_data/tb_output_edge_labels_%05d.dat'%i)
+        copyfile('./tb_output_edge_predictions.dat', './tb_output_edge_predictions_%05d.dat'%i)
+        copyfile('./tb_output_edge_targets.dat', './tb_output_edge_targets_%05d.dat'%i)
+            
+    with open('./tb_output_edge_predictions_%05d.dat'%i, 'r') as prd_file:
+        for line in prd_file.readlines():
+            prd_list = [float(x) for j, x in enumerate(line.split(' ')) if (j < 57) and x.strip()]
+        n_edges = len(prd_list)
+        prd.extend(prd_list)
 
-        with open('./tb_output_edge_predictions.dat', 'r') as prd_file:
-            for line in prd_file.readlines():
-                prd_list = [float(x) for j, x in enumerate(line.split(' ')) if j < 57 if x.strip()]
-            prd = prd + prd_list
+    with open('./tb_output_edge_targets_%05d.dat'%i, 'r') as tgt_file:
+        for line in tgt_file.readlines():
+            tgt_list = [int(float(x)) for j, x in enumerate(line.split(' ')) if (j < 57) and x.strip()]
+        tgt.extend(tgt_list)
 
-        with open('./tb_output_edge_targets.dat', 'r') as tgt_file:
-            for line in tgt_file.readlines():
-                tgt_list = [float(x) for j, x in enumerate(line.split(' ')) if j < 57 if x.strip()]
-            tgt = tgt + tgt_list
+    with open('./tb_data/tb_output_edge_labels_%05d.dat'%i, 'r') as res_file:
+        for line in res_file.readlines():
+            res_list = [float(x) for j, x in enumerate(line.split(' ')) if (j < n_edges) and x.strip()]
+        res.extend(res_list)
 
 
 result = np.array(res)
 prdctn = np.array(prd)
 target = np.array(tgt)
+print(result)
+print(prdctn)
+print(target)
 print("result shape: ", result.shape)
 print("prediction shape: ", prdctn.shape)
 print("target shape: ", target.shape)
