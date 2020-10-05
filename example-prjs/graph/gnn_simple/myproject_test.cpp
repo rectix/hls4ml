@@ -121,9 +121,14 @@ int main(int argc, char **argv)
 
   std::ofstream eout;
   eout.open("tb_output_edge_labels.dat");
-  for(int i = 0; i < e_in.size(); i++){
-    eout << e_str[i][0] << " ";
-    //std::cout << "writing e[" << i << "] \n";
+  if(e_in.size() < N_EDGES_MAX){
+    for(int i = 0; i < e_in.size(); i++){
+      eout << e_str[i][0] << " ";
+    }
+  }else{
+    for(int i = 0; i < N_EDGES_MAX; i++){
+      eout << e_str[i][0] << " ";
+    }
   }
   //std::cout << "done writing to file" << std::endl;
   eout.close();

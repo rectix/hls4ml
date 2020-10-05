@@ -20,10 +20,10 @@ res = []
 prd = []
 tgt = []
 
-runCsim = False
+runCsim = True
 
 os.makedirs('./tb_data', exist_ok=True)
-for i in range(10): #90623
+for i in range(10000): #90623
     if runCsim:
         copyfile('/scratch/data/vrazavim/exatrkx-neurips19/gnn-tracking/tb_input_edge_features_%05d.dat'%i, './tb_input_edge_features.dat')
         copyfile('/scratch/data/vrazavim/exatrkx-neurips19/gnn-tracking/tb_input_node_features_%05d.dat'%i, './tb_input_node_features.dat')
@@ -33,16 +33,16 @@ for i in range(10): #90623
         copyfile('/scratch/data/vrazavim/exatrkx-neurips19/gnn-tracking/tb_senders_%05d.dat'%i, './tb_senders.dat')
         os.system('source /xilinx/Vivado/2019.2/settings64.sh; vivado_hls -f build_prj.tcl')
         copyfile('./myproject_prj/solution_roc/csim/build/tb_output_edge_labels.dat', './tb_data/tb_output_edge_labels_%05d.dat'%i)
-        copyfile('./tb_output_edge_predictions.dat', './tb_output_edge_predictions_%05d.dat'%i)
-        copyfile('./tb_output_edge_targets.dat', './tb_output_edge_targets_%05d.dat'%i)
+        copyfile('./tb_output_edge_predictions.dat', './tb_data/tb_output_edge_predictions_%05d.dat'%i)
+        copyfile('./tb_output_edge_targets.dat', './tb_data/tb_output_edge_targets_%05d.dat'%i)
             
-    with open('./tb_output_edge_predictions_%05d.dat'%i, 'r') as prd_file:
+    with open('./tb_data/tb_output_edge_predictions_%05d.dat'%i, 'r') as prd_file:
         for line in prd_file.readlines():
             prd_list = [float(x) for j, x in enumerate(line.split(' ')) if (j < 57) and x.strip()]
         n_edges = len(prd_list)
         prd.extend(prd_list)
 
-    with open('./tb_output_edge_targets_%05d.dat'%i, 'r') as tgt_file:
+    with open('./tb_data/tb_output_edge_targets_%05d.dat'%i, 'r') as tgt_file:
         for line in tgt_file.readlines():
             tgt_list = [int(float(x)) for j, x in enumerate(line.split(' ')) if (j < 57) and x.strip()]
         tgt.extend(tgt_list)
