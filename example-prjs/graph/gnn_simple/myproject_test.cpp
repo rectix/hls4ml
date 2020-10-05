@@ -18,7 +18,7 @@ int main(int argc, char **argv)
   input_t      E_str[N_EDGES_MAX][E_FEATURES];
   index_t      receivers_str[N_EDGES_MAX][1];
   index_t      senders_str[N_EDGES_MAX][1];
-  result_t     e_expected[N_EDGES_MAX][1];
+  float        e_expected[N_EDGES_MAX][1];
 
   std::ifstream Nin("tb_input_node_features.dat");
   float num_n;
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
 
   std::ifstream ein("tb_output_edge_predictions.dat");
   float num_out;
-  std::vector<input_t> e_in;
+  std::vector<float> e_in;
   while (ein >> num_out){
     e_in.push_back(num_out);
   }
