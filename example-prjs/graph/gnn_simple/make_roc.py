@@ -52,7 +52,7 @@ for bit in bits:
         replace(f,r'ap_fixed<[0-9]{1,2},6>','ap_fixed<%i,6>'%bit)
 
     os.makedirs('tb_data_%i'%bit, exist_ok=True)
-    for i in range(2*16): #90623
+    for i in range(6*16): #90623
         if runCsim and not os.path.isfile('tb_data_%i/tb_output_edge_predictions_%05d.dat'%(bit,i)):
             copyfile('tb_data/tb_input_edge_features_%05d.dat'%i, './tb_input_edge_features.dat')
             copyfile('tb_data/tb_input_node_features_%05d.dat'%i, './tb_input_node_features.dat')
@@ -132,11 +132,13 @@ for bit in bits:
     plt.savefig('scatter_%i.pdf'%bit)
 
 plt.figure(figsize=(6,5))
-plt.plot(bits, aucs, ls='-', lw=2, marker='o', label='hls4ml AUC')
-plt.plot([min(bits), max(bits)], [exp_auc,exp_auc], label='Expected AUC', ls='--', color='gray',lw=2)
+plt.plot(bits, aucs, ls='-', lw=2, marker='o', label='hls4ml')
+plt.plot([min(bits), max(bits)], [exp_auc,exp_auc], label='Expected (%.3f)'%exp_auc, ls='--', color='gray',lw=2)
 plt.xlabel('Total bit precision')
+plt.xlim(9,23)
+plt.ylim(0.65,1.0)
 plt.ylabel('AUC')
-plt.legend(title='112 nodes, 148 edges')
+plt.legend(title='   112 nodes, 148 edges',loc='lower right')
 plt.tight_layout()
 plt.savefig('AUC_vs_BP.pdf')
 
