@@ -7,9 +7,9 @@
 #define ENCODER_NODE_B0_H_
 
 #ifndef __SYNTHESIS__
-ap_fixed<16,6> encoder_node_b0[4];
+ap_fixed<12,6> encoder_node_b0[4];
 #else
-ap_fixed<16,6> encoder_node_b0[4] = {0.003668, -0.369082, -0.163093, -0.003372};
+ap_fixed<12,6> encoder_node_b0[4] = {0.003668, -0.369082, -0.163093, -0.003372};
 #endif
 
 #endif

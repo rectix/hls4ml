@@ -7,9 +7,9 @@
 #define ENCODER_EDGE_B0_H_
 
 #ifndef __SYNTHESIS__
-ap_fixed<16,6> encoder_edge_b0[4];
+ap_fixed<12,6> encoder_edge_b0[4];
 #else
-ap_fixed<16,6> encoder_edge_b0[4] = {0.205708, 0.258497, 0.125076, -0.007564};
+ap_fixed<12,6> encoder_edge_b0[4] = {0.205708, 0.258497, 0.125076, -0.007564};
 #endif
 
 #endif

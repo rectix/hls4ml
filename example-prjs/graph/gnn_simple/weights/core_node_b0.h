@@ -7,9 +7,9 @@
 #define CORE_NODE_B0_H_
 
 #ifndef __SYNTHESIS__
-ap_fixed<16,6> core_node_b0[4];
+ap_fixed<12,6> core_node_b0[4];
 #else
-ap_fixed<16,6> core_node_b0[4] = {0.000000, 0.000000, 0.000000, 0.000000};
+ap_fixed<12,6> core_node_b0[4] = {0.000000, 0.000000, 0.000000, 0.000000};
 #endif
 
 #endif

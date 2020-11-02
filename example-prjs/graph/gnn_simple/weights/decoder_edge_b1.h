@@ -7,9 +7,9 @@
 #define DECODER_EDGE_B1_H_
 
 #ifndef __SYNTHESIS__
-ap_fixed<16,6> decoder_edge_b1[4];
+ap_fixed<12,6> decoder_edge_b1[4];
 #else
-ap_fixed<16,6> decoder_edge_b1[4] = {-0.055541, -0.524071, -0.011781, -0.049948};
+ap_fixed<12,6> decoder_edge_b1[4] = {-0.055541, -0.524071, -0.011781, -0.049948};
 #endif
 
 #endif
