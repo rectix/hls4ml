@@ -100,7 +100,7 @@ namespace nnet {
       nnet::relu<data_T, res_T, typename CONFIG_T::relu_config2>(L_logits, L[i]);
 
       for(int j = 0; j < CONFIG_T::n_hidden; j++){
-	#pragma HLS UNROLL
+        #pragma HLS UNROLL
 	Q[r][j] += L[i][j];
       }
     }

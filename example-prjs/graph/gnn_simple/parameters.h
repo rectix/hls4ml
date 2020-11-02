@@ -18,7 +18,7 @@ typedef ap_fixed<16,6> model_default_t;
 typedef ap_fixed<16,6> input_t;
 typedef ap_fixed<16,6> result_t;
 typedef ap_uint<16> index_t;
-#define REUSE_GRAPH 1
+#define REUSE_GRAPH 8
 #define REUSE_DENSE 1
 #define N_ITERS 1
 #define latent_dim 8
