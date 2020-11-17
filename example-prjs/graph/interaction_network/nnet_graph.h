@@ -223,8 +223,8 @@ namespace nnet {
 
   template<class data_T, class res_T, typename CONFIG_T>
     void object_model(
-                      data_T    aggregated[][],
-	              res_T     influence[][],
+                      data_T    aggregated[CONFIG_T::n_node][CONFIG_T::n_in],
+	              res_T     influence[CONFIG_T::n_node][CONFIG_T::n_out],
 		      typename CONFIG_T::dense_config1::weight_t  core_node_w0[CONFIG_T::n_in*CONFIG_T::n_hidden],
 		      typename CONFIG_T::dense_config1::bias_t    core_node_b0[CONFIG_T::n_hidden],
 		      typename CONFIG_T::dense_config2::weight_t  core_node_w1[CONFIG_T::n_hidden*CONFIG_T::n_hidden],
@@ -237,7 +237,7 @@ namespace nnet {
     }
 
     #pragma HLS PIPELINE II=CONFIG_T::reuse_factor
-    IN_object_loop: for(int i = 0; i < CONFIG_T::n_edge; i++){
+    IN_object_loop: for(int i = 0; i < CONFIG_T::n_node; i++){
       data_T influence0_logits[CONFIG_T::n_hidden];
       #pragma HLS ARRAY_PARTITION variable=influence0_logits complete dim=0
       nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(aggregated, influence0_logits, core_node_w0, core_node_b0);
@@ -284,7 +284,8 @@ namespace nnet {
     data_T interaction_terms[CONFIG_T::n_edge][CONFIG_T::e_features+2*CONFIG_T::n_features];
     #pragma HLS ARRAY_PARTITION variable=interaction_terms complete dim=0
 
-    IN_main_loop: for(int i = 0; i < CONFIG_T::n_edge; i++){
+    #pragma HLS PIPELINE II=CONFIG_T::reuse_factor
+    Edge_reference_loop: for(int i = 0; i < CONFIG_T::n_edge; i++){
       #pragma HLS UNROLL
       index_T r = receivers[i][0];
       index_T s = senders[i][0];
@@ -294,8 +295,52 @@ namespace nnet {
       nnet::merge<data_T, CONFIG_T::e_features+CONFIG_T::n_features, CONFIG_T::n_features>(l_logits, N[s], interaction_terms[i]);
     }
 
-    data_T effects
-    
+    data_T effects[CONFIG_T::n_edge][CONFIG_T::n_hidden];
+    #pragma HLS ARRAY_PARTITION variable=effects complete dim=0
+    nnet::relational_model<data_T, res_T, typename CONFIG_T::graph_config1>(interaction_terms, effects, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1, core_edge_w2, core_edge_b2, core_edge_w3, core_edge_b3);
+
+    data_T aggregation[CONFIG_T::n_node][CONFIG_T::n_hidden];
+    #pragma HLS ARRAY_PARTITION variable=aggregation complete dim=0
+    for(int i = 0; i < CONFIG_T::n_node; i++){
+      for(int j = 0; j < CONFIG_T::n_hidden; j++){
+        aggregation[i][j] = 0;
+      }
+    }
+    for(int i = 0; i < CONFIG_T::n_edge; i++){
+      for(int j = 0; j < CONFIG_T::n_hidden; j++){
+	#pragma HLS UNROLL
+        index_T r = receivers[i][0];
+        aggregation[r][j] += effects[i][j];
+      }
+    }
+
+    data_T aggregated[CONFIG_T::n_node][CONFIG_T::n_hidden+CONFIG_T::n_features];
+    #pragma HLS ARRAY_PARTITION variable=aggregated complete dim=0
+
+    #pragma HLS PIPELINE II=CONFIG_T::reuse_factor
+    Node_aggregation_loop: for(int i = 0; i < CONFIG_T::n_node; i++){
+      #pragma HLS UNROLL
+      nnet::merge<data_T, CONFIG_T::n_hidden, CONFIG_T::n_features>(aggregation[i], N[i], aggregated[i]);
+    }
+
+    data_T influence[CONFIG_T::n_node][CONFIG_T::n_features];
+    #pragma HLS ARRAY_PARTITION variable=influence complete dim=0
+    nnet::object_model<data_T, res_T, typename CONFIG_T::graph_config2>(aggregated, influence, core_node_w0, core_node_b0, core_node_w1, core_node_b1, core_node_w2, core_node_b2);
+
+    #pragma HLS PIPELINE II=CONFIG_T::reuse_factor
+    Classification_loop: for(int i = 0; i < CONFIG_T::n_edge; i++){
+      #pragma HLS UNROLL
+      index_T r = receivers[i][0];
+      index_T s = senders[i][0];
+      data_T p_logits[CONFIG_T::e_features+CONFIG_T::n_features];
+      #pragma HLS ARRAY_PARTITION variable=p_logits complete dim=0
+      nnet::merge<data_T, CONFIG_T::e_features, CONFIG_T::n_features>(E[i], influence[r], p_logits);
+      nnet::merge<data_T, CONFIG_T::e_features+CONFIG_T::n_features, CONFIG_T::n_features>(p_logits, influence[s], interaction_terms[i]);
+    }
+
+    #pragma HLS ARRAY_PARTITION variable=predicted complete dim=0
+    nnet::relational_model<data_T, res_T, typename CONFIG_T::graph_config3>(interaction_terms, predicted, core_final_w0, core_final_b0, core_final_w1, core_final_b1, core_final_w2, core_final_b2, core_final_w3, core_final_b3);
+  }
 
 
   template<class data_T, class res_T, typename CONFIG_T>
