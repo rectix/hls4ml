@@ -104,7 +104,7 @@ void myproject(
    loaded_weights = true;
  }
 #endif
-  
+ /*
   //interaction network
   input_t L[N_EDGES_MAX][latent_dim];
   input_t Q[N_NODES_MAX][latent_dim];
@@ -131,4 +131,7 @@ void myproject(
 
   //activation function
   nnet::sigmoid_batch<input_t, input_t, sigmoid_config1>(e_logits, e);
+ */
+  nnet::interaction_network<input_t, index_t, input_t, graph_config1>(E, N, receivers, senders, e, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1, core_edge_w2, core_edge_b2, core_edge_w3, core_edge_b3, core_node_w0, core_node_b0, core_node_w1, core_node_b1, core_node_w2, core_node_b2, core_final_w0, core_final_b0, core_final_w1, core_final_b1, core_final_w2, core_final_b2, core_final_w3, core_final_b3);
+
 }

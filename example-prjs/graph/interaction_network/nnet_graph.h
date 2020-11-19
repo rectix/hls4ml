@@ -272,7 +272,28 @@ namespace nnet {
                              index_T    receivers[CONFIG_T::n_edge][1],
                              index_T    senders[CONFIG_T::n_edge][1],
 			     res_T     predicted[CONFIG_T::n_edge][1],
-			     typename CONFIG_T::graph_config1::dense_config1::weight_t)
+			     typename CONFIG_T::graph_config2::dense_config1::weight_t  core_edge_w0[CONFIG_T::graph_config2::n_in*CONFIG_T::graph_config2::n_hidden],
+			     typename CONFIG_T::graph_config2::dense_config1::bias_t    core_edge_b0[CONFIG_T::graph_config2::n_hidden],
+			     typename CONFIG_T::graph_config2::dense_config2::weight_t  core_edge_w1[CONFIG_T::graph_config2::n_hidden*CONFIG_T::graph_config2::n_hidden],
+			     typename CONFIG_T::graph_config2::dense_config2::bias_t    core_edge_b1[CONFIG_T::graph_config2::n_hidden],
+			     typename CONFIG_T::graph_config2::dense_config2::weight_t  core_edge_w2[CONFIG_T::graph_config2::n_hidden*CONFIG_T::graph_config2::n_hidden],
+			     typename CONFIG_T::graph_config2::dense_config2::bias_t    core_edge_b2[CONFIG_T::graph_config2::n_hidden],
+			     typename CONFIG_T::graph_config2::dense_config3::weight_t  core_edge_w3[CONFIG_T::graph_config2::n_hidden*CONFIG_T::graph_config2::n_out],
+			     typename CONFIG_T::graph_config2::dense_config3::bias_t    core_edge_b3[CONFIG_T::graph_config2::n_out],
+			     typename CONFIG_T::graph_config3::dense_config1::weight_t  core_node_w0[CONFIG_T::graph_config3::n_in*CONFIG_T::graph_config3::n_hidden],
+			     typename CONFIG_T::graph_config3::dense_config1::bias_t    core_node_b0[CONFIG_T::graph_config3::n_hidden],
+			     typename CONFIG_T::graph_config3::dense_config2::weight_t  core_node_w1[CONFIG_T::graph_config3::n_hidden*CONFIG_T::graph_config3::n_hidden],
+			     typename CONFIG_T::graph_config3::dense_config2::bias_t    core_node_b1[CONFIG_T::graph_config3::n_hidden],
+			     typename CONFIG_T::graph_config3::dense_config3::weight_t  core_node_w2[CONFIG_T::graph_config3::n_hidden*CONFIG_T::graph_config3::n_out],
+			     typename CONFIG_T::graph_config3::dense_config3::bias_t    core_node_b2[CONFIG_T::graph_config3::n_out],
+			     typename CONFIG_T::graph_config4::dense_config1::weight_t  core_final_w0[CONFIG_T::graph_config4::n_in*CONFIG_T::graph_config4::n_hidden],
+                             typename CONFIG_T::graph_config4::dense_config1::bias_t    core_final_b0[CONFIG_T::graph_config4::n_hidden],
+                             typename CONFIG_T::graph_config4::dense_config2::weight_t  core_final_w1[CONFIG_T::graph_config4::n_hidden*CONFIG_T::graph_config4::n_hidden],
+                             typename CONFIG_T::graph_config4::dense_config2::bias_t    core_final_b1[CONFIG_T::graph_config4::n_hidden],
+                             typename CONFIG_T::graph_config4::dense_config2::weight_t  core_final_w2[CONFIG_T::graph_config4::n_hidden*CONFIG_T::graph_config4::n_hidden],
+                             typename CONFIG_T::graph_config4::dense_config2::bias_t    core_final_b2[CONFIG_T::graph_config4::n_hidden],
+                             typename CONFIG_T::graph_config4::dense_config3::weight_t  core_final_w3[CONFIG_T::graph_config4::n_hidden*CONFIG_T::graph_config4::n_out],
+                             typename CONFIG_T::graph_config4::dense_config3::bias_t    core_final_b3[CONFIG_T::graph_config4::n_out])
   {
     if(CONFIG_T::io_stream){
       #pragma HLS STREAM variable=E
@@ -297,7 +318,7 @@ namespace nnet {
 
     data_T effects[CONFIG_T::n_edge][CONFIG_T::n_hidden];
     #pragma HLS ARRAY_PARTITION variable=effects complete dim=0
-    nnet::relational_model<data_T, res_T, typename CONFIG_T::graph_config1>(interaction_terms, effects, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1, core_edge_w2, core_edge_b2, core_edge_w3, core_edge_b3);
+    nnet::relational_model<data_T, res_T, typename CONFIG_T::graph_config2>(interaction_terms, effects, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1, core_edge_w2, core_edge_b2, core_edge_w3, core_edge_b3);
 
     data_T aggregation[CONFIG_T::n_node][CONFIG_T::n_hidden];
     #pragma HLS ARRAY_PARTITION variable=aggregation complete dim=0
@@ -325,7 +346,7 @@ namespace nnet {
 
     data_T influence[CONFIG_T::n_node][CONFIG_T::n_features];
     #pragma HLS ARRAY_PARTITION variable=influence complete dim=0
-    nnet::object_model<data_T, res_T, typename CONFIG_T::graph_config2>(aggregated, influence, core_node_w0, core_node_b0, core_node_w1, core_node_b1, core_node_w2, core_node_b2);
+    nnet::object_model<data_T, res_T, typename CONFIG_T::graph_config3>(aggregated, influence, core_node_w0, core_node_b0, core_node_w1, core_node_b1, core_node_w2, core_node_b2);
 
     #pragma HLS PIPELINE II=CONFIG_T::reuse_factor
     Classification_loop: for(int i = 0; i < CONFIG_T::n_edge; i++){
@@ -339,7 +360,7 @@ namespace nnet {
     }
 
     #pragma HLS ARRAY_PARTITION variable=predicted complete dim=0
-    nnet::relational_model<data_T, res_T, typename CONFIG_T::graph_config3>(interaction_terms, predicted, core_final_w0, core_final_b0, core_final_w1, core_final_b1, core_final_w2, core_final_b2, core_final_w3, core_final_b3);
+    nnet::relational_model<data_T, res_T, typename CONFIG_T::graph_config4>(interaction_terms, predicted, core_final_w0, core_final_b0, core_final_w1, core_final_b1, core_final_w2, core_final_b2, core_final_w3, core_final_b3);
   }
 
 
