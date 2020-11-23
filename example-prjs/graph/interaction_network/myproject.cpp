@@ -10,45 +10,28 @@
 #include "nnet_graph.h"
 
 //insert weights from training
-#include "weights/encoder_node_w0.h"
-#include "weights/encoder_node_b0.h"
-#include "weights/encoder_node_w1.h"
-#include "weights/encoder_node_b1.h"
-#include "weights/encoder_edge_w0.h"
-#include "weights/encoder_edge_b0.h"
-#include "weights/encoder_edge_w1.h"
-#include "weights/encoder_edge_b1.h"
 #include "weights/core_edge_w0.h"
 #include "weights/core_edge_b0.h"
 #include "weights/core_edge_w1.h"
 #include "weights/core_edge_b1.h"
+#include "weights/core_edge_w2.h"
+#include "weights/core_edge_b2.h"
+#include "weights/core_edge_w3.h"
+#include "weights/core_edge_b3.h"
 #include "weights/core_node_w0.h"
 #include "weights/core_node_b0.h"
 #include "weights/core_node_w1.h"
 #include "weights/core_node_b1.h"
-#include "weights/decoder_edge_w0.h"
-#include "weights/decoder_edge_b0.h"
-#include "weights/decoder_edge_w1.h"
-#include "weights/decoder_edge_b1.h"
-#include "weights/decoder_edge_w2.h"
-#include "weights/decoder_edge_b2.h"
-#include "weights/decoder_edge_w3.h"
-#include "weights/decoder_edge_b3.h"
-
-/* Weight Matrices Dimensions
-Encoder (3,128)
-Core (256,128) Then concatenate first encoded features for 128 --> 256
-Decoder (256,128)
-Output (128,1)
-
-
-//parameters
-#define N_NODES 2714
-#define N_FEATURES 3
-#define N_EDGES 24758
-#define E_FEATURES 4
-#define latent_dim 128
-*/
+#include "weights/core_node_w2.h"
+#include "weights/core_node_b2.h"
+#include "weights/core_final_w0.h"
+#include "weights/core_final_b0.h"
+#include "weights/core_final_w1.h"
+#include "weights/core_final_b1.h"
+#include "weights/core_final_w2.h"
+#include "weights/core_final_b2.h"
+#include "weights/core_final_w3.h"
+#include "weights/core_final_b3.h"
 
 void myproject(
 	       input_t      N[N_NODES_MAX][N_FEATURES],
@@ -76,62 +59,54 @@ void myproject(
   static bool loaded_weights = false;
  if (!loaded_weights) {
    //hls-fpga-machine-learning insert load weights                                                                           
-   nnet::load_weights_from_txt<model_default_t, N_FEATURES*latent_dim>(encoder_node_w0, "encoder_node_w0.txt");
-   nnet::load_weights_from_txt<model_default_t, latent_dim>(encoder_node_b0, "encoder_node_b0.txt");
-   nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(encoder_node_w1, "encoder_node_w1.txt");
-   nnet::load_weights_from_txt<model_default_t, latent_dim>(encoder_node_b1, "encoder_node_b1.txt");
-   nnet::load_weights_from_txt<model_default_t, E_FEATURES*latent_dim>(encoder_edge_w0, "encoder_edge_w0.txt");
-   nnet::load_weights_from_txt<model_default_t, latent_dim>(encoder_edge_b0, "encoder_edge_b0.txt");
-   nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(encoder_edge_w1, "encoder_edge_w1.txt");
-   nnet::load_weights_from_txt<model_default_t, latent_dim>(encoder_edge_b1, "encoder_edge_b1.txt");
-   nnet::load_weights_from_txt<model_default_t, 3*latent_dim*latent_dim>(core_edge_w0, "core_edge_w0.txt");
+   nnet::load_weights_from_txt<model_default_t, E_FEATURES*latent_dim + 2*N_FEATURES*latent_dim>(core_edge_w0, "core_edge_w0.txt");
    nnet::load_weights_from_txt<model_default_t, latent_dim>(core_edge_b0, "core_edge_b0.txt");
    nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(core_edge_w1, "core_edge_w1.txt");
    nnet::load_weights_from_txt<model_default_t, latent_dim>(core_edge_b1, "core_edge_b1.txt");
-   nnet::load_weights_from_txt<model_default_t, 2*latent_dim*latent_dim>(core_node_w0, "core_node_w0.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(core_edge_w2, "core_edge_w2.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(core_edge_b2, "core_edge_b2.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(core_edge_w3, "core_edge_w3.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(core_edge_b3, "core_edge_b3.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim + N_FEATURES*latent_dim>(core_node_w0, "core_node_w0.txt");
    nnet::load_weights_from_txt<model_default_t, latent_dim>(core_node_b0, "core_node_b0.txt");
    nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(core_node_w1, "core_node_w1.txt");
    nnet::load_weights_from_txt<model_default_t, latent_dim>(core_node_b1, "core_node_b1.txt");
-   nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(decoder_edge_w0, "decoder_edge_w0.txt");
-   nnet::load_weights_from_txt<model_default_t, latent_dim>(decoder_edge_b0, "decoder_edge_b0.txt");
-   nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(decoder_edge_w1, "decoder_edge_w1.txt");
-   nnet::load_weights_from_txt<model_default_t, latent_dim>(decoder_edge_b1, "decoder_edge_b1.txt");
-   nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(decoder_edge_w2, "decoder_edge_w2.txt");
-   nnet::load_weights_from_txt<model_default_t, latent_dim>(decoder_edge_b2, "decoder_edge_b2.txt");
-   nnet::load_weights_from_txt<model_default_t, latent_dim>(decoder_edge_w3, "decoder_edge_w3.txt");
-   nnet::load_weights_from_txt<model_default_t, 1>(decoder_edge_b3, "decoder_edge_b3.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim*N_FEATURES>(core_node_w2, "core_node_w2.txt");
+   nnet::load_weights_from_txt<model_default_t, N_FEATURES>(core_node_b2, "core_node_b2.txt");
+   nnet::load_weights_from_txt<model_default_t, 3*latent_dim*latent_dim>(core_final_w0, "core_final_w0.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(core_final_b0, "core_final_b0.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(core_final_w1, "core_final_w1.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(core_final_b1, "core_final_b1.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(core_final_w2, "core_final_w2.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(core_final_b1, "core_final_b2.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(core_final_w3, "core_final_w3.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(core_final_b3, "core_final_b3.txt");
 
    loaded_weights = true;
  }
 #endif
- /*
+
   //interaction network
-  input_t L[N_EDGES_MAX][latent_dim];
-  input_t Q[N_NODES_MAX][latent_dim];
-  input_t P[N_NODES_MAX][latent_dim];
-  #pragma HLS ARRAY_PARTITION variable=L complete dim=0
-  #pragma HLS ARRAY_PARTITION variable=Q complete dim=0
-  #pragma HLS ARRAY_PARTITION variable=P complete dim=0
+  input_t effects[N_EDGES_MAX][latent_dim];
+  input_t aggregation[N_NODES_MAX][latent_dim];
+  input_t influence[N_NODES_MAX][latent_dim];
+  #pragma HLS ARRAY_PARTITION variable=effects complete dim=0
+  #pragma HLS ARRAY_PARTITION variable=aggregation complete dim=0
+  #pragma HLS ARRAY_PARTITION variable=influence complete dim=0
 
   input_t e_logits[N_EDGES_MAX][1];
   input_t q[N_NODES_MAX][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=e_logits complete dim=0
   #pragma HLS ARRAY_PARTITION variable=q complete dim=0
-  
-  for(int i = 0; i < N_ITERS; i++){
 
-    //edge block
-    nnet::IN_edge_module<input_t, index_t, input_t, graph_config3>(E, N, receivers, senders, L, Q, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1);
-    //node block
-    nnet::IN_node_module<input_t, input_t, graph_config4>(N, Q, P, core_node_w0, core_node_b0, core_node_w1, core_node_b1);
-    //edge block
-    nnet::IN_edge_module<input_t, index_t, input_t, graph_config3>(L, P, receivers, senders, e_logits, q, core_edge_w2, core_edge_b2, core_edge_w3, core_edge_b3);
-
-  }
+  //edge block
+  nnet::relational_model<input_t, index_t, input_t, graph_config1>(E, N, receivers, senders, effects, aggregation, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1, core_edge_w2, core_edge_b2, core_edge_w3, core_edge_b3);
+  //node block
+  nnet::object_model<input_t, input_t, graph_config2>(N, aggregation, influence, core_node_w0, core_node_b0, core_node_w1, core_node_b1, core_node_w2, core_node_b2);
+  //edge block
+  nnet::relational_model<input_t, index_t, input_t, graph_config3>(effects, influence, receivers, senders, e_logits, aggregation, core_final_w0, core_final_b0, core_final_w1, core_final_b1, core_final_w2, core_final_b2, core_final_w3, core_final_b3);
 
   //activation function
   nnet::sigmoid_batch<input_t, input_t, sigmoid_config1>(e_logits, e);
- */
-  nnet::interaction_network<input_t, index_t, input_t, graph_config1>(E, N, receivers, senders, e, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1, core_edge_w2, core_edge_b2, core_edge_w3, core_edge_b3, core_node_w0, core_node_b0, core_node_w1, core_node_b1, core_node_w2, core_node_b2, core_final_w0, core_final_b0, core_final_w1, core_final_b1, core_final_w2, core_final_b2, core_final_w3, core_final_b3);
 
 }

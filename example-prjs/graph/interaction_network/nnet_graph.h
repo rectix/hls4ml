@@ -229,15 +229,15 @@ namespace nnet {
       #pragma HLS ARRAY_PARTITION variable=effects2 complete dim=0
       nnet::relu<data_T, data_T, typename CONFIG_T::relu_config1>(effects2_logits, effects2);
 
-      data_T effects_logits[CONFIG_T::n_out];
-      #pragma HLS ARRAY_PARTITION variable=effects_logits complete dim=0
-      nnet::dense_large_basic<data_T, data_T3 typename CONFIG_T::dense_config3>(effects2, effects_logits, core_edge_w3, core_edge_b1);
-      #pragma HLS ARRAY_PARTITION variable=effects[i] complete dim=0
-
       if(CONFIG_T::activate_final){
-        nnet::sigmoid<data_T, res_T, typename CONFIG_T::sigmoid_config1>(effects_logits, effects[i]);
+        data_T effects_logits[CONFIG_T::n_out];
+        #pragma HLS ARRAY_PARTITION variable=effects_logits complete dim=0
+	nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config3>(effects2, effects_logits, core_edge_w3, core_edge_b3);
+        #pragma HLS ARRAY_PARTITION variable=effects[i] complete dim=0
+	nnet::relu<data_T, res_T, typename CONFIG_T::relu_config2>(effects_logits, effects[i]);
       }else{
-        nnet::relu<data_T, res_T, typename CONFIG_T::relu_config2>(effects_logits, effects[i]);
+        #pragma HLS ARRAY_PARTITION variable=effects[i] complete dim=0
+	nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config3>(effects2, effects[[] c core_edge_w3, core_edge_b3);
       }
 
       for(int j = 0; j < CONFIG_T::n_out; j++){
@@ -252,7 +252,7 @@ namespace nnet {
 		      data_T    node_terms[CONFIG_T::n_node][CONFIG_T::n_features],
                       data_T    aggregation[CONFIG_T::n_node][CONFIG_T::n_in],
 	              res_T     influence[CONFIG_T::n_node][CONFIG_T::n_out],
-		      typename CONFIG_T::dense_config1::weight_t  core_node_w0[CONFIG_T::n_in*CONFIG_T::n_hidden],
+		      typename CONFIG_T::dense_config1::weight_t  core_node_w0[CONFIG_T::n_in*CONFIG_T::n_hidden + CONFIG_T::n_features*CONFIG_T::n_hidden],
 		      typename CONFIG_T::dense_config1::bias_t    core_node_b0[CONFIG_T::n_hidden],
 		      typename CONFIG_T::dense_config2::weight_t  core_node_w1[CONFIG_T::n_hidden*CONFIG_T::n_hidden],
 		      typename CONFIG_T::dense_config2::bias_t    core_node_b1[CONFIG_T::n_hidden],
