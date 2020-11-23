@@ -95,7 +95,7 @@ void myproject(
   #pragma HLS ARRAY_PARTITION variable=influence complete dim=0
 
   input_t e_logits[N_EDGES_MAX][1];
-  input_t q[N_NODES_MAX][latent_dim];
+  input_t q[N_NODES_MAX][1];
   #pragma HLS ARRAY_PARTITION variable=e_logits complete dim=0
   #pragma HLS ARRAY_PARTITION variable=q complete dim=0
 
@@ -104,7 +104,7 @@ void myproject(
   //node block
   nnet::object_model<input_t, input_t, graph_config2>(N, aggregation, influence, core_node_w0, core_node_b0, core_node_w1, core_node_b1, core_node_w2, core_node_b2);
   //edge block
-  nnet::relational_model<input_t, index_t, input_t, graph_config3>(effects, influence, receivers, senders, e_logits, aggregation, core_final_w0, core_final_b0, core_final_w1, core_final_b1, core_final_w2, core_final_b2, core_final_w3, core_final_b3);
+  nnet::relational_model<input_t, index_t, input_t, graph_config3>(effects, influence, receivers, senders, e_logits, q, core_final_w0, core_final_b0, core_final_w1, core_final_b1, core_final_w2, core_final_b2, core_final_w3, core_final_b3);
 
   //activation function
   nnet::sigmoid_batch<input_t, input_t, sigmoid_config1>(e_logits, e);
