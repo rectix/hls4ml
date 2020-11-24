@@ -233,10 +233,8 @@ namespace nnet {
         data_T effects_logits[CONFIG_T::n_out];
         #pragma HLS ARRAY_PARTITION variable=effects_logits complete dim=0
 	nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config3>(effects2, effects_logits, core_edge_w3, core_edge_b3);
-        #pragma HLS ARRAY_PARTITION variable=effects[i] complete dim=0
 	nnet::sigmoid<data_T, res_T, typename CONFIG_T::sigmoid_config1>(effects_logits, effects[i]);
       }else{
-        #pragma HLS ARRAY_PARTITION variable=effects[i] complete dim=0
 	nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config3>(effects2, effects[i], core_edge_w3, core_edge_b3);
       }
 
@@ -284,10 +282,8 @@ namespace nnet {
         data_T influence_logits[CONFIG_T::n_out];
         #pragma HLS ARRAY_PARTITION variable=influence_logits complete dim=0
         nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config3>(influence1, influence_logits, core_node_w2, core_node_b2);
-        #pragma HLS ARRAY_PARTITION variable=influence[i] complete dim=0
         nnet::relu<data_T, res_T, typename CONFIG_T::relu_config2>(influence_logits, influence[i]);
       }else{
-        #pragma HLS ARRAY_PARTITION variable=influence[i] complete dim=0
         nnet::dense_large_basic<data_T, res_T, typename CONFIG_T::dense_config3>(influence1, influence[i], core_node_w2, core_node_b2);
       }
     }
