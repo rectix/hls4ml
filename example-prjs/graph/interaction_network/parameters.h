@@ -99,7 +99,7 @@ struct graph_config2 : nnet::graph_config {
   static const unsigned reuse_factor = REUSE_GRAPH;
 
   struct dense_config1 : nnet::dense_config {
-    static const unsigned n_in = n_features + n_features; //n_in + n_features
+    static const unsigned n_in = e_features + n_features; //n_in + n_features
     static const unsigned n_out = n_hidden;
     static const unsigned io_type = nnet::io_parallel;
     static const unsigned reuse_factor = REUSE_DENSE;
