@@ -147,7 +147,7 @@ struct graph_config3 : nnet::graph_config {
   static const unsigned n_edge = N_EDGES_MAX;
   static const unsigned n_node = N_NODES_MAX;
   static const unsigned n_hidden = LATENT_EDGE;
-  static const unsigned e_features = LATENT_EDGE;
+  static const unsigned e_features = E_FEATURES;
   static const unsigned n_features = N_FEATURES;
   static const unsigned n_out = E_FEATURES;
   static const bool io_stream = true;
