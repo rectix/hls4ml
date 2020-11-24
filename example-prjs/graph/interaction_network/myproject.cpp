@@ -50,7 +50,7 @@ void myproject(
 #pragma HLS ARRAY_RESHAPE variable=senders complete dim=0
 #pragma HLS ARRAY_RESHAPE variable=e complete dim=0
 #pragma HLS INTERFACE ap_vld port=N,E,receivers,senders,e
-#pragma HLS DATAFLOW
+//#pragma HLS DATAFLOW
 
   const_size_in	= N_NODES_MAX*N_FEATURES+N_EDGES_MAX*E_FEATURES+2*N_EDGES_MAX*1;
   const_size_out = N_EDGES_MAX*1;
