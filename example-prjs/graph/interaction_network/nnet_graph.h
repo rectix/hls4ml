@@ -190,7 +190,7 @@ namespace nnet {
     }
 
     for(int i = 0; i < CONFIG_T::n_node; i++){
-      for(int j = 0; j < CONFIG_T::n_features; j++){
+      for(int j = 0; j < CONFIG_T::n_out; j++){
 	aggregation[i][j] = 0;
       }
     }
