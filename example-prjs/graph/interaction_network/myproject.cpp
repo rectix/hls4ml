@@ -24,14 +24,14 @@
 #include "weights/core_node_b1.h"
 #include "weights/core_node_w2.h"
 #include "weights/core_node_b2.h"
-#include "weights/core_final_w0.h"
-#include "weights/core_final_b0.h"
-#include "weights/core_final_w1.h"
-#include "weights/core_final_b1.h"
-#include "weights/core_final_w2.h"
-#include "weights/core_final_b2.h"
-#include "weights/core_final_w3.h"
-#include "weights/core_final_b3.h"
+//#include "weights/core_final_w0.h"
+//#include "weights/core_final_b0.h"
+//#include "weights/core_final_w1.h"
+//#include "weights/core_final_b1.h"
+//#include "weights/core_final_w2.h"
+//#include "weights/core_final_b2.h"
+//#include "weights/core_final_w3.h"
+//#include "weights/core_final_b3.h"
 
 void myproject(
 	       input_t      N[N_NODES_MAX][N_FEATURES],
@@ -73,14 +73,14 @@ void myproject(
    nnet::load_weights_from_txt<model_default_t, LATENT_NODE>(core_node_b1, "core_node_b1.txt");
    nnet::load_weights_from_txt<model_default_t, LATENT_NODE*N_FEATURES>(core_node_w2, "core_node_w2.txt");
    nnet::load_weights_from_txt<model_default_t, N_FEATURES>(core_node_b2, "core_node_b2.txt");
-   nnet::load_weights_from_txt<model_default_t, E_FEATURES*LATENT_EDGE + 2*N_FEATURES*LATENT_EDGE>(core_final_w0, "core_final_w0.txt");
-   nnet::load_weights_from_txt<model_default_t, LATENT_EDGE>(core_final_b0, "core_final_b0.txt");
-   nnet::load_weights_from_txt<model_default_t, LATENT_EDGE*LATENT_EDGE>(core_final_w1, "core_final_w1.txt");
-   nnet::load_weights_from_txt<model_default_t, LATENT_EDGE>(core_final_b1, "core_final_b1.txt");
-   nnet::load_weights_from_txt<model_default_t, LATENT_EDGE*LATENT_EDGE>(core_final_w2, "core_final_w2.txt");
-   nnet::load_weights_from_txt<model_default_t, LATENT_EDGE>(core_final_b2, "core_final_b2.txt");
-   nnet::load_weights_from_txt<model_default_t, LATENT_EDGE*E_FEATURES>(core_final_w3, "core_final_w3.txt");
-   nnet::load_weights_from_txt<model_default_t, E_FEATURES>(core_final_b3, "core_final_b3.txt");
+   //nnet::load_weights_from_txt<model_default_t, E_FEATURES*LATENT_EDGE + 2*N_FEATURES*LATENT_EDGE>(core_final_w0, "core_final_w0.txt");
+   //nnet::load_weights_from_txt<model_default_t, LATENT_EDGE>(core_final_b0, "core_final_b0.txt");
+   //nnet::load_weights_from_txt<model_default_t, LATENT_EDGE*LATENT_EDGE>(core_final_w1, "core_final_w1.txt");
+   //nnet::load_weights_from_txt<model_default_t, LATENT_EDGE>(core_final_b1, "core_final_b1.txt");
+   //nnet::load_weights_from_txt<model_default_t, LATENT_EDGE*LATENT_EDGE>(core_final_w2, "core_final_w2.txt");
+   //nnet::load_weights_from_txt<model_default_t, LATENT_EDGE>(core_final_b2, "core_final_b2.txt");
+   //nnet::load_weights_from_txt<model_default_t, LATENT_EDGE*E_FEATURES>(core_final_w3, "core_final_w3.txt");
+   //nnet::load_weights_from_txt<model_default_t, E_FEATURES>(core_final_b3, "core_final_b3.txt");
 
    loaded_weights = true;
  }
@@ -104,7 +104,7 @@ void myproject(
   //node block
   nnet::object_model<input_t, input_t, graph_config2>(N, aggregation, influence, core_node_w0, core_node_b0, core_node_w1, core_node_b1, core_node_w2, core_node_b2);
   //edge block
-  nnet::relational_model<input_t, index_t, input_t, graph_config3>(effects, influence, receivers, senders, e_logits, q, core_final_w0, core_final_b0, core_final_w1, core_final_b1, core_final_w2, core_final_b2, core_final_w3, core_final_b3);
+  nnet::relational_model<input_t, index_t, input_t, graph_config3>(effects, influence, receivers, senders, e_logits, q, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1, core_edge_w2, core_edge_b2, core_edge_w3, core_edge_b3);
 
   //activation function
   nnet::sigmoid_batch<input_t, input_t, sigmoid_config1>(e_logits, e);
