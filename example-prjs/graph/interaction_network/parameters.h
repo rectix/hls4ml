@@ -11,12 +11,12 @@
 #include "nnet_common.h"
 
 //hls-fpga-machine-learning insert numbers
-typedef ap_fixed<16,6> accum_default_t;
-typedef ap_fixed<16,6> weight_default_t;
-typedef ap_fixed<16,6> bias_default_t;
-typedef ap_fixed<16,6> model_default_t;
-typedef ap_fixed<16,6> input_t;
-typedef ap_fixed<16,6> result_t;
+typedef ap_fixed<12,6> accum_default_t;
+typedef ap_fixed<12,6> weight_default_t;
+typedef ap_fixed<12,6> bias_default_t;
+typedef ap_fixed<12,6> model_default_t;
+typedef ap_fixed<12,6> input_t;
+typedef ap_fixed<12,6> result_t;
 typedef ap_uint<16> index_t;
 #define REUSE_GRAPH 8
 #define REUSE_DENSE 1
@@ -71,7 +71,7 @@ struct graph_config1 : nnet::graph_config {
   };
   struct dense_config3 : nnet::dense_config {
     static const unsigned n_in = n_hidden;
-    static const unsigned n_out = n_out;
+    static const unsigned n_out = e_features; //n_out
     static const unsigned io_type = nnet::io_parallel;
     static const unsigned reuse_factor = REUSE_DENSE;
     static const unsigned n_zeros = 0;
@@ -99,7 +99,7 @@ struct graph_config2 : nnet::graph_config {
   static const unsigned reuse_factor = REUSE_GRAPH;
 
   struct dense_config1 : nnet::dense_config {
-    static const unsigned n_in = n_in + n_features;
+    static const unsigned n_in = n_features + n_features; //n_in + n_features
     static const unsigned n_out = n_hidden;
     static const unsigned io_type = nnet::io_parallel;
     static const unsigned reuse_factor = REUSE_DENSE;
@@ -127,7 +127,7 @@ struct graph_config2 : nnet::graph_config {
   };
   struct dense_config3 : nnet::dense_config {
     static const unsigned n_in = n_hidden;
-    static const unsigned n_out = n_out;
+    static const unsigned n_out = n_features; //n_out
     static const unsigned io_type = nnet::io_parallel;
     static const unsigned reuse_factor = REUSE_DENSE;
     static const unsigned n_zeros = 0;
@@ -183,7 +183,7 @@ struct graph_config3 : nnet::graph_config {
   };
   struct dense_config3 : nnet::dense_config {
     static const unsigned n_in = n_hidden;
-    static const unsigned n_out = n_out;
+    static const unsigned n_out = e_features; //n_out
     static const unsigned io_type = nnet::io_parallel;
     static const unsigned reuse_factor = REUSE_DENSE;
     static const unsigned n_zeros = 0;
