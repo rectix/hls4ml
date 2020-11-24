@@ -67,7 +67,7 @@ void myproject(
    nnet::load_weights_from_txt<model_default_t, LATENT_EDGE>(core_edge_b2, "core_edge_b2.txt");
    nnet::load_weights_from_txt<model_default_t, LATENT_EDGE*E_FEATURES>(core_edge_w3, "core_edge_w3.txt");
    nnet::load_weights_from_txt<model_default_t, E_FEATURES>(core_edge_b3, "core_edge_b3.txt");
-   nnet::load_weights_from_txt<model_default_t, 2*N_FEATURES*LATENT_NODE>(core_node_w0, "core_node_w0.txt");
+   nnet::load_weights_from_txt<model_default_t, E_FEATURES*LATENT_NODE + N_FEATURES*LATENT_NODE>(core_node_w0, "core_node_w0.txt");
    nnet::load_weights_from_txt<model_default_t, LATENT_NODE>(core_node_b0, "core_node_b0.txt");
    nnet::load_weights_from_txt<model_default_t, LATENT_NODE*LATENT_NODE>(core_node_w1, "core_node_w1.txt");
    nnet::load_weights_from_txt<model_default_t, LATENT_NODE>(core_node_b1, "core_node_b1.txt");
@@ -88,15 +88,13 @@ void myproject(
 
   //interaction network
   input_t effects[N_EDGES_MAX][E_FEATURES];
-  input_t aggregation[N_NODES_MAX][N_FEATURES];
+  input_t aggregation[N_NODES_MAX][E_FEATURES];
   input_t influence[N_NODES_MAX][N_FEATURES];
   #pragma HLS ARRAY_PARTITION variable=effects complete dim=0
   #pragma HLS ARRAY_PARTITION variable=aggregation complete dim=0
   #pragma HLS ARRAY_PARTITION variable=influence complete dim=0
 
-  input_t e_logits[N_EDGES_MAX][1];
-  input_t q[N_NODES_MAX][N_FEATURES];
-  #pragma HLS ARRAY_PARTITION variable=e_logits complete dim=0
+  input_t q[N_NODES_MAX][E_FEATURES];
   #pragma HLS ARRAY_PARTITION variable=q complete dim=0
 
   //edge block
@@ -104,9 +102,6 @@ void myproject(
   //node block
   nnet::object_model<input_t, input_t, graph_config2>(N, aggregation, influence, core_node_w0, core_node_b0, core_node_w1, core_node_b1, core_node_w2, core_node_b2);
   //edge block
-  nnet::relational_model<input_t, index_t, input_t, graph_config3>(effects, influence, receivers, senders, e_logits, q, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1, core_edge_w2, core_edge_b2, core_edge_w3, core_edge_b3);
-
-  //activation function
-  nnet::sigmoid_batch<input_t, input_t, sigmoid_config1>(e_logits, e);
+  nnet::relational_model<input_t, index_t, input_t, graph_config3>(effects, influence, receivers, senders, e, q, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1, core_edge_w2, core_edge_b2, core_edge_w3, core_edge_b3);
 
 }

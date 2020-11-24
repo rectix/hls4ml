@@ -80,7 +80,7 @@ struct graph_config1 : nnet::graph_config {
     typedef bias_default_t bias_t;
     typedef weight_default_t weight_t;
   };
-  struct relu_config2 : nnet::activ_config {
+  struct sigmoid_config1 : nnet::activ_config {
     static const unsigned n_in = n_out;
     static const unsigned table_size = 1024;
     static const unsigned io_type = nnet::io_parallel;
@@ -93,7 +93,7 @@ struct graph_config2 : nnet::graph_config {
   static const unsigned n_hidden = LATENT_NODE;
   static const unsigned e_features = E_FEATURES;
   static const unsigned n_features = N_FEATURES;
-  static const unsigned n_in = N_FEATURES;
+  static const unsigned n_in = E_FEATURES;
   static const unsigned n_out = N_FEATURES;
   static const bool activate_final = false;
   static const unsigned reuse_factor = REUSE_GRAPH;
@@ -192,18 +192,11 @@ struct graph_config3 : nnet::graph_config {
     typedef bias_default_t bias_t;
     typedef weight_default_t weight_t;
   };
-  struct relu_config2 : nnet::activ_config {
+  struct sigmoid_config1 : nnet::activ_config {
     static const unsigned n_in = n_out;
     static const unsigned table_size = 1024;
     static const unsigned io_type = nnet::io_parallel;
   };
-};
-
-struct sigmoid_config1 : nnet::activ_config {
-  static const unsigned n_batch = N_EDGES_MAX;
-  static const unsigned n_in = 1;
-  static const unsigned table_size = 1024;
-  static const unsigned io_type = nnet::io_parallel;
 };
 
 #endif 
