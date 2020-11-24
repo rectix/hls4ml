@@ -174,7 +174,7 @@ namespace nnet {
 			  index_T   receivers[CONFIG_T::n_edge][1],
 			  index_T   senders[CONFIG_T::n_edge][1],
 			  res_T     effects[CONFIG_T::n_edge][CONFIG_T::n_out],
-			  res_T     aggregation[CONFIG_T::n_node][CONFIG_T::n_out],
+			  res_T     aggregation[CONFIG_T::n_node][CONFIG_T::n_features],
 			  typename CONFIG_T::dense_config1::weight_t core_edge_w0[CONFIG_T::e_features*CONFIG_T::n_hidden + 2*CONFIG_T::n_features*CONFIG_T::n_hidden],
 			  typename CONFIG_T::dense_config1::bias_t core_edge_b0[CONFIG_T::n_hidden],
 			  typename CONFIG_T::dense_config2::weight_t core_edge_w1[CONFIG_T::n_hidden*CONFIG_T::n_hidden],
@@ -190,8 +190,8 @@ namespace nnet {
     }
 
     for(int i = 0; i < CONFIG_T::n_node; i++){
-      for(int j = 0; j < CONFIG_T::n_out; j++){
-      aggregation[i][j] = 0;
+      for(int j = 0; j < CONFIG_T::n_features; j++){
+	aggregation[i][j] = 0;
       }
     }
 
@@ -237,12 +237,12 @@ namespace nnet {
 	nnet::relu<data_T, res_T, typename CONFIG_T::relu_config2>(effects_logits, effects[i]);
       }else{
         #pragma HLS ARRAY_PARTITION variable=effects[i] complete dim=0
-	nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config3>(effects2, effects[[] c core_edge_w3, core_edge_b3);
+	nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config3>(effects2, effects[i], core_edge_w3, core_edge_b3);
       }
 
       for(int j = 0; j < CONFIG_T::n_out; j++){
 	#pragma HLS UNROLL
-	aggregation[r][j] += L[i][j]
+	aggregation[r][j] += effects[i][j];
       }
     }
   }

@@ -21,9 +21,10 @@ typedef ap_uint<16> index_t;
 #define REUSE_GRAPH 8
 #define REUSE_DENSE 1
 #define N_ITERS 1
-#define latent_dim 8
+#define LATENT_EDGE 8
+#define LATENT_NODE 8
 #define N_FEATURES 3
-#define E_FEATURES 4
+#define E_FEATURES 1
 //graph_nets simple example:
 #define N_NODES_MAX 112
 #define N_EDGES_MAX 148
@@ -33,10 +34,10 @@ typedef ap_uint<16> index_t;
 struct graph_config1 : nnet::graph_config {
   static const unsigned n_edge = N_EDGES_MAX;
   static const unsigned n_node = N_NODES_MAX;
-  static const unsigned n_hidden = latent_dim;
+  static const unsigned n_hidden = LATENT_EDGE;
   static const unsigned e_features = E_FEATURES;
   static const unsigned n_features = N_FEATURES;
-  static const unsigned n_out = latent_dim;
+  static const unsigned n_out = E_FEATURES;
   static const bool io_stream = true;
   static const bool activate_final = true;
   static const unsigned reuse_factor = REUSE_GRAPH;
@@ -89,10 +90,10 @@ struct graph_config1 : nnet::graph_config {
 struct graph_config2 : nnet::graph_config {
   static const unsigned n_edge = N_EDGES_MAX;
   static const unsigned n_node = N_NODES_MAX;
-  static const unsigned n_hidden = latent_dim;
+  static const unsigned n_hidden = LATENT_NODE;
   static const unsigned e_features = E_FEATURES;
   static const unsigned n_features = N_FEATURES;
-  static const unsigned n_in = latent_dim;
+  static const unsigned n_in = N_FEATURES;
   static const unsigned n_out = N_FEATURES;
   static const bool activate_final = false;
   static const unsigned reuse_factor = REUSE_GRAPH;
@@ -145,10 +146,10 @@ struct graph_config2 : nnet::graph_config {
 struct graph_config3 : nnet::graph_config {
   static const unsigned n_edge = N_EDGES_MAX;
   static const unsigned n_node = N_NODES_MAX;
-  static const unsigned n_hidden = latent_dim;
-  static const unsigned e_features = latent_dim;
+  static const unsigned n_hidden = LATENT_EDGE;
+  static const unsigned e_features = LATENT_EDGE;
   static const unsigned n_features = N_FEATURES;
-  static const unsigned n_out = 1;
+  static const unsigned n_out = E_FEATURES;
   static const bool io_stream = true;
   static const bool activate_final = false;
   static const unsigned reuse_factor = REUSE_GRAPH;
