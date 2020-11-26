@@ -151,7 +151,7 @@ struct graph_config3 : nnet::graph_config {
   static const unsigned n_features = N_FEATURES;
   static const unsigned n_out = E_FEATURES;
   static const bool io_stream = true;
-  static const bool activate_final = false;
+  static const bool activate_final = true;
   static const unsigned reuse_factor = REUSE_GRAPH;
 
   struct dense_config1 : nnet::dense_config {
