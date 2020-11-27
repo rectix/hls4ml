@@ -24,14 +24,6 @@
 #include "weights/core_node_b1.h"
 #include "weights/core_node_w2.h"
 #include "weights/core_node_b2.h"
-//#include "weights/core_final_w0.h"
-//#include "weights/core_final_b0.h"
-//#include "weights/core_final_w1.h"
-//#include "weights/core_final_b1.h"
-//#include "weights/core_final_w2.h"
-//#include "weights/core_final_b2.h"
-//#include "weights/core_final_w3.h"
-//#include "weights/core_final_b3.h"
 
 void myproject(
 	       input_t      N[N_NODES_MAX][N_FEATURES],
@@ -73,14 +65,6 @@ void myproject(
    nnet::load_weights_from_txt<model_default_t, LATENT_NODE>(core_node_b1, "core_node_b1.txt");
    nnet::load_weights_from_txt<model_default_t, LATENT_NODE*N_FEATURES>(core_node_w2, "core_node_w2.txt");
    nnet::load_weights_from_txt<model_default_t, N_FEATURES>(core_node_b2, "core_node_b2.txt");
-   //nnet::load_weights_from_txt<model_default_t, E_FEATURES*LATENT_EDGE + 2*N_FEATURES*LATENT_EDGE>(core_final_w0, "core_final_w0.txt");
-   //nnet::load_weights_from_txt<model_default_t, LATENT_EDGE>(core_final_b0, "core_final_b0.txt");
-   //nnet::load_weights_from_txt<model_default_t, LATENT_EDGE*LATENT_EDGE>(core_final_w1, "core_final_w1.txt");
-   //nnet::load_weights_from_txt<model_default_t, LATENT_EDGE>(core_final_b1, "core_final_b1.txt");
-   //nnet::load_weights_from_txt<model_default_t, LATENT_EDGE*LATENT_EDGE>(core_final_w2, "core_final_w2.txt");
-   //nnet::load_weights_from_txt<model_default_t, LATENT_EDGE>(core_final_b2, "core_final_b2.txt");
-   //nnet::load_weights_from_txt<model_default_t, LATENT_EDGE*E_FEATURES>(core_final_w3, "core_final_w3.txt");
-   //nnet::load_weights_from_txt<model_default_t, E_FEATURES>(core_final_b3, "core_final_b3.txt");
 
    loaded_weights = true;
  }
@@ -96,6 +80,7 @@ void myproject(
 
   input_t q[N_NODES_MAX][E_FEATURES];
   #pragma HLS ARRAY_PARTITION variable=q complete dim=0
+  DO_PRAGMA(HLS PIPELINE II=REUSE_GRAPH)
 
   //edge block
   nnet::relational_model<input_t, index_t, input_t, graph_config1>(E, N, receivers, senders, effects, aggregation, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1, core_edge_w2, core_edge_b2, core_edge_w3, core_edge_b3);
