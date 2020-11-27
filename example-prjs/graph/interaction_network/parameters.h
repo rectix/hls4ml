@@ -18,7 +18,7 @@ typedef ap_fixed<16,6> model_default_t;
 typedef ap_fixed<16,6> input_t;
 typedef ap_fixed<16,6> result_t;
 typedef ap_uint<16> index_t;
-#define REUSE_GRAPH 1
+#define REUSE_GRAPH 8
 #define REUSE_DENSE 1
 #define N_ITERS 1
 #define LATENT_EDGE 8
@@ -26,8 +26,8 @@ typedef ap_uint<16> index_t;
 #define N_FEATURES 3
 #define E_FEATURES 1
 //graph_nets simple example:
-#define N_NODES_MAX 28 //112
-#define N_EDGES_MAX 37 //148
+#define N_NODES_MAX 112 //28 112
+#define N_EDGES_MAX 148 //37 148
 
 //hls-fpga-machine-learning insert layer-config
 
