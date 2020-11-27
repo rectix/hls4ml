@@ -7,7 +7,7 @@ import mplhep as hep
 import numpy as np
 
 plt.style.use(hep.style.CMS)
-directory = '../gnn_simple'
+directory = './'
 #hls4ml.report.vivado_report.read_vivado_report(directory, full_report=False)
 
 def read_vivado_report(dsp, bram, ff, lut, latency, ii, hls_dir, full_report=False):
@@ -148,7 +148,7 @@ LUT = []
 Latency = []
 II = []
 Reuse = [1, 2, 4, 8, 16]
-Precision = [8, 10, 12, 14, 16, 18, 20]
+Precision = [10, 12, 16, 20]
 maxDSP = 5520
 maxBRAM = 4320
 maxFF = 1326720
@@ -201,12 +201,12 @@ plt.plot(Reuse, 100*np.array(DSP)/maxDSP, '-o', lw=2, label='DSP')
 plt.plot(Reuse, 100*np.array(LUT)/maxLUT, '-o', lw=2, label='LUT')
 plt.plot(Reuse, 100*np.array(BRAM)/maxBRAM, '-o', lw=2, label='BRAM')
 plt.plot(Reuse, 100*np.array(FF)/maxFF, '-o', lw=2, label='FF')
-plt.ylim(0,200)
+plt.ylim(-10,320)
 plt.xlabel('Reuse factor')
 plt.ylabel('Usage [%]')
 #plt.title('Resources vs Reuse factor')
 plt.legend()
-plt.legend(title = '112 nodes, 57 edges')
+plt.legend(title = '28 nodes, 37 edges')
 plt.tight_layout()
 plt.savefig('Resources_vs_RF.pdf')
 
@@ -216,7 +216,7 @@ plt.ylim(105,230)
 plt.xlabel('Reuse factor')
 plt.ylabel('Latency [cycles]')
 #plt.title('Latency vs Reuse factor')
-plt.legend(title = '112 nodes, 57 edges')
+plt.legend(title = '28 nodes, 37 edges')
 plt.tight_layout()
 plt.savefig('Latency_vs_RF.pdf')
 """
@@ -273,17 +273,17 @@ plt.xlabel('Total bit precision')
 plt.ylabel('Usage [%]')
 #plt.title('LUTs vs Bit Precision')
 plt.legend()
-plt.legend(title = '112 nodes, 57 edges')
+plt.legend(title = '28 nodes, 37 edges')
 plt.tight_layout()
 plt.savefig('Resources_vs_BP.pdf')
 
 plt.figure(figsize=(6,5))
 plt.plot(Precision, Latency, '-o', lw=2)
-plt.ylim(100,150)
+plt.ylim(150,200)
 plt.xlabel('Total bit precision')
 plt.ylabel('Latency [cycles]')
 #plt.title('Latency vs Bit Precision')
-plt.legend(title = '112 nodes, 57 edges')
+plt.legend(title = '28 nodes, 37 edges')
 plt.tight_layout()
 plt.savefig('Latency_vs_BP.pdf')
 
