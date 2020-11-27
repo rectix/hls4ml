@@ -11,12 +11,12 @@
 #include "nnet_common.h"
 
 //hls-fpga-machine-learning insert numbers
-typedef ap_fixed<10,6> accum_default_t;
-typedef ap_fixed<10,6> weight_default_t;
-typedef ap_fixed<10,6> bias_default_t;
-typedef ap_fixed<10,6> model_default_t;
-typedef ap_fixed<10,6> input_t;
-typedef ap_fixed<10,6> result_t;
+typedef ap_fixed<16,6> accum_default_t;
+typedef ap_fixed<16,6> weight_default_t;
+typedef ap_fixed<16,6> bias_default_t;
+typedef ap_fixed<16,6> model_default_t;
+typedef ap_fixed<16,6> input_t;
+typedef ap_fixed<16,6> result_t;
 typedef ap_uint<16> index_t;
 #define REUSE_GRAPH 8
 #define REUSE_DENSE 1
