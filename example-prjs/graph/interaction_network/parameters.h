@@ -19,7 +19,7 @@ typedef ap_fixed<16,6> input_t;
 typedef ap_fixed<16,6> result_t;
 typedef ap_uint<16> index_t;
 #define PRAGMA_SUB(x) _Pragma (#x)
-#define DO_PRAGMA(X) PRAGMA_SUB(x)
+#define DO_PRAGMA(x) PRAGMA_SUB(x)
 #define REUSE_GRAPH 8
 #define REUSE_DENSE 1
 #define N_ITERS 1
