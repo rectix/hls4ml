@@ -17,6 +17,6 @@ def replace(file_path, pattern, subst):
     remove(file_path)
     #Move new file                                                                                                                
     move(abs_path, file_path)
-bit = 20
+bit = 16
 for f in ['parameters.h']+glob.glob('weights/*.h'):
     replace(f,r'ap_fixed<[0-9]{1,2},6>','ap_fixed<%i,6>'%bit)
