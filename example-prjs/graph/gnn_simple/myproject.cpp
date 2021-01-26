@@ -6,6 +6,8 @@
 #include "nnet_activation.h"
 #include "nnet_dense_large.h"
 #include "nnet_common.h"
+#include "nnet_helpers.h"
+#include "nnet_graph.h"
 
 //insert weights from training
 #include "weights/encoder_node_w0.h"
@@ -49,11 +51,11 @@ Output (128,1)
 */
 
 void myproject(
-	       input_t      N[N_NODES][N_FEATURES],
-	       input_t      E[N_EDGES][E_FEATURES],
-               index_t      receivers[N_EDGES][1],
-               index_t      senders[N_EDGES][1],
-	       result_t     e[N_EDGES][1],
+	       input_t      N[N_NODES_MAX][N_FEATURES],
+	       input_t      E[N_EDGES_MAX][E_FEATURES],
+               index_t      receivers[N_EDGES_MAX][1],
+               index_t      senders[N_EDGES_MAX][1],
+	       result_t     e[N_EDGES_MAX][1],
 	       unsigned short &const_size_in,
 	       unsigned short &const_size_out)
 {
@@ -67,120 +69,93 @@ void myproject(
 #pragma HLS INTERFACE ap_vld port=N,E,receivers,senders,e
 #pragma HLS DATAFLOW
 
-  const_size_in	= N_NODES*N_FEATURES+N_EDGES*E_FEATURES+2*N_EDGES*1;
-  const_size_out = N_EDGES*1;
+  const_size_in	= N_NODES_MAX*N_FEATURES+N_EDGES_MAX*E_FEATURES+2*N_EDGES_MAX*1;
+  const_size_out = N_EDGES_MAX*1;
 
+#ifndef __SYNTHESIS__
+  static bool loaded_weights = false;
+ if (!loaded_weights) {
+   //hls-fpga-machine-learning insert load weights                                                                           
+   nnet::load_weights_from_txt<model_default_t, N_FEATURES*latent_dim>(encoder_node_w0, "encoder_node_w0.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(encoder_node_b0, "encoder_node_b0.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(encoder_node_w1, "encoder_node_w1.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(encoder_node_b1, "encoder_node_b1.txt");
+   nnet::load_weights_from_txt<model_default_t, E_FEATURES*latent_dim>(encoder_edge_w0, "encoder_edge_w0.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(encoder_edge_b0, "encoder_edge_b0.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(encoder_edge_w1, "encoder_edge_w1.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(encoder_edge_b1, "encoder_edge_b1.txt");
+   nnet::load_weights_from_txt<model_default_t, 3*latent_dim*latent_dim>(core_edge_w0, "core_edge_w0.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(core_edge_b0, "core_edge_b0.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(core_edge_w1, "core_edge_w1.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(core_edge_b1, "core_edge_b1.txt");
+   nnet::load_weights_from_txt<model_default_t, 2*latent_dim*latent_dim>(core_node_w0, "core_node_w0.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(core_node_b0, "core_node_b0.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(core_node_w1, "core_node_w1.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(core_node_b1, "core_node_b1.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(decoder_edge_w0, "decoder_edge_w0.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(decoder_edge_b0, "decoder_edge_b0.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(decoder_edge_w1, "decoder_edge_w1.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(decoder_edge_b1, "decoder_edge_b1.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(decoder_edge_w2, "decoder_edge_w2.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(decoder_edge_b2, "decoder_edge_b2.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim*1>(decoder_edge_w3, "decoder_edge_w3.txt");
+   nnet::load_weights_from_txt<model_default_t, 1>(decoder_edge_b3, "decoder_edge_b3.txt");
+
+   loaded_weights = true;
+ }
+#endif
+  
   //encode nodes features
-  input_t Rn0_logits[N_NODES][latent_dim];
-  #pragma HLS ARRAY_PARTITION variable=Rn0_logits complete dim=0
-  nnet::dense_batch<input_t, input_t, dense_config1>(N, Rn0_logits, encoder_node_w0, encoder_node_b0);
-  input_t Rn0[N_NODES][latent_dim];
-  #pragma HLS ARRAY_PARTITION variable=Rn0 complete dim=0
-  nnet::relu_batch<input_t, input_t, relu_config1>(Rn0_logits, Rn0);
-  
-  input_t Rn_logits[N_NODES][latent_dim];
-  #pragma HLS ARRAY_PARTITION variable=Rn_logits complete dim=0
-  nnet::dense_batch<input_t, input_t, dense_config2>(Rn0, Rn_logits, encoder_node_w1, encoder_node_b1);
-  input_t Rn[N_NODES][latent_dim];
+  input_t Rn[N_NODES_MAX][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=Rn complete dim=0
-  nnet::relu_batch<input_t, input_t, relu_config1>(Rn_logits, Rn);
-  
+  nnet::graph_independent<input_t, input_t, graph_config1>(N, Rn, encoder_node_w0, encoder_node_b0, encoder_node_w1, encoder_node_b1);
+  /*
+  for(int i = 0; i < N_NODES; i++){
+    std::cout << "Rn[" << i << "] = [";
+    for(int j = 0; j < latent_dim; j++){
+      std::cout << Rn[i][j] << ", ";
+    }
+    std::cout << "]" << std::endl;
+  }
+  */
   //encode edge features
-  input_t Re0_logits[N_EDGES][latent_dim];
-  #pragma HLS ARRAY_PARTITION variable=Re0_logits complete dim=0
-  nnet::dense_batch<input_t, input_t, dense_config3>(E, Re0_logits, encoder_edge_w0, encoder_edge_b0);
-  input_t Re0[N_EDGES][latent_dim];
-  #pragma HLS ARRAY_PARTITION variable=Re0 complete dim=0
-  nnet::relu_batch<input_t, input_t, relu_config2>(Re0_logits, Re0);
-  
-  input_t Re_logits[N_EDGES][latent_dim];
-  #pragma HLS ARRAY_PARTITION variable=Re_logits complete dim=0
-  nnet::dense_batch<input_t, input_t, dense_config4>(Re0, Re_logits, encoder_edge_w1, encoder_edge_b1);
-  input_t Re[N_EDGES][latent_dim];
+  input_t Re[N_EDGES_MAX][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=Re complete dim=0
-  nnet::relu_batch<input_t, input_t, relu_config2>(Re_logits, Re);
-  
+  nnet::graph_independent<input_t, input_t, graph_config2>(E, Re, encoder_edge_w0, encoder_edge_b0, encoder_edge_w1, encoder_edge_b1);
+  /*
+  for(int i = 0; i < N_EDGES; i++){
+    std::cout << "Re[" << i << "] = [";
+    for(int j = 0; j < latent_dim; j++){
+      std::cout << Re[i][j] << ", ";
+    }
+    std::cout << "]" << std::endl;
+  }
+  */
   //core networks
-  input_t L[N_EDGES][latent_dim];
-  input_t P[N_NODES][latent_dim];
+  input_t L[N_EDGES_MAX][latent_dim];
+  input_t Q[N_NODES_MAX][latent_dim];
+  input_t P[N_NODES_MAX][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=L complete dim=0
+  #pragma HLS ARRAY_PARTITION variable=Q complete dim=0
   #pragma HLS ARRAY_PARTITION variable=P complete dim=0
-
+  
   for(int i = 0; i < N_ITERS; i++){
 
     //core edge updates
-    for(int j = 0; j < N_EDGES; j++){
-      index_t r = receivers[j][0];
-      index_t s = senders[j][0];
-      input_t l_logits[2*latent_dim];
-      #pragma HLS ARRAY_PARTITION variable=l_logits complete dim=0
-      nnet::merge<input_t, latent_dim, latent_dim>(Re[j], Rn[r], l_logits);
-      input_t l[3*latent_dim];
-      #pragma HLS ARRAY_PARTITION variable=l complete dim=0
-      nnet::merge<input_t, 2*latent_dim, latent_dim>(l_logits, Rn[s], l);
-      
-      input_t L0_logits[latent_dim];
-      #pragma HLS ARRAY_PARTITION variable=L0_logits complete dim=0
-      nnet::dense_large<input_t, input_t, dense_config5>(l, L0_logits, core_edge_w0, core_edge_b0);
-      input_t L0[latent_dim];
-      #pragma HLS ARRAY_PARTITION variable=L0 complete dim=0
-      nnet::relu<input_t, input_t, relu_config3>(L0_logits, L0);
-      
-      input_t L_logits[latent_dim];
-      #pragma HLS ARRAY_PARTITION variable=L_logits complete dim=0
-      nnet::dense_large<input_t, input_t, dense_config6>(L0, L_logits, core_edge_w1, core_edge_b1);
-      
-      nnet::relu<input_t, input_t, relu_config3>(L_logits, L[j]);
-    }
-    
+    nnet::IN_edge_module<input_t, index_t, input_t, graph_config3>(Re, Rn, receivers, senders, L, Q, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1);
     //core node updates
-    for(int j = 0; j < N_NODES; j++){
-      input_t p[2*latent_dim];
-      #pragma HLS ARRAY_PARTITION variable=p complete dim=0
-      nnet::merge<input_t, latent_dim, latent_dim>(L[j], Rn[j], p);
-      
-      input_t P0_logits[latent_dim];
-      #pragma HLS ARRAY_PARTITION variable=P0_logits complete dim=0
-      nnet::dense_large<input_t, input_t, dense_config7>(p, P0_logits, core_node_w0, core_node_b0);
-      input_t P0[latent_dim];
-      #pragma HLS ARRAY_PARTITION variable=P0 complete dim=0
-      nnet::relu<input_t, input_t, relu_config3>(P0_logits, P0);
-      
-      input_t P_logits[latent_dim];
-      #pragma HLS ARRAY_PARTITION variable=P_logits complete dim=0
-      nnet::dense_large<input_t, input_t, dense_config6>(P0, P_logits, core_node_w1, core_node_b1);
-      
-      nnet::relu<input_t, input_t, relu_config3>(P_logits, P[j]);
-    }
+    nnet::IN_node_module<input_t, input_t, graph_config4>(Rn, Q, P, core_node_w0, core_node_b0, core_node_w1, core_node_b1);
+
   }
-  
+
   //decode edge features
-  input_t Ro0_logits[N_EDGES][latent_dim];
-  #pragma HLS ARRAY_PARTITION variable=Ro0_logits complete dim=0
-  nnet::dense_batch<input_t, input_t, dense_config4>(L, Ro0_logits, decoder_edge_w0, decoder_edge_b0);
-  input_t Ro0[N_EDGES][latent_dim];
-  #pragma HLS ARRAY_PARTITION variable=Ro0 complete dim=0
-  nnet::relu_batch<input_t, input_t, relu_config2>(Ro0_logits, Ro0);
-  
-  input_t Ro_logits[N_EDGES][latent_dim];
-  #pragma HLS ARRAY_PARTITION variable=Ro_logits complete dim=0
-  nnet::dense_batch<input_t, input_t, dense_config4>(Ro0, Ro_logits, decoder_edge_w1, decoder_edge_b1);
-  input_t Ro[N_EDGES][latent_dim];
+  input_t Ro[N_EDGES_MAX][latent_dim];
   #pragma HLS ARRAY_PARTITION variable=Ro complete dim=0
-  nnet::relu_batch<input_t, input_t, relu_config2>(Ro_logits, Ro);
-  
-  input_t e0_logits[N_EDGES][latent_dim];
-  #pragma HLS ARRAY_PARTITION variable=e0_logits complete dim=0
-  nnet::dense_batch<input_t, input_t, dense_config4>(Ro, e0_logits, decoder_edge_w2, decoder_edge_b2);
-  input_t e0[N_EDGES][latent_dim];
-  #pragma HLS ARRAY_PARTITION variable=e0 complete dim=0
-  nnet::relu_batch<input_t, input_t, relu_config2>(e0_logits, e0);
-  input_t e1_logits[N_EDGES][1];
-  #pragma HLS ARRAY_PARTITION variable=e1_logits complete dim=0
-  nnet::dense_batch<input_t, input_t, dense_config8>(e0, e1_logits, decoder_edge_w3, decoder_edge_b3);
-  input_t e_logits[N_EDGES][1];
+  nnet::graph_independent<input_t, input_t, graph_config5>(L, Ro, decoder_edge_w0, decoder_edge_b0, decoder_edge_w1, decoder_edge_b1);
+
+  input_t e_logits[N_EDGES_MAX][1];
   #pragma HLS ARRAY_PARTITION variable=e_logits complete dim=0
-  nnet::relu_batch<input_t, input_t, relu_config4>(e1_logits, e_logits);
-  
+  nnet::graph_independent<input_t, input_t, graph_config6>(Ro, e_logits, decoder_edge_w2, decoder_edge_b2, decoder_edge_w3, decoder_edge_b3);
+
   nnet::sigmoid_batch<input_t, input_t, sigmoid_config1>(e_logits, e);
 }

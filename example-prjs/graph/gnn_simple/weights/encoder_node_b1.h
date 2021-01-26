@@ -1,15 +1,15 @@
-//Numpy array shape [4]
-//Min 0.000000000000
-//Max 0.000000000000
-//Number of zeros 4
+//Numpy array shape [8]
+//Min -0.313127790409
+//Max 0.173565356787
+//Number of zeros 0
 
 #ifndef ENCODER_NODE_B1_H_
 #define ENCODER_NODE_B1_H_
 
 #ifndef __SYNTHESIS__
-ap_fixed<16,6> encoder_node_b1[4];
+ap_fixed<16,6> encoder_node_b1[8];
 #else
-ap_fixed<16,6> encoder_node_b1[4] = {0.000000, 0.000000, 0.000000, 0.000000};
+ap_fixed<16,6> encoder_node_b1[8] = {0.147346, 0.106749, 0.173565, -0.067655, -0.014823, -0.031195, 0.085009, -0.313128};
 #endif
 
 #endif

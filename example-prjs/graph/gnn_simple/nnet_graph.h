@@ -22,6 +22,8 @@
 
 #include "nnet_common.h"
 #include "nnet_dense.h"
+#include "nnet_dense_large.h"
+#include "nnet_activation.h"
 #include "nnet_conv.h"
 #include "hls_stream.h"
 #include <math.h>
@@ -30,17 +32,140 @@ namespace nnet {
   
   struct graph_config
   {
+    // Internal data type definitions
+    typedef float bias_t;
+    typedef float weight_t;
+    
     // Layer Sizes
-    static const unsigned n_node = 4;
-    static const unsigned n_edge = 4;
-    static const unsigned n_input_dim = 7;
-    static const unsigned n_hidden_dim = 4;
+    static const unsigned n_node = 10;
+    static const unsigned n_edge = 20;
+    static const unsigned n_batch = 20;
+    static const unsigned n_in = 7;
+    static const unsigned n_hidden = 4;
+    static const unsigned n_out = 4;
     
     // Resource reuse info
     static const unsigned io_type = io_parallel;
+    static const unsigned io_stream = false;
     static const unsigned reuse_factor = 1;
     static const unsigned n_zeros = 0;
   };
+
+  template<class data_T, class index_T, class res_T, typename CONFIG_T>
+    void IN_edge_module(
+			data_T    Re[CONFIG_T::n_edge][CONFIG_T::n_hidden],
+			data_T    Rn[CONFIG_T::n_node][CONFIG_T::n_hidden],
+			index_T    receivers[CONFIG_T::n_edge][1],
+			index_T    senders[CONFIG_T::n_edge][1],
+			res_T     L[CONFIG_T::n_edge][CONFIG_T::n_hidden],
+			res_T     Q[CONFIG_T::n_node][CONFIG_T::n_hidden],
+			typename CONFIG_T::dense_config1::weight_t  core_edge_w0[3*CONFIG_T::n_hidden*CONFIG_T::n_hidden],
+			typename CONFIG_T::dense_config1::bias_t    core_edge_b0[CONFIG_T::n_hidden],
+			typename CONFIG_T::dense_config2::weight_t  core_edge_w1[CONFIG_T::n_hidden*CONFIG_T::n_hidden],
+			typename CONFIG_T::dense_config2::bias_t    core_edge_b1[CONFIG_T::n_hidden])
+  {
+    if(CONFIG_T::io_stream){
+      #pragma HLS STREAM variable=receivers
+      #pragma HLS STREAM variable=senders
+    }
+    
+    for(int i = 0; i < CONFIG_T::n_node; i++){
+      for(int j = 0; j < CONFIG_T::n_hidden; j++){
+	Q[i][j] = 0;
+      }
+    }
+
+    #pragma HLS PIPELINE II=CONFIG_T::reuse_factor //*CONFIG_T::n_edge
+    IN_edge_loop: for(int i = 0; i < CONFIG_T::n_edge; i++) {
+      #pragma HLS UNROLL
+      index_T r = receivers[i][0];
+      index_T s = senders[i][0];
+      data_T l_logits[2*CONFIG_T::n_hidden];
+      #pragma HLS ARRAY_PARTITION variable=l_logits complete dim=0
+      nnet::merge<data_T, CONFIG_T::n_hidden, CONFIG_T::n_hidden>(Re[i], Rn[r], l_logits);
+      data_T l[3*CONFIG_T::n_hidden];
+      #pragma HLS ARRAY_PARTITION variable=l complete dim=0
+      nnet::merge<data_T, 2*CONFIG_T::n_hidden, CONFIG_T::n_hidden>(l_logits, Rn[s], l);
+
+      data_T L0_logits[CONFIG_T::dense_config1::n_out];
+      #pragma HLS ARRAY_PARTITION variable=L0_logits complete dim=0
+      nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(l, L0_logits, core_edge_w0, core_edge_b0);
+      data_T L0[CONFIG_T::relu_config1::n_in];
+      #pragma HLS ARRAY_PARTITION variable=L0 complete dim=0
+      nnet::relu<data_T, data_T, typename CONFIG_T::relu_config1>(L0_logits, L0);
+
+      data_T L_logits[CONFIG_T::dense_config2::n_out];
+      #pragma HLS ARRAY_PARTITION variable=L_logits complete dim=0
+      nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config2>(L0, L_logits, core_edge_w1, core_edge_b1);
+      nnet::relu<data_T, res_T, typename CONFIG_T::relu_config2>(L_logits, L[i]);
+
+      for(int j = 0; j < CONFIG_T::n_hidden; j++){
+        #pragma HLS UNROLL
+	Q[r][j] += L[i][j];
+      }
+    }
+  }
+
+  template<class data_T, class res_T, typename CONFIG_T>
+    void IN_node_module(
+			data_T    Rn[CONFIG_T::n_node][CONFIG_T::n_hidden],
+			data_T    Q[CONFIG_T::n_edge][CONFIG_T::n_hidden],
+			res_T     P[CONFIG_T::n_node][CONFIG_T::n_hidden],
+			typename CONFIG_T::dense_config1::weight_t  core_node_w0[2*CONFIG_T::n_hidden*CONFIG_T::n_hidden],
+			typename CONFIG_T::dense_config1::bias_t    core_node_b0[CONFIG_T::n_hidden],
+			typename CONFIG_T::dense_config2::weight_t  core_node_w1[CONFIG_T::n_hidden*CONFIG_T::n_hidden],
+			typename CONFIG_T::dense_config2::bias_t    core_node_b1[CONFIG_T::n_hidden])
+  {
+    #pragma HLS PIPELINE II=CONFIG_T::reuse_factor //*CONFIG_T::n_node
+    IN_node_loop: for(int i = 0; i < CONFIG_T::n_node; i++){
+      #pragma HLS UNROLL
+      data_T p[2*CONFIG_T::n_hidden];
+      #pragma HLS ARRAY_PARTITION variable=p complete dim=0
+      nnet::merge<data_T, CONFIG_T::n_hidden, CONFIG_T::n_hidden>(Q[i], Rn[i], p);
+      
+      data_T P0_logits[CONFIG_T::dense_config1::n_out];
+      #pragma HLS ARRAY_PARTITION variable=P0_logits complete dim=0
+      nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(p, P0_logits, core_node_w0, core_node_b0);
+      data_T P0[CONFIG_T::relu_config1::n_in];
+      #pragma HLS ARRAY_PARTITION variable=P0 complete dim=0
+      nnet::relu<data_T, data_T, typename CONFIG_T::relu_config1>(P0_logits, P0);
+      
+      data_T P_logits[CONFIG_T::dense_config2::n_out];
+      #pragma HLS ARRAY_PARTITION variable=P_logits complete dim=0
+      nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config2>(P0, P_logits, core_node_w1, core_node_b1);
+      nnet::relu<data_T, res_T, typename CONFIG_T::relu_config1>(P_logits, P[i]);
+    }
+  }
+
+  template<class data_T, class res_T, typename CONFIG_T>
+    void graph_independent(
+			   data_T    X[CONFIG_T::dense_config1::n_batch][CONFIG_T::dense_config1::n_in],
+			   res_T     R[CONFIG_T::dense_config2::n_batch][CONFIG_T::dense_config2::n_out],
+			   typename CONFIG_T::dense_config1::weight_t  w0[CONFIG_T::dense_config1::n_in*CONFIG_T::dense_config1::n_out],
+			   typename CONFIG_T::dense_config1::bias_t    b0[CONFIG_T::dense_config1::n_out],
+			   typename CONFIG_T::dense_config2::weight_t  w1[CONFIG_T::dense_config2::n_in*CONFIG_T::dense_config2::n_out],
+			   typename CONFIG_T::dense_config2::bias_t    b1[CONFIG_T::dense_config2::n_out])
+  {
+    if(CONFIG_T::io_stream){
+      #pragma HLS STREAM variable=X
+    }
+    #pragma HLS PIPELINE II=CONFIG_T::reuse_factor //*CONFIG_T::dense_config2::n_batch
+    data_T R0_logits[CONFIG_T::dense_config1::n_batch][CONFIG_T::dense_config1::n_out];
+    #pragma HLS ARRAY_PARTITION variable=R0_logits complete dim=0
+    nnet::dense_batch<data_T, data_T, typename CONFIG_T::dense_config1>(X, R0_logits, w0, b0);
+    data_T R0[CONFIG_T::relu_config1::n_batch][CONFIG_T::relu_config1::n_in];
+    #pragma HLS ARRAY_PARTITION variable=R0 complete dim=0
+    nnet::relu_batch<data_T, data_T, typename CONFIG_T::relu_config1>(R0_logits, R0);
+
+    if(CONFIG_T::activate_final){
+        data_T R_logits[CONFIG_T::dense_config2::n_batch][CONFIG_T::dense_config2::n_out];
+        #pragma HLS ARRAY_PARTITION variable=R_logits complete dim=0
+        nnet::dense_batch<data_T, data_T, typename CONFIG_T::dense_config2>(R0, R_logits, w1, b1);
+        nnet::relu_batch<data_T, res_T, typename CONFIG_T::relu_config2>(R_logits, R);
+    }else{
+      nnet::dense_batch<data_T, data_T, typename CONFIG_T::dense_config2>(R0, R, w1, b1);
+    }
+  }
 
   template<class data_T, class res_T, typename CONFIG_T>
     void compute_edge_net_features(
