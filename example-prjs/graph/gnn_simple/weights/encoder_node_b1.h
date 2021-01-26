@@ -1,6 +1,6 @@
 //Numpy array shape [8]
-//Min -0.020567647316
-//Max 0.158172382865
+//Min -0.313127790409
+//Max 0.173565356787
 //Number of zeros 0
 
 #ifndef ENCODER_NODE_B1_H_
@@ -9,7 +9,7 @@
 #ifndef __SYNTHESIS__
 ap_fixed<16,6> encoder_node_b1[8];
 #else
-ap_fixed<16,6> encoder_node_b1[8] = {0.055769, 0.024249, 0.158172, 0.078701, -0.020568, 0.091713, -0.009654, 0.030699};
+ap_fixed<16,6> encoder_node_b1[8] = {0.147346, 0.106749, 0.173565, -0.067655, -0.014823, -0.031195, 0.085009, -0.313128};
 #endif
 
 #endif
