@@ -19,7 +19,7 @@ cp -r firmware/weights /path_to_hls4ml/example-prjs/graph/gnn_simple/.
 ## Set up Vivado HLS
 - move to 'hls4ml/example-prjs/graph/gnn_simple` and run:
 ```
-source /path to Xilinx Vivado HLS installation
+source /path to Xilinx Vivado HLS installation/settings64.sh
 ```
 
 ## Run CSIM (for accuracy test)
