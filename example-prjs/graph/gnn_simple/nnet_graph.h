@@ -51,18 +51,18 @@ namespace nnet {
     static const unsigned n_zeros = 0;
   };
 
-  template<class data_T, class index_T, class res_T, typename CONFIG_T>
+  template<class data_T, class index_T, class res_T, typename CONFIG_T, typename WEIGHTS_T, typename BIASES_T>
     void IN_edge_module(
 			data_T    Re[CONFIG_T::n_edge][CONFIG_T::n_hidden],
 			data_T    Rn[CONFIG_T::n_node][CONFIG_T::n_hidden],
 			index_T    receivers[CONFIG_T::n_edge][1],
 			index_T    senders[CONFIG_T::n_edge][1],
 			res_T     L[CONFIG_T::n_edge][CONFIG_T::n_hidden],
-			res_T     Q[CONFIG_T::n_node][CONFIG_T::n_hidden],
+			res_T     Q[CONFIG_T::n_node][CONFIG_T::n_hidden])/*,
 			typename CONFIG_T::dense_config1::weight_t  core_edge_w0[3*CONFIG_T::n_hidden*CONFIG_T::n_hidden],
 			typename CONFIG_T::dense_config1::bias_t    core_edge_b0[CONFIG_T::n_hidden],
 			typename CONFIG_T::dense_config2::weight_t  core_edge_w1[CONFIG_T::n_hidden*CONFIG_T::n_hidden],
-			typename CONFIG_T::dense_config2::bias_t    core_edge_b1[CONFIG_T::n_hidden])
+			typename CONFIG_T::dense_config2::bias_t    core_edge_b1[CONFIG_T::n_hidden])*/
   {
     if(CONFIG_T::io_stream){
       #pragma HLS STREAM variable=receivers
@@ -86,7 +86,7 @@ namespace nnet {
       data_T l[3*CONFIG_T::n_hidden];
       #pragma HLS ARRAY_PARTITION variable=l complete dim=0
       nnet::merge<data_T, 2*CONFIG_T::n_hidden, CONFIG_T::n_hidden>(l_logits, Rn[s], l);
-
+      /*
       data_T L0_logits[CONFIG_T::dense_config1::n_out];
       #pragma HLS ARRAY_PARTITION variable=L0_logits complete dim=0
       nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(l, L0_logits, core_edge_w0, core_edge_b0);
@@ -98,6 +98,31 @@ namespace nnet {
       #pragma HLS ARRAY_PARTITION variable=L_logits complete dim=0
       nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config2>(L0, L_logits, core_edge_w1, core_edge_b1);
       nnet::relu<data_T, res_T, typename CONFIG_T::relu_config2>(L_logits, L[i]);
+      */
+      if(CONFIG_T::activate_final){
+	data_T L_logits[CONFIG_T::n_hidden];
+        #pragma HLS ARRAY_PARTITION variable=L_logits complete dim=0
+        if(CONFIG_T::n_layers == 1){
+	  nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(l, L_logits, WEIGHTS_T::core_edge_w0, BIASES_T::core_edge_b0);
+        }else if(CONFIG_T::n_layers == 2){
+	  nnet::dense_large_basic_2lyr<data_T, data_T, typename CONFIG_T>(l, L_logits, WEIGHTS_T::core_edge_w0, BIASES_T::core_edge_b0, WEIGHTS_T::core_edge_w1, BIASES_T::core_edge_b1);
+	}else if(CONFIG_T::n_layers == 3){
+	  nnet::dense_large_basic_3lyr<data_T, data_T, typename CONFIG_T>(l, L_logits, WEIGHTS_T::core_edge_w0, BIASES_T::core_edge_b0, WEIGHTS_T::core_edge_w1, BIASES_T::core_edge_b1, WEIGHTS_T::core_edge_w2, BIASES_T::core_edge_b2);
+	}else if(CONFIG_T::n_layers == 4){
+	  nnet::dense_large_basic_4lyr<data_T, data_T, typename CONFIG_T>(l, L_logits, WEIGHTS_T::core_edge_w0, BIASES_T::core_edge_b0, WEIGHTS_T::core_edge_w1, BIASES_T::core_edge_b1, WEIGHTS_T::core_edge_w2, BIASES_T::core_edge_b2, WEIGHTS_T::core_edge_w3, BIASES_T::core_edge_b3);
+	}
+	nnet::relu<data_T, res_T, typename CONFIG_T::relu_config2>(L_logits, L[i]);
+      }else{
+        if(CONFIG_T::n_layers == 1){
+	  nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(l, L[i], WEIGHTS_T::core_edge_w0, BIASES_T::core_edge_b0);
+        }else if(CONFIG_T::n_layers == 2){
+	  nnet::dense_large_basic_2lyr<data_T, data_T, typename CONFIG_T>(l, L[i], WEIGHTS_T::core_edge_w0, BIASES_T::core_edge_b0, WEIGHTS_T::core_edge_w1, BIASES_T::core_edge_b1);
+        }else if(CONFIG_T::n_layers == 3){
+	  nnet::dense_large_basic_3lyr<data_T, data_T, typename CONFIG_T>(l, L[i], WEIGHTS_T::core_edge_w0, BIASES_T::core_edge_b0, WEIGHTS_T::core_edge_w1, BIASES_T::core_edge_b1, WEIGHTS_T::core_edge_w2, BIASES_T::core_edge_b2);
+        }else if(CONFIG_T::n_layers == 4){
+	  nnet::dense_large_basic_4lyr<data_T, res_T, typename CONFIG_T>(l, L[i], WEIGHTS_T::core_edge_w0, BIASES_T::core_edge_b0, WEIGHTS_T::core_edge_w1, BIASES_T::core_edge_b1, WEIGHTS_T::core_edge_w2, BIASES_T::core_edge_b2, WEIGHTS_T::core_edge_w3, BIASES_T::core_edge_b3);
+        }
+      }
 
       for(int j = 0; j < CONFIG_T::n_hidden; j++){
         #pragma HLS UNROLL
@@ -106,15 +131,15 @@ namespace nnet {
     }
   }
 
-  template<class data_T, class res_T, typename CONFIG_T>
+  template<class data_T, class res_T, typename CONFIG_T, typename WEIGHTS_T, typename BIASES_T>
     void IN_node_module(
 			data_T    Rn[CONFIG_T::n_node][CONFIG_T::n_hidden],
 			data_T    Q[CONFIG_T::n_edge][CONFIG_T::n_hidden],
-			res_T     P[CONFIG_T::n_node][CONFIG_T::n_hidden],
+			  res_T     P[CONFIG_T::n_node][CONFIG_T::n_hidden])/*,
 			typename CONFIG_T::dense_config1::weight_t  core_node_w0[2*CONFIG_T::n_hidden*CONFIG_T::n_hidden],
 			typename CONFIG_T::dense_config1::bias_t    core_node_b0[CONFIG_T::n_hidden],
 			typename CONFIG_T::dense_config2::weight_t  core_node_w1[CONFIG_T::n_hidden*CONFIG_T::n_hidden],
-			typename CONFIG_T::dense_config2::bias_t    core_node_b1[CONFIG_T::n_hidden])
+			typename CONFIG_T::dense_config2::bias_t    core_node_b1[CONFIG_T::n_hidden])*/
   {
     #pragma HLS PIPELINE II=CONFIG_T::reuse_factor //*CONFIG_T::n_node
     IN_node_loop: for(int i = 0; i < CONFIG_T::n_node; i++){
@@ -122,7 +147,7 @@ namespace nnet {
       data_T p[2*CONFIG_T::n_hidden];
       #pragma HLS ARRAY_PARTITION variable=p complete dim=0
       nnet::merge<data_T, CONFIG_T::n_hidden, CONFIG_T::n_hidden>(Q[i], Rn[i], p);
-      
+      /*      
       data_T P0_logits[CONFIG_T::dense_config1::n_out];
       #pragma HLS ARRAY_PARTITION variable=P0_logits complete dim=0
       nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(p, P0_logits, core_node_w0, core_node_b0);
@@ -134,6 +159,31 @@ namespace nnet {
       #pragma HLS ARRAY_PARTITION variable=P_logits complete dim=0
       nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config2>(P0, P_logits, core_node_w1, core_node_b1);
       nnet::relu<data_T, res_T, typename CONFIG_T::relu_config1>(P_logits, P[i]);
+      */
+      if(CONFIG_T::activate_final){
+	data_T P_logits[CONFIG_T::n_hidden];
+	#pragma HLS ARRAY_PARTITION variable=P_logits complete dim=0
+	if(CONFIG_T::n_layers == 1){
+	  nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(p, P_logits, WEIGHTS_T::core_node_w0, BIASES_T::core_node_b0);
+	}else if(CONFIG_T::n_layers == 2){
+	  nnet::dense_large_basic_2lyr<data_T, data_T, typename CONFIG_T>(p, P_logits, WEIGHTS_T::core_node_w0, BIASES_T::core_node_b0, WEIGHTS_T::core_node_w1, BIASES_T::core_node_b1);
+	}else if(CONFIG_T::n_layers == 3){
+	  nnet::dense_large_basic_3lyr<data_T, data_T, typename CONFIG_T>(p, P_logits, WEIGHTS_T::core_node_w0, BIASES_T::core_node_b0, WEIGHTS_T::core_node_w1, BIASES_T::core_node_b1, WEIGHTS_T::core_node_w2, BIASES_T::core_node_b2);
+	}else if(CONFIG_T::n_layers == 4){
+	  nnet::dense_large_basic_4lyr<data_T, data_T, typename CONFIG_T>(p, P_logits, WEIGHTS_T::core_node_w0, BIASES_T::core_node_b0, WEIGHTS_T::core_node_w1, BIASES_T::core_node_b1, WEIGHTS_T::core_node_w2, BIASES_T::core_node_b2, WEIGHTS_T::core_node_w3, BIASES_T::core_node_b3);
+	}
+	nnet::relu<data_T, res_T, typename CONFIG_T::relu_config2>(P_logits, P[i]);
+      }else{
+        if(CONFIG_T::n_layers == 1){
+	  nnet::dense_large_basic<data_T, res_T, typename CONFIG_T::dense_config1>(p, P[i], WEIGHTS_T::core_node_w0, BIASES_T::core_node_b0);
+        }else if(CONFIG_T::n_layers == 2){
+	  nnet::dense_large_basic_2lyr<data_T, res_T, typename CONFIG_T>(p, P[i], WEIGHTS_T::core_node_w0, BIASES_T::core_node_b0, WEIGHTS_T::core_node_w1, BIASES_T::core_node_b1);
+        }else if(CONFIG_T::n_layers == 3){
+	  nnet::dense_large_basic_3lyr<data_T, res_T, typename CONFIG_T>(p, P[i], WEIGHTS_T::core_node_w0, BIASES_T::core_node_b0, WEIGHTS_T::core_node_w1, BIASES_T::core_node_b1, WEIGHTS_T::core_node_w2, BIASES_T::core_node_b2);
+        }else if(CONFIG_T::n_layers == 4){
+	  nnet::dense_large_basic_4lyr<data_T, res_T, typename CONFIG_T>(p, P[i], WEIGHTS_T::core_node_w0, BIASES_T::core_node_b0, WEIGHTS_T::core_node_w1, BIASES_T::core_node_b1, WEIGHTS_T::core_node_w2, BIASES_T::core_node_b2, WEIGHTS_T::core_node_w3, BIASES_T::core_node_b3);
+        }
+      }
     }
   }
 
