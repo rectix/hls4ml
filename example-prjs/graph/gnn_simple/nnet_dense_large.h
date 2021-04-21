@@ -585,12 +585,12 @@ void dense_large_basic_2lyr(
 
     data_T data0_logits[CONFIG_T::dense_config1::n_out];
     #pragma HLS ARRAY_PARTITION variable=data0_logits complete dim=0
-    nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(data, data0_logits, weights0, biases0);
+    dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(data, data0_logits, weights0, biases0);
     data_T data0[CONFIG_T::dense_config1::n_out];
     #pragma HLS ARRAY_PARTITION variable=data0 complete dim=0
-    nnet::relu<data_T, data_T, typename CONFIG_T::relu_config1>(data0_logits, data0);
+    relu<data_T, data_T, typename CONFIG_T::relu_config1>(data0_logits, data0);
 
-    nnet::dense_large_basic<data_T, res_T, typename CONFIG_T::dense_config2>(data0, res, weights1, biases1);
+    dense_large_basic<data_T, res_T, typename CONFIG_T::dense_config2>(data0, res, weights1, biases1);
 }
 
 template<class data_T, class res_T, typename CONFIG_T>
@@ -606,17 +606,17 @@ void dense_large_basic_3lyr(
 
     data_T data0_logits[CONFIG_T::dense_config1::n_out];
     #pragma HLS ARRAY_PARTITION variable=data0_logits complete dim=0
-    nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(data, data0_logits, weights0, biases0);
+    dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(data, data0_logits, weights0, biases0);
     data_T data0[CONFIG_T::dense_config1::n_out];
     #pragma HLS ARRAY_PARTITION variable=data0 complete dim=0
-    nnet::relu<data_T, data_T, typename CONFIG_T::relu_config1>(data0_logits, data0);
+    relu<data_T, data_T, typename CONFIG_T::relu_config1>(data0_logits, data0);
 
     data_T data1_logits[CONFIG_T::dense_config2::n_out];
     #pragma HLS ARRAY_PARTITION variable=data1_logits complete dim=0
-    nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config2>(data0, data1_logits, weights1, biases1);
+    dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config2>(data0, data1_logits, weights1, biases1);
     data_T data1[CONFIG_T::dense_config2::n_out];
     #pragma HLS ARRAY_PARTITION variable=data1 complete dim=0
-    nnet::relu<data_T, data_T, typename CONFIG_T::relu_config2>(data1_logits, data1);
+    relu<data_T, data_T, typename CONFIG_T::relu_config2>(data1_logits, data1);
 
     nnet::dense_large_basic<data_T, res_T, typename CONFIG_T::dense_config3>(data1, res, weights2, biases2);
 }
@@ -636,26 +636,26 @@ void dense_large_basic_4lyr(
 
     data_T data0_logits[CONFIG_T::dense_config1::n_out];
     #pragma HLS ARRAY_PARTITION variable=data0_logits complete dim=0
-    nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(data, data0_logits, weights0, biases0);
+    dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(data, data0_logits, weights0, biases0);
     data_T data0[CONFIG_T::dense_config1::n_out];
     #pragma HLS ARRAY_PARTITION variable=data0 complete dim=0
-    nnet::relu<data_T, data_T, typename CONFIG_T::relu_config1>(data0_logits, data0);
+    relu<data_T, data_T, typename CONFIG_T::relu_config1>(data0_logits, data0);
 
     data_T data1_logits[CONFIG_T::dense_config2::n_out];
     #pragma HLS ARRAY_PARTITION variable=data1_logits complete dim=0
-    nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config2>(data0, data1_logits, weights1, biases1);
+    dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config2>(data0, data1_logits, weights1, biases1);
     data_T data1[CONFIG_T::dense_config2::n_out];
     #pragma HLS ARRAY_PARTITION variable=data1 complete dim=0
-    nnet::relu<data_T, data_T, typename CONFIG_T::relu_config2>(data1_logits, data1);
+    relu<data_T, data_T, typename CONFIG_T::relu_config2>(data1_logits, data1);
 
     data_T data2_logits[CONFIG_T::dense_config3::n_out];
     #pragma HLS ARRAY_PARTITION variable=data2_logits complete dim=0
-    nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config3>(data1, data2_logits, weights2, biases2);
+    dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config3>(data1, data2_logits, weights2, biases2);
     data_T data2[CONFIG_T::dense_config3::n_out];
     #pragma HLS ARRAY_PARTITION variable=data2 complete dim=0
-    nnet::relu<data_T, data_T, typename CONFIG_T::relu_config3>(data2_logits, data2);
+    relu<data_T, data_T, typename CONFIG_T::relu_config3>(data2_logits, data2);
 
-    nnet::dense_large_basic<data_T, res_T, typename CONFIG_T::dense_config4>(data2, res, weights3, biases3);
+    dense_large_basic<data_T, res_T, typename CONFIG_T::dense_config4>(data2, res, weights3, biases3);
 }
 
 template<class data_T, class res_T, typename CONFIG_T>

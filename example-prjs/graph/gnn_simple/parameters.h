@@ -55,62 +55,61 @@ typedef ap_uint<16> index_t;
 #define N_NODES_MAX 10//112
 #define N_EDGES_MAX 20//148
 
-//hls-fpga-machine-learning define weights
-#ifndef __SYNTHESIS__
-  static bool loaded_weights = false;
- if (!loaded_weights) {
-  //hls-fpga-machine-learning insert load weights
-  /*
-  struct encoder_node_w {
-    nnet::load_weights_from_txt<model_default_t, N_FEATURES*latent_dim>(encoder_node_w0, "encoder_node_w0.txt");
-    nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(encoder_node_w1, "encoder_node_w1.txt");
-  };
-  struct encoder_node_b {
-    nnet::load_weights_from_txt<model_default_t, latent_dim>(encoder_node_b0, "encoder_node_b0.txt");
-    nnet::load_weights_from_txt<model_default_t, latent_dim>(encoder_node_b1, "encoder_node_b1.txt");
-  };
-  struct encoder_edge_w {
-    nnet::load_weights_from_txt<model_default_t, E_FEATURES*latent_dim>(encoder_edge_w0, "encoder_edge_w0.txt");
-    nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(encoder_edge_w1, "encoder_edge_w1.txt");
-  };
-  struct encoder_edge_b {
-    nnet::load_weights_from_txt<model_default_t, latent_dim>(encoder_edge_b0, "encoder_edge_b0.txt");
-    nnet::load_weights_from_txt<model_default_t, latent_dim>(encoder_edge_b1, "encoder_edge_b1.txt");
-  };
-  */
-  struct core_edge_w {
-    nnet::load_weights_from_txt<model_default_t, 3*latent_dim*latent_dim>(core_edge_w0, "core_edge_w0.txt");
-    nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(core_edge_w1, "core_edge_w1.txt");
-  };
-  struct core_edge_b {
-    nnet::load_weights_from_txt<model_default_t, latent_dim>(core_edge_b0, "core_edge_b0.txt");
-    nnet::load_weights_from_txt<model_default_t, latent_dim>(core_edge_b1, "core_edge_b1.txt");
-  };
-  struct core_node_w {
-    nnet::load_weights_from_txt<model_default_t, 2*latent_dim*latent_dim>(core_node_w0, "core_node_w0.txt");
-    nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(core_node_w1, "core_node_w1.txt");
-  };
-  struct core_node_b {
-    nnet::load_weights_from_txt<model_default_t, latent_dim>(core_node_b0, "core_node_b0.txt");
-    nnet::load_weights_from_txt<model_default_t, latent_dim>(core_node_b1, "core_node_b1.txt");
-  };
-  /*
-  struct decoder_edge_w {
-    nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(decoder_edge_w0, "decoder_edge_w0.txt");
-    nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(decoder_edge_w1, "decoder_edge_w1.txt");
-    nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(decoder_edge_w2, "decoder_edge_w2.txt");
-    nnet::load_weights_from_txt<model_default_t, latent_dim*1>(decoder_edge_w3, "decoder_edge_w3.txt");
-  };
-  struct decoder_edge_b {
-    nnet::load_weights_from_txt<model_default_t, latent_dim>(decoder_edge_b0, "decoder_edge_b0.txt");
-    nnet::load_weights_from_txt<model_default_t, latent_dim>(decoder_edge_b1, "decoder_edge_b1.txt");
-    nnet::load_weights_from_txt<model_default_t, latent_dim>(decoder_edge_b2, "decoder_edge_b2.txt");
-    nnet::load_weights_from_txt<model_default_t, 1>(decoder_edge_b3, "decoder_edge_b3.txt");
-  };
-  */
-  loaded_weights = true;
- }
-#endif
+//hls-fpga-machine-learning insert load weights
+/*
+struct encoder_node_w {
+  model_default_t encoder_node_w0[N_FEATURES*latent_dim];
+  model_default_t encoder_node_b0[latent_dim];
+  model_default_t encoder_node_w1[latent_dim*latent_dim];
+  model_default_t encoder_node_b1[latent_dim];
+  model_default_t encoder_node_w2[latent_dim*latent_dim];
+  model_default_t encoder_node_b2[latent_dim];
+  model_default_t encoder_node_w3[latent_dim*latent_dim];
+  model_default_t encoder_node_b3[latent_dim];
+};
+struct encoder_edge_w {
+  model_default_t encoder_edge_w0[E_FEATURES*latent_dim];
+  model_default_t encoder_edge_b0[latent_dim];
+  model_default_t encoder_edge_w1[latent_dim*latent_dim];
+  model_default_t encoder_edge_b1[latent_dim];
+  model_default_t encoder_edge_w2[latent_dim*latent_dim];
+  model_default_t encoder_edge_b2[latent_dim];
+  model_default_t encoder_edge_w3[latent_dim*latent_dim];
+  model_default_t encoder_edge_b3[latent_dim];
+};
+*/
+struct core_edge_w {
+  model_default_t core_edge_w0[3*latent_dim*latent_dim];
+  model_default_t core_edge_b0[latent_dim];
+  model_default_t core_edge_w1[latent_dim*latent_dim];
+  model_default_t core_edge_b1[latent_dim];
+  model_default_t core_edge_w2[latent_dim*latent_dim];
+  model_default_t core_edge_b2[latent_dim];
+  model_default_t core_edge_w3[latent_dim*latent_dim];
+  model_default_t core_edge_b3[latent_dim];
+};
+struct core_node_w {
+  model_default_t core_node_w0[2*latent_dim*latent_dim];
+  model_default_t core_node_b0[latent_dim];
+  model_default_t core_node_w1[latent_dim*latent_dim];
+  model_default_t core_node_b1[latent_dim];
+  model_default_t core_node_w2[latent_dim*latent_dim];
+  model_default_t core_node_b2[latent_dim];
+  model_default_t core_node_w3[latent_dim*latent_dim];
+  model_default_t core_node_b3[latent_dim];
+};
+/*
+struct decoder_edge_w {
+  model_default_t decoder_edge_w0[latent_dim*latent_dim];
+  model_default_t decoder_edge_b0[latent_dim];
+  model_default_t decoder_edge_w1[latent_dim*latent_dim];
+  model_default_t decoder_edge_b1[latent_dim];
+  model_default_t decoder_edge_w2[latent_dim*latent_dim];
+  model_default_t decoder_edge_b2[latent_dim];
+  model_default_t decoder_edge_w3[latent_dim*1];
+  model_default_t decoder_edge_b3[1];
+};
+*/
 
 //hls-fpga-machine-learning insert layer-config
 
@@ -209,7 +208,6 @@ struct graph_config3 : nnet::graph_config {
   static const unsigned reuse_factor = REUSE_GRAPH;
   static const unsigned n_layers = 2;
 
-
   struct dense_config1 : nnet::dense_config {
     static const unsigned n_in = 3*n_hidden;
     static const unsigned n_out = n_hidden;
@@ -251,7 +249,6 @@ struct graph_config4 : nnet::graph_config {
   static const bool activate_final = true;
   static const unsigned reuse_factor = REUSE_GRAPH;
   static const unsigned n_layers = 2;
-
 
   struct dense_config1 : nnet::dense_config {
     static const unsigned n_in = 2*n_hidden;

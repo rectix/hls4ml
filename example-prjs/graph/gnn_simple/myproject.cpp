@@ -84,16 +84,16 @@ void myproject(
    nnet::load_weights_from_txt<model_default_t, latent_dim>(encoder_edge_b0, "encoder_edge_b0.txt");
    nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(encoder_edge_w1, "encoder_edge_w1.txt");
    nnet::load_weights_from_txt<model_default_t, latent_dim>(encoder_edge_b1, "encoder_edge_b1.txt");
-   /*
-   nnet::load_weights_from_txt<model_default_t, 3*latent_dim*latent_dim>(core_edge_w0, "core_edge_w0.txt");
-   nnet::load_weights_from_txt<model_default_t, latent_dim>(core_edge_b0, "core_edge_b0.txt");
-   nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(core_edge_w1, "core_edge_w1.txt");
-   nnet::load_weights_from_txt<model_default_t, latent_dim>(core_edge_b1, "core_edge_b1.txt");
-   nnet::load_weights_from_txt<model_default_t, 2*latent_dim*latent_dim>(core_node_w0, "core_node_w0.txt");
-   nnet::load_weights_from_txt<model_default_t, latent_dim>(core_node_b0, "core_node_b0.txt");
-   nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(core_node_w1, "core_node_w1.txt");
-   nnet::load_weights_from_txt<model_default_t, latent_dim>(core_node_b1, "core_node_b1.txt");
-   */
+   
+   nnet::load_weights_from_txt<model_default_t, 3*latent_dim*latent_dim>(core_edge_w::core_edge_w0, "core_edge_w0.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(core_edge_w::core_edge_b0, "core_edge_b0.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(core_edge_w::core_edge_w1, "core_edge_w1.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(core_edge_w::core_edge_b1, "core_edge_b1.txt");
+   nnet::load_weights_from_txt<model_default_t, 2*latent_dim*latent_dim>(core_node_w::core_node_w0, "core_node_w0.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(core_node_w::core_node_b0, "core_node_b0.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(core_node_w::core_node_w1, "core_node_w1.txt");
+   nnet::load_weights_from_txt<model_default_t, latent_dim>(core_node_w::core_node_b1, "core_node_b1.txt");
+   
    nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(decoder_edge_w0, "decoder_edge_w0.txt");
    nnet::load_weights_from_txt<model_default_t, latent_dim>(decoder_edge_b0, "decoder_edge_b0.txt");
    nnet::load_weights_from_txt<model_default_t, latent_dim*latent_dim>(decoder_edge_w1, "decoder_edge_w1.txt");
@@ -144,9 +144,9 @@ void myproject(
   for(int i = 0; i < N_ITERS; i++){
 
     //core edge updates
-    nnet::IN_edge_module<input_t, index_t, input_t, graph_config3, core_edge_w, core_edge_b>(Re, Rn, receivers, senders, L, Q);//, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1);
+    nnet::IN_edge_module<input_t, index_t, input_t, graph_config3, core_edge_w>(Re, Rn, receivers, senders, L, Q);//, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1);
     //core node updates
-    nnet::IN_node_module<input_t, input_t, graph_config4, core_node_w, core_node_b>(Rn, Q, P);//, core_node_w0, core_node_b0, core_node_w1, core_node_b1);
+    nnet::IN_node_module<input_t, input_t, graph_config4, core_node_w>(Rn, Q, P);//, core_node_w0, core_node_b0, core_node_w1, core_node_b1);
 
   }
 

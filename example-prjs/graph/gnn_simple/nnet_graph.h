@@ -51,7 +51,7 @@ namespace nnet {
     static const unsigned n_zeros = 0;
   };
 
-  template<class data_T, class index_T, class res_T, typename CONFIG_T, typename WEIGHTS_T, typename BIASES_T>
+  template<class data_T, class index_T, class res_T, typename CONFIG_T, typename WEIGHTS_T>
     void IN_edge_module(
 			data_T    Re[CONFIG_T::n_edge][CONFIG_T::n_hidden],
 			data_T    Rn[CONFIG_T::n_node][CONFIG_T::n_hidden],
@@ -103,24 +103,24 @@ namespace nnet {
 	data_T L_logits[CONFIG_T::n_hidden];
         #pragma HLS ARRAY_PARTITION variable=L_logits complete dim=0
         if(CONFIG_T::n_layers == 1){
-	  nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(l, L_logits, WEIGHTS_T::core_edge_w0, BIASES_T::core_edge_b0);
+	  nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(l, L_logits, WEIGHTS_T::core_edge_w0, WEIGHTS_T::core_edge_b0);
         }else if(CONFIG_T::n_layers == 2){
-	  nnet::dense_large_basic_2lyr<data_T, data_T, typename CONFIG_T>(l, L_logits, WEIGHTS_T::core_edge_w0, BIASES_T::core_edge_b0, WEIGHTS_T::core_edge_w1, BIASES_T::core_edge_b1);
+	  nnet::dense_large_basic_2lyr<data_T, data_T, CONFIG_T>(l, L_logits, WEIGHTS_T::core_edge_w0, WEIGHTS_T::core_edge_b0, WEIGHTS_T::core_edge_w1, WEIGHTS_T::core_edge_b1);
 	}else if(CONFIG_T::n_layers == 3){
-	  nnet::dense_large_basic_3lyr<data_T, data_T, typename CONFIG_T>(l, L_logits, WEIGHTS_T::core_edge_w0, BIASES_T::core_edge_b0, WEIGHTS_T::core_edge_w1, BIASES_T::core_edge_b1, WEIGHTS_T::core_edge_w2, BIASES_T::core_edge_b2);
+	  nnet::dense_large_basic_3lyr<data_T, data_T, CONFIG_T>(l, L_logits, WEIGHTS_T::core_edge_w0, WEIGHTS_T::core_edge_b0, WEIGHTS_T::core_edge_w1, WEIGHTS_T::core_edge_b1, WEIGHTS_T::core_edge_w2, WEIGHTS_T::core_edge_b2);
 	}else if(CONFIG_T::n_layers == 4){
-	  nnet::dense_large_basic_4lyr<data_T, data_T, typename CONFIG_T>(l, L_logits, WEIGHTS_T::core_edge_w0, BIASES_T::core_edge_b0, WEIGHTS_T::core_edge_w1, BIASES_T::core_edge_b1, WEIGHTS_T::core_edge_w2, BIASES_T::core_edge_b2, WEIGHTS_T::core_edge_w3, BIASES_T::core_edge_b3);
+	  nnet::dense_large_basic_4lyr<data_T, data_T, CONFIG_T>(l, L_logits, WEIGHTS_T::core_edge_w0, WEIGHTS_T::core_edge_b0, WEIGHTS_T::core_edge_w1, WEIGHTS_T::core_edge_b1, WEIGHTS_T::core_edge_w2, WEIGHTS_T::core_edge_b2, WEIGHTS_T::core_edge_w3, WEIGHTS_T::core_edge_b3);
 	}
 	nnet::relu<data_T, res_T, typename CONFIG_T::relu_config2>(L_logits, L[i]);
       }else{
         if(CONFIG_T::n_layers == 1){
-	  nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(l, L[i], WEIGHTS_T::core_edge_w0, BIASES_T::core_edge_b0);
+	  nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(l, L[i], WEIGHTS_T::core_edge_w0, WEIGHTS_T::core_edge_b0);
         }else if(CONFIG_T::n_layers == 2){
-	  nnet::dense_large_basic_2lyr<data_T, data_T, typename CONFIG_T>(l, L[i], WEIGHTS_T::core_edge_w0, BIASES_T::core_edge_b0, WEIGHTS_T::core_edge_w1, BIASES_T::core_edge_b1);
+	  nnet::dense_large_basic_2lyr<data_T, data_T, CONFIG_T>(l, L[i], WEIGHTS_T::core_edge_w0, WEIGHTS_T::core_edge_b0, WEIGHTS_T::core_edge_w1, WEIGHTS_T::core_edge_b1);
         }else if(CONFIG_T::n_layers == 3){
-	  nnet::dense_large_basic_3lyr<data_T, data_T, typename CONFIG_T>(l, L[i], WEIGHTS_T::core_edge_w0, BIASES_T::core_edge_b0, WEIGHTS_T::core_edge_w1, BIASES_T::core_edge_b1, WEIGHTS_T::core_edge_w2, BIASES_T::core_edge_b2);
+	  nnet::dense_large_basic_3lyr<data_T, data_T, CONFIG_T>(l, L[i], WEIGHTS_T::core_edge_w0, WEIGHTS_T::core_edge_b0, WEIGHTS_T::core_edge_w1, WEIGHTS_T::core_edge_b1, WEIGHTS_T::core_edge_w2, WEIGHTS_T::core_edge_b2);
         }else if(CONFIG_T::n_layers == 4){
-	  nnet::dense_large_basic_4lyr<data_T, res_T, typename CONFIG_T>(l, L[i], WEIGHTS_T::core_edge_w0, BIASES_T::core_edge_b0, WEIGHTS_T::core_edge_w1, BIASES_T::core_edge_b1, WEIGHTS_T::core_edge_w2, BIASES_T::core_edge_b2, WEIGHTS_T::core_edge_w3, BIASES_T::core_edge_b3);
+	  nnet::dense_large_basic_4lyr<data_T, res_T, CONFIG_T>(l, L[i], WEIGHTS_T::core_edge_w0, WEIGHTS_T::core_edge_b0, WEIGHTS_T::core_edge_w1, WEIGHTS_T::core_edge_b1, WEIGHTS_T::core_edge_w2, WEIGHTS_T::core_edge_b2, WEIGHTS_T::core_edge_w3, WEIGHTS_T::core_edge_b3);
         }
       }
 
@@ -131,7 +131,7 @@ namespace nnet {
     }
   }
 
-  template<class data_T, class res_T, typename CONFIG_T, typename WEIGHTS_T, typename BIASES_T>
+  template<class data_T, class res_T, typename CONFIG_T, typename WEIGHTS_T>
     void IN_node_module(
 			data_T    Rn[CONFIG_T::n_node][CONFIG_T::n_hidden],
 			data_T    Q[CONFIG_T::n_edge][CONFIG_T::n_hidden],
@@ -164,24 +164,24 @@ namespace nnet {
 	data_T P_logits[CONFIG_T::n_hidden];
 	#pragma HLS ARRAY_PARTITION variable=P_logits complete dim=0
 	if(CONFIG_T::n_layers == 1){
-	  nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(p, P_logits, WEIGHTS_T::core_node_w0, BIASES_T::core_node_b0);
+	  nnet::dense_large_basic<data_T, data_T, typename CONFIG_T::dense_config1>(p, P_logits, WEIGHTS_T::core_node_w0, WEIGHTS_T::core_node_b0);
 	}else if(CONFIG_T::n_layers == 2){
-	  nnet::dense_large_basic_2lyr<data_T, data_T, typename CONFIG_T>(p, P_logits, WEIGHTS_T::core_node_w0, BIASES_T::core_node_b0, WEIGHTS_T::core_node_w1, BIASES_T::core_node_b1);
+	  nnet::dense_large_basic_2lyr<data_T, data_T, CONFIG_T>(p, P_logits, WEIGHTS_T::core_node_w0, WEIGHTS_T::core_node_b0, WEIGHTS_T::core_node_w1, WEIGHTS_T::core_node_b1);
 	}else if(CONFIG_T::n_layers == 3){
-	  nnet::dense_large_basic_3lyr<data_T, data_T, typename CONFIG_T>(p, P_logits, WEIGHTS_T::core_node_w0, BIASES_T::core_node_b0, WEIGHTS_T::core_node_w1, BIASES_T::core_node_b1, WEIGHTS_T::core_node_w2, BIASES_T::core_node_b2);
+	  nnet::dense_large_basic_3lyr<data_T, data_T, CONFIG_T>(p, P_logits, WEIGHTS_T::core_node_w0, WEIGHTS_T::core_node_b0, WEIGHTS_T::core_node_w1, WEIGHTS_T::core_node_b1, WEIGHTS_T::core_node_w2, WEIGHTS_T::core_node_b2);
 	}else if(CONFIG_T::n_layers == 4){
-	  nnet::dense_large_basic_4lyr<data_T, data_T, typename CONFIG_T>(p, P_logits, WEIGHTS_T::core_node_w0, BIASES_T::core_node_b0, WEIGHTS_T::core_node_w1, BIASES_T::core_node_b1, WEIGHTS_T::core_node_w2, BIASES_T::core_node_b2, WEIGHTS_T::core_node_w3, BIASES_T::core_node_b3);
+	  nnet::dense_large_basic_4lyr<data_T, data_T, CONFIG_T>(p, P_logits, WEIGHTS_T::core_node_w0, WEIGHTS_T::core_node_b0, WEIGHTS_T::core_node_w1, WEIGHTS_T::core_node_b1, WEIGHTS_T::core_node_w2, WEIGHTS_T::core_node_b2, WEIGHTS_T::core_node_w3, WEIGHTS_T::core_node_b3);
 	}
 	nnet::relu<data_T, res_T, typename CONFIG_T::relu_config2>(P_logits, P[i]);
       }else{
         if(CONFIG_T::n_layers == 1){
-	  nnet::dense_large_basic<data_T, res_T, typename CONFIG_T::dense_config1>(p, P[i], WEIGHTS_T::core_node_w0, BIASES_T::core_node_b0);
+	  nnet::dense_large_basic<data_T, res_T, typename CONFIG_T::dense_config1>(p, P[i], WEIGHTS_T::core_node_w0, WEIGHTS_T::core_node_b0);
         }else if(CONFIG_T::n_layers == 2){
-	  nnet::dense_large_basic_2lyr<data_T, res_T, typename CONFIG_T>(p, P[i], WEIGHTS_T::core_node_w0, BIASES_T::core_node_b0, WEIGHTS_T::core_node_w1, BIASES_T::core_node_b1);
+	  nnet::dense_large_basic_2lyr<data_T, res_T, CONFIG_T>(p, P[i], WEIGHTS_T::core_node_w0, WEIGHTS_T::core_node_b0, WEIGHTS_T::core_node_w1, WEIGHTS_T::core_node_b1);
         }else if(CONFIG_T::n_layers == 3){
-	  nnet::dense_large_basic_3lyr<data_T, res_T, typename CONFIG_T>(p, P[i], WEIGHTS_T::core_node_w0, BIASES_T::core_node_b0, WEIGHTS_T::core_node_w1, BIASES_T::core_node_b1, WEIGHTS_T::core_node_w2, BIASES_T::core_node_b2);
+	  nnet::dense_large_basic_3lyr<data_T, res_T, CONFIG_T>(p, P[i], WEIGHTS_T::core_node_w0, WEIGHTS_T::core_node_b0, WEIGHTS_T::core_node_w1, WEIGHTS_T::core_node_b1, WEIGHTS_T::core_node_w2, WEIGHTS_T::core_node_b2);
         }else if(CONFIG_T::n_layers == 4){
-	  nnet::dense_large_basic_4lyr<data_T, res_T, typename CONFIG_T>(p, P[i], WEIGHTS_T::core_node_w0, BIASES_T::core_node_b0, WEIGHTS_T::core_node_w1, BIASES_T::core_node_b1, WEIGHTS_T::core_node_w2, BIASES_T::core_node_b2, WEIGHTS_T::core_node_w3, BIASES_T::core_node_b3);
+	  nnet::dense_large_basic_4lyr<data_T, res_T, CONFIG_T>(p, P[i], WEIGHTS_T::core_node_w0, WEIGHTS_T::core_node_b0, WEIGHTS_T::core_node_w1, WEIGHTS_T::core_node_b1, WEIGHTS_T::core_node_w2, WEIGHTS_T::core_node_b2, WEIGHTS_T::core_node_w3, WEIGHTS_T::core_node_b3);
         }
       }
     }
