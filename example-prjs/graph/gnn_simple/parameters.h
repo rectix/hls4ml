@@ -58,56 +58,56 @@ typedef ap_uint<16> index_t;
 //hls-fpga-machine-learning insert load weights
 /*
 struct encoder_node_w {
-  model_default_t encoder_node_w0[N_FEATURES*latent_dim];
-  model_default_t encoder_node_b0[latent_dim];
-  model_default_t encoder_node_w1[latent_dim*latent_dim];
-  model_default_t encoder_node_b1[latent_dim];
-  model_default_t encoder_node_w2[latent_dim*latent_dim];
-  model_default_t encoder_node_b2[latent_dim];
-  model_default_t encoder_node_w3[latent_dim*latent_dim];
-  model_default_t encoder_node_b3[latent_dim];
+  static model_default_t encoder_node_w0[N_FEATURES*latent_dim];
+  static model_default_t encoder_node_b0[latent_dim];
+  static model_default_t encoder_node_w1[latent_dim*latent_dim];
+  static model_default_t encoder_node_b1[latent_dim];
+  static model_default_t encoder_node_w2[latent_dim*latent_dim];
+  static model_default_t encoder_node_b2[latent_dim];
+  static model_default_t encoder_node_w3[latent_dim*latent_dim];
+  static model_default_t encoder_node_b3[latent_dim];
 };
 struct encoder_edge_w {
-  model_default_t encoder_edge_w0[E_FEATURES*latent_dim];
-  model_default_t encoder_edge_b0[latent_dim];
-  model_default_t encoder_edge_w1[latent_dim*latent_dim];
-  model_default_t encoder_edge_b1[latent_dim];
-  model_default_t encoder_edge_w2[latent_dim*latent_dim];
-  model_default_t encoder_edge_b2[latent_dim];
-  model_default_t encoder_edge_w3[latent_dim*latent_dim];
-  model_default_t encoder_edge_b3[latent_dim];
+  static model_default_t encoder_edge_w0[E_FEATURES*latent_dim];
+  static model_default_t encoder_edge_b0[latent_dim];
+  static model_default_t encoder_edge_w1[latent_dim*latent_dim];
+  static model_default_t encoder_edge_b1[latent_dim];
+  static model_default_t encoder_edge_w2[latent_dim*latent_dim];
+  static model_default_t encoder_edge_b2[latent_dim];
+  static model_default_t encoder_edge_w3[latent_dim*latent_dim];
+  static model_default_t encoder_edge_b3[latent_dim];
 };
 */
 struct core_edge_w {
-  model_default_t core_edge_w0[3*latent_dim*latent_dim];
-  model_default_t core_edge_b0[latent_dim];
-  model_default_t core_edge_w1[latent_dim*latent_dim];
-  model_default_t core_edge_b1[latent_dim];
-  model_default_t core_edge_w2[latent_dim*latent_dim];
-  model_default_t core_edge_b2[latent_dim];
-  model_default_t core_edge_w3[latent_dim*latent_dim];
-  model_default_t core_edge_b3[latent_dim];
+  static model_default_t core_edge_w0[3*latent_dim*latent_dim];
+  static model_default_t core_edge_b0[latent_dim];
+  static model_default_t core_edge_w1[latent_dim*latent_dim];
+  static model_default_t core_edge_b1[latent_dim];
+  static model_default_t core_edge_w2[latent_dim*latent_dim];
+  static model_default_t core_edge_b2[latent_dim];
+  static model_default_t core_edge_w3[latent_dim*latent_dim];
+  static model_default_t core_edge_b3[latent_dim];
 };
 struct core_node_w {
-  model_default_t core_node_w0[2*latent_dim*latent_dim];
-  model_default_t core_node_b0[latent_dim];
-  model_default_t core_node_w1[latent_dim*latent_dim];
-  model_default_t core_node_b1[latent_dim];
-  model_default_t core_node_w2[latent_dim*latent_dim];
-  model_default_t core_node_b2[latent_dim];
-  model_default_t core_node_w3[latent_dim*latent_dim];
-  model_default_t core_node_b3[latent_dim];
+  static model_default_t core_node_w0[2*latent_dim*latent_dim];
+  static model_default_t core_node_b0[latent_dim];
+  static model_default_t core_node_w1[latent_dim*latent_dim];
+  static model_default_t core_node_b1[latent_dim];
+  static model_default_t core_node_w2[latent_dim*latent_dim];
+  static model_default_t core_node_b2[latent_dim];
+  static model_default_t core_node_w3[latent_dim*latent_dim];
+  static model_default_t core_node_b3[latent_dim];
 };
 /*
 struct decoder_edge_w {
-  model_default_t decoder_edge_w0[latent_dim*latent_dim];
-  model_default_t decoder_edge_b0[latent_dim];
-  model_default_t decoder_edge_w1[latent_dim*latent_dim];
-  model_default_t decoder_edge_b1[latent_dim];
-  model_default_t decoder_edge_w2[latent_dim*latent_dim];
-  model_default_t decoder_edge_b2[latent_dim];
-  model_default_t decoder_edge_w3[latent_dim*1];
-  model_default_t decoder_edge_b3[1];
+  static model_default_t decoder_edge_w0[latent_dim*latent_dim];
+  static model_default_t decoder_edge_b0[latent_dim];
+  static model_default_t decoder_edge_w1[latent_dim*latent_dim];
+  static model_default_t decoder_edge_b1[latent_dim];
+  static model_default_t decoder_edge_w2[latent_dim*latent_dim];
+  static model_default_t decoder_edge_b2[latent_dim];
+  static model_default_t decoder_edge_w3[latent_dim*1];
+  static model_default_t decoder_edge_b3[1];
 };
 */
 
