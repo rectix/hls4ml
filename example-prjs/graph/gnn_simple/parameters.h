@@ -154,6 +154,9 @@ struct graph_config1 : nnet::graph_config {
     static const unsigned table_size = 1024;
     static const unsigned io_type = nnet::io_parallel;
   };
+  struct dense_config3 : nnet::dense_config {};
+  struct relu_config3 : nnet::activ_config {};
+  struct dense_config4 : nnet::dense_config {};
 };
 
 struct graph_config2 : nnet::graph_config {
@@ -197,6 +200,9 @@ struct graph_config2 : nnet::graph_config {
     static const unsigned table_size = 1024;
     static const unsigned io_type = nnet::io_parallel;
   };
+  struct dense_config3 : nnet::dense_config {};
+  struct relu_config3 : nnet::activ_config {};
+  struct dense_config4 : nnet::dense_config {};
 };
 
 struct graph_config3 : nnet::graph_config {
@@ -240,6 +246,9 @@ struct graph_config3 : nnet::graph_config {
     static const unsigned table_size = 1024;
     static const unsigned io_type = nnet::io_parallel;
   };
+  struct dense_config3 : nnet::dense_config {};
+  struct relu_config3 : nnet::activ_config {};
+  struct dense_config4 : nnet::dense_config {};
 };
 
 struct graph_config4 : nnet::graph_config {
@@ -282,6 +291,9 @@ struct graph_config4 : nnet::graph_config {
     static const unsigned table_size = 1024;
     static const unsigned io_type = nnet::io_parallel;
   };
+  struct dense_config3 : nnet::dense_config {};
+  struct relu_config3 : nnet::activ_config {};
+  struct dense_config4 : nnet::dense_config {};
 };
 
 struct graph_config5 : nnet::graph_config {
@@ -326,6 +338,9 @@ struct graph_config5 : nnet::graph_config {
     static const unsigned table_size = 1024;
     static const unsigned io_type = nnet::io_parallel;
   };
+  struct dense_config3 : nnet::dense_config {};
+  struct relu_config3 : nnet::activ_config {};
+  struct dense_config4 : nnet::dense_config {};
 };
 
 struct graph_config6 : nnet::graph_config {
@@ -369,6 +384,9 @@ struct graph_config6 : nnet::graph_config {
     static const unsigned table_size = 1024;
     static const unsigned io_type = nnet::io_parallel;
   };
+  struct dense_config3 : nnet::dense_config {};
+  struct relu_config3 : nnet::activ_config {};
+  struct dense_config4 : nnet::dense_config {};
 };
 
 struct sigmoid_config1 : nnet::activ_config {
