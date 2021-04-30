@@ -117,6 +117,8 @@ struct graph_config1 : nnet::graph_config {
   static const bool io_stream = true;
   static const bool activate_final = true;
   static const unsigned reuse_factor = REUSE_GRAPH;
+  typedef bias_default_t bias_t;
+  typedef weight_default_t weight_t;
 
   struct dense_config1 : nnet::dense_config {
     static const unsigned n_batch = N_NODES_MAX;
@@ -154,15 +156,25 @@ struct graph_config1 : nnet::graph_config {
     static const unsigned table_size = 1024;
     static const unsigned io_type = nnet::io_parallel;
   };
-  struct dense_config3 : nnet::dense_config {};
+  struct dense_config3 : nnet::dense_config {
+    typedef accum_default_t accum_t;
+    typedef bias_default_t bias_t;
+    typedef weight_default_t weight_t;
+  };
   struct relu_config3 : nnet::activ_config {};
-  struct dense_config4 : nnet::dense_config {};
+  struct dense_config4 : nnet::dense_config {
+    typedef accum_default_t accum_t;
+    typedef bias_default_t bias_t;
+    typedef weight_default_t weight_t;
+  };
 };
 
 struct graph_config2 : nnet::graph_config {
   static const bool io_stream = true;
   static const bool activate_final = true;
   static const unsigned reuse_factor = REUSE_GRAPH;
+  typedef bias_default_t bias_t;
+  typedef weight_default_t weight_t;
 
   struct dense_config1 : nnet::dense_config {
     static const unsigned n_batch = N_EDGES_MAX;
@@ -200,9 +212,17 @@ struct graph_config2 : nnet::graph_config {
     static const unsigned table_size = 1024;
     static const unsigned io_type = nnet::io_parallel;
   };
-  struct dense_config3 : nnet::dense_config {};
+  struct dense_config3 : nnet::dense_config {
+    typedef accum_default_t accum_t;
+    typedef bias_default_t bias_t;
+    typedef weight_default_t weight_t;
+  };
   struct relu_config3 : nnet::activ_config {};
-  struct dense_config4 : nnet::dense_config {};
+  struct dense_config4 : nnet::dense_config {
+    typedef accum_default_t accum_t;
+    typedef bias_default_t bias_t;
+    typedef weight_default_t weight_t;
+  };
 };
 
 struct graph_config3 : nnet::graph_config {
@@ -213,6 +233,8 @@ struct graph_config3 : nnet::graph_config {
   static const bool activate_final = true;
   static const unsigned reuse_factor = REUSE_GRAPH;
   static const unsigned n_layers = 2;
+  typedef bias_default_t bias_t;
+  typedef weight_default_t weight_t;
 
   struct dense_config1 : nnet::dense_config {
     static const unsigned n_in = 3*n_hidden;
@@ -246,9 +268,17 @@ struct graph_config3 : nnet::graph_config {
     static const unsigned table_size = 1024;
     static const unsigned io_type = nnet::io_parallel;
   };
-  struct dense_config3 : nnet::dense_config {};
+  struct dense_config3 : nnet::dense_config {
+    typedef accum_default_t accum_t;
+    typedef bias_default_t bias_t;
+    typedef weight_default_t weight_t;
+  };
   struct relu_config3 : nnet::activ_config {};
-  struct dense_config4 : nnet::dense_config {};
+  struct dense_config4 : nnet::dense_config {
+    typedef accum_default_t accum_t;
+    typedef bias_default_t bias_t;
+    typedef weight_default_t weight_t;
+  };
 };
 
 struct graph_config4 : nnet::graph_config {
@@ -258,6 +288,8 @@ struct graph_config4 : nnet::graph_config {
   static const bool activate_final = true;
   static const unsigned reuse_factor = REUSE_GRAPH;
   static const unsigned n_layers = 2;
+  typedef bias_default_t bias_t;
+  typedef weight_default_t weight_t;
 
   struct dense_config1 : nnet::dense_config {
     static const unsigned n_in = 2*n_hidden;
@@ -291,16 +323,25 @@ struct graph_config4 : nnet::graph_config {
     static const unsigned table_size = 1024;
     static const unsigned io_type = nnet::io_parallel;
   };
-  struct dense_config3 : nnet::dense_config {};
+  struct dense_config3 : nnet::dense_config {
+    typedef accum_default_t accum_t;
+    typedef bias_default_t bias_t;
+    typedef weight_default_t weight_t;
+  };
   struct relu_config3 : nnet::activ_config {};
-  struct dense_config4 : nnet::dense_config {};
+  struct dense_config4 : nnet::dense_config {
+    typedef accum_default_t accum_t;
+    typedef bias_default_t bias_t;
+    typedef weight_default_t weight_t;
+  };
 };
 
 struct graph_config5 : nnet::graph_config {
   static const bool io_stream = false;
   static const bool activate_final = true;
   static const unsigned reuse_factor = REUSE_GRAPH;
-
+  typedef bias_default_t bias_t;
+  typedef weight_default_t weight_t;
 
   struct dense_config1 : nnet::dense_config {
     static const unsigned n_batch = N_EDGES_MAX;
@@ -338,15 +379,25 @@ struct graph_config5 : nnet::graph_config {
     static const unsigned table_size = 1024;
     static const unsigned io_type = nnet::io_parallel;
   };
-  struct dense_config3 : nnet::dense_config {};
+  struct dense_config3 : nnet::dense_config {
+    typedef accum_default_t accum_t;
+    typedef bias_default_t bias_t;
+    typedef weight_default_t weight_t;
+  };
   struct relu_config3 : nnet::activ_config {};
-  struct dense_config4 : nnet::dense_config {};
+  struct dense_config4 : nnet::dense_config {
+    typedef accum_default_t accum_t;
+    typedef bias_default_t bias_t;
+    typedef weight_default_t weight_t;
+  };
 };
 
 struct graph_config6 : nnet::graph_config {
   static const bool io_stream = false;
   static const bool activate_final = false;
   static const unsigned reuse_factor = REUSE_GRAPH;
+  typedef bias_default_t bias_t;
+  typedef weight_default_t weight_t;
 
   struct dense_config1 : nnet::dense_config {
     static const unsigned n_batch = N_EDGES_MAX;
@@ -384,9 +435,17 @@ struct graph_config6 : nnet::graph_config {
     static const unsigned table_size = 1024;
     static const unsigned io_type = nnet::io_parallel;
   };
-  struct dense_config3 : nnet::dense_config {};
+  struct dense_config3 : nnet::dense_config {
+    typedef accum_default_t accum_t;
+    typedef bias_default_t bias_t;
+    typedef weight_default_t weight_t;
+  };
   struct relu_config3 : nnet::activ_config {};
-  struct dense_config4 : nnet::dense_config {};
+  struct dense_config4 : nnet::dense_config {
+    typedef accum_default_t accum_t;
+    typedef bias_default_t bias_t;
+    typedef weight_default_t weight_t;
+  };
 };
 
 struct sigmoid_config1 : nnet::activ_config {
