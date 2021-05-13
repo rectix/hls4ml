@@ -189,12 +189,16 @@ struct graph_config3 : nnet::graph_config {
     static const unsigned io_type = nnet::io_parallel;
   };
   struct dense_config3 : nnet::dense_config {
+    static const unsigned n_in = 1;
+    static const unsigned n_out = 1;
     typedef accum_default_t accum_t;
     typedef bias_default_t bias_t;
     typedef weight_default_t weight_t;
   };
   struct relu_config3 : nnet::activ_config {};
   struct dense_config4 : nnet::dense_config {
+    static const unsigned n_in = 1;
+    static const unsigned n_out = 1;
     typedef accum_default_t accum_t;
     typedef bias_default_t bias_t;
     typedef weight_default_t weight_t;
@@ -247,12 +251,16 @@ struct graph_config4 : nnet::graph_config {
     static const unsigned io_type = nnet::io_parallel;
   };
   struct dense_config3 : nnet::dense_config {
+    static const n_in = 1;
+    static const n_out = 1;
     typedef accum_default_t accum_t;
     typedef bias_default_t bias_t;
     typedef weight_default_t weight_t;
   };
   struct relu_config3 : nnet::activ_config {};
   struct dense_config4 : nnet::dense_config {
+    static const unsigned n_in = 1;
+    static const unsigned n_out = 1;
     typedef accum_default_t accum_t;
     typedef bias_default_t bias_t;
     typedef weight_default_t weight_t;
