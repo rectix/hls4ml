@@ -200,14 +200,17 @@ namespace nnet {
         #pragma HLS ARRAY_PARTITION variable=L_logits complete dim=0
         if(CONFIG_T::n_layers == 1){
 	  nnet::dense_mult_1lyr<data_T, data_T, CONFIG_T>(l, L_logits, core_edge_w0, core_edge_b0);
+	  nnet::relu<data_T, res_T, typename CONFIG_T::relu_config1>(L_logits, L[i]);
         }else if(CONFIG_T::n_layers == 2){
 	  nnet::dense_mult_2lyr<data_T, data_T, CONFIG_T>(l, L_logits, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1);
+	  nnet::relu<data_T, res_T, typename CONFIG_T::relu_config2>(L_logits, L[i]);
 	}else if(CONFIG_T::n_layers == 3){
 	  nnet::dense_mult_3lyr<data_T, data_T, CONFIG_T>(l, L_logits, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1, core_edge_w2, core_edge_b2);
+	  nnet::relu<data_T, res_T, typename CONFIG_T::relu_config3>(L_logits, L[i]);
 	}else if(CONFIG_T::n_layers == 4){
 	  nnet::dense_mult_4lyr<data_T, data_T, CONFIG_T>(l, L_logits, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1, core_edge_w2, core_edge_b2, core_edge_w3, core_edge_b3);
+	  nnet::relu<data_T, res_T, typename CONFIG_T::relu_config4>(L_logits, L[i]);
 	}
-	nnet::relu<data_T, res_T, typename CONFIG_T::relu_config2>(L_logits, L[i]);
       }else{
         if(CONFIG_T::n_layers == 1){
 	  nnet::dense_mult_1lyr<data_T, data_T, CONFIG_T>(l, L[i], core_edge_w0, core_edge_b0);
@@ -265,14 +268,17 @@ namespace nnet {
 	#pragma HLS ARRAY_PARTITION variable=P_logits complete dim=0
 	if(CONFIG_T::n_layers == 1){
 	  nnet::dense_mult_1lyr<data_T, data_T, CONFIG_T>(p, P_logits, core_node_w0, core_node_b0);
+	  nnet::relu<data_T, res_T, typename CONFIG_T::relu_config1>(P_logits, P[i]);
 	}else if(CONFIG_T::n_layers == 2){
 	  nnet::dense_mult_2lyr<data_T, data_T, CONFIG_T>(p, P_logits, core_node_w0, core_node_b0, core_node_w1, core_node_b1);
+	  nnet::relu<data_T, res_T, typename CONFIG_T::relu_config2>(P_logits, P[i]);
 	}else if(CONFIG_T::n_layers == 3){
 	  nnet::dense_mult_3lyr<data_T, data_T, CONFIG_T>(p, P_logits, core_node_w0, core_node_b0, core_node_w1, core_node_b1, core_node_w2, core_node_b2);
+	  nnet::relu<data_T, res_T, typename CONFIG_T::relu_config3>(P_logits, P[i]);
 	}else if(CONFIG_T::n_layers == 4){
 	  nnet::dense_mult_4lyr<data_T, data_T, CONFIG_T>(p, P_logits, core_node_w0, core_node_b0, core_node_w1, core_node_b1, core_node_w2, core_node_b2, core_node_w3, core_node_b3);
+	  nnet::relu<data_T, res_T, typename CONFIG_T::relu_config4>(P_logits, P[i]);
 	}
-	nnet::relu<data_T, res_T, typename CONFIG_T::relu_config2>(P_logits, P[i]);
       }else{
         if(CONFIG_T::n_layers == 1){
 	  nnet::dense_mult_1lyr<data_T, res_T, CONFIG_T>(p, P[i], core_node_w0, core_node_b0);

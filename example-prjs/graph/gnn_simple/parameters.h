@@ -199,6 +199,7 @@ struct graph_config3 : nnet::graph_config {
     typedef bias_default_t bias_t;
     typedef weight_default_t weight_t;
   };
+  struct relu_config4 : nnet::activ_config {};
 };
 
 struct graph_config4 : nnet::graph_config {
@@ -256,6 +257,7 @@ struct graph_config4 : nnet::graph_config {
     typedef bias_default_t bias_t;
     typedef weight_default_t weight_t;
   };
+  struct relu_config4 : nnet::activ_config {};
 };
 
 struct graph_config5 : nnet::graph_config {
