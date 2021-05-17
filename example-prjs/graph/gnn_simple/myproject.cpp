@@ -70,8 +70,7 @@ void myproject(
   //hls-fpga-machine-learning insert IO
 #pragma HLS ARRAY_RESHAPE variable=N complete dim=0
 #pragma HLS ARRAY_RESHAPE variable=E complete dim=0
-#pragma HLS ARRAY_RESHAPE variable=receivers complete dim=0
-#pragma HLS ARRAY_RESHAPE variable=senders complete dim=0
+#pragma HLS ARRAY_RESHAPE variable=edge_index complete dim=0
 #pragma HLS ARRAY_RESHAPE variable=e complete dim=0
 #pragma HLS INTERFACE ap_vld port=N,E,edge_index,e
 #pragma HLS DATAFLOW
@@ -157,7 +156,7 @@ void myproject(
   for(int i = 0; i < N_ITERS; i++){
 
     //core edge updates
-    nnet::IN_edge_module<input_t, index_t, input_t, graph_config3>(Re, Rn, receivers, senders, L, Q, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1, core_edge_w2, core_edge_b2, core_edge_w3, core_edge_b3);
+    nnet::IN_edge_module<input_t, index_t, input_t, graph_config3>(Re, Rn, edge_index, L, Q, core_edge_w0, core_edge_b0, core_edge_w1, core_edge_b1, core_edge_w2, core_edge_b2, core_edge_w3, core_edge_b3);
     //core node updates
     nnet::IN_node_module<input_t, input_t, graph_config4>(Rn, Q, P, core_node_w0, core_node_b0, core_node_w1, core_node_b1, core_node_w2, core_node_b2, core_node_w3, core_node_b3);
 
