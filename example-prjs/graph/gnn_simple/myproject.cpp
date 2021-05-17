@@ -95,10 +95,18 @@ void myproject(
    nnet::load_weights_from_txt<model_default_t, LATENT>(core_edge_b0, "core_edge_b0.txt");
    nnet::load_weights_from_txt<model_default_t, LATENT*LATENT>(core_edge_w1, "core_edge_w1.txt");
    nnet::load_weights_from_txt<model_default_t, LATENT>(core_edge_b1, "core_edge_b1.txt");
+   nnet::load_weights_from_txt<model_default_t, 1>(core_edge_w2, "core_edge_w2.txt");
+   nnet::load_weights_from_txt<model_default_t, 1>(core_edge_b2, "core_edge_b2.txt");
+   nnet::load_weights_from_txt<model_default_t, 1>(core_edge_w3, "core_edge_w3.txt");
+   nnet::load_weights_from_txt<model_default_t, 1>(core_edge_b3, "core_edge_b3.txt");
    nnet::load_weights_from_txt<model_default_t, 2*LATENT*LATENT>(core_node_w0, "core_node_w0.txt");
    nnet::load_weights_from_txt<model_default_t, LATENT>(core_node_b0, "core_node_b0.txt");
    nnet::load_weights_from_txt<model_default_t, LATENT*LATENT>(core_node_w1, "core_node_w1.txt");
    nnet::load_weights_from_txt<model_default_t, LATENT>(core_node_b1, "core_node_b1.txt");
+   nnet::load_weights_from_txt<model_default_t, 1>(core_node_w2, "core_node_w2.txt");
+   nnet::load_weights_from_txt<model_default_t, 1>(core_node_b2, "core_node_b2.txt");
+   nnet::load_weights_from_txt<model_default_t, 1>(core_node_w3, "core_node_w3.txt");
+   nnet::load_weights_from_txt<model_default_t, 1>(core_node_b3, "core_node_b3.txt");
    nnet::load_weights_from_txt<model_default_t, LATENT*LATENT>(decoder_edge_w0, "decoder_edge_w0.txt");
    nnet::load_weights_from_txt<model_default_t, LATENT>(decoder_edge_b0, "decoder_edge_b0.txt");
    nnet::load_weights_from_txt<model_default_t, LATENT*LATENT>(decoder_edge_w1, "decoder_edge_w1.txt");
