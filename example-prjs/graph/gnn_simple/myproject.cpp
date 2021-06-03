@@ -2,12 +2,11 @@
 #include "parameters.h"
 #include "myproject.h"
 
-#include "nnet_dense.h"
-#include "nnet_activation.h"
-#include "nnet_dense_large.h"
-#include "nnet_common.h"
-#include "nnet_helpers.h"
-#include "nnet_graph.h"
+#include "../../../hls4ml/templates/vivado/nnet_utils/nnet_activation.h"
+#include "../../../hls4ml/templates/vivado/nnet_utils/nnet_dense_large.h"
+#include "../../../hls4ml/templates/vivado/nnet_utils/nnet_common.h"
+#include "../../../hls4ml/templates/vivado/nnet_utils/nnet_helpers.h"
+#include "../../../hls4ml/templates/vivado/nnet_utils/nnet_graph.h"
 
 //insert weights from training
 #include "weights/encoder_node_w0.h"

@@ -116,6 +116,26 @@ void  relu1(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
     relu_max<data_T, res_T, 1, CONFIG_T>(data, res);
 }
 
+//GNN Addition
+template<class data_T, class res_T, typename CONFIG_T>
+void  relu_batch(data_T data[CONFIG_T::n_batch][CONFIG_T::n_in], res_T res[CONFIG_T::n_batch][CONFIG_T::n_in])
+{
+  data_T data_temp[CONFIG_T::n_in];
+  res_T res_temp[CONFIG_T::n_in];
+  #pragma HLS PIPELINE//New
+  for (int bb=0; bb<CONFIG_T::n_batch; bb++) {
+	//#pragma HLS PIPELINE//New, now commenting
+    for (int ii=0; ii<CONFIG_T::n_in; ii++) {
+      data_temp[ii] = data[bb][ii];
+    }
+    relu<data_T, res_T, CONFIG_T>(data_temp, res_temp);
+    for (int ii=0; ii<CONFIG_T::n_in; ii++) {
+      res[bb][ii] = res_temp[ii];
+    }
+  }
+}
+
+
 // *************************************************
 //       Sigmoid Activation
 // *************************************************
@@ -172,6 +192,78 @@ void  sigmoid(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
         res[ii] = (res_T) sigmoid_table[index];
     }
 }
+//Experimented below, does not
+//template<class data_T, class res_T, typename CONFIG_T>
+//void  sigmoid(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
+//{
+//    // Initialize the lookup table
+//#ifdef __HLS_SYN__
+//    bool initialized = false;
+//    typename CONFIG_T::table_t sigmoid_table[CONFIG_T::table_size];
+//#else
+//    static bool initialized = false;
+//    static typename CONFIG_T::table_t sigmoid_table[CONFIG_T::table_size];
+//#endif
+//    if (!initialized) {
+//        init_sigmoid_table<CONFIG_T, CONFIG_T::table_size>(sigmoid_table);
+//        initialized = true;
+//    }
+//
+//    if (CONFIG_T::io_type == io_parallel){
+//        #pragma HLS PIPELINE
+//    }
+//
+//    // Index into the lookup table based on data
+//    int data_round;
+//    int index;
+////    for (int ii=0; ii<CONFIG_T::n_in; ii++) {
+////        if (CONFIG_T::io_type == io_serial){
+////            #pragma HLS PIPELINE
+////        }
+//        data_round = data[0]*CONFIG_T::table_size/16;
+//        index = data_round + 8*CONFIG_T::table_size/16;
+//        if (index < 0)   index = 0;
+//        if (index > CONFIG_T::table_size-1) index = CONFIG_T::table_size-1;
+//        res[0] = (res_T) sigmoid_table[index];
+//    //}
+//}
+
+//GNN Addition
+template<class data_T, class res_T, typename CONFIG_T>
+void  sigmoid_batch(data_T data[CONFIG_T::n_batch][CONFIG_T::n_in], res_T res[CONFIG_T::n_batch][CONFIG_T::n_in])
+{
+  data_T data_temp[CONFIG_T::n_in];
+  res_T res_temp[CONFIG_T::n_in];
+  #pragma HLS PIPELINE//New
+  for (int bb=0; bb<CONFIG_T::n_batch; bb++) {
+	//#pragma HLS PIPELINE//New, now commenting
+    for (int ii=0; ii<CONFIG_T::n_in; ii++) {
+      data_temp[ii] = data[bb][ii];
+    }
+    sigmoid<data_T, res_T, CONFIG_T>(data_temp, res_temp);
+    for (int ii=0; ii<CONFIG_T::n_in; ii++) {
+      res[bb][ii] = res_temp[ii];
+    }
+  }
+}
+////////Experimented below does not work :(
+//template<class data_T, class res_T, typename CONFIG_T>
+//void  sigmoid_batch(data_T data[CONFIG_T::n_batch][CONFIG_T::n_in], res_T res[CONFIG_T::n_batch][CONFIG_T::n_in])
+//{
+//  data_T data_temp[CONFIG_T::n_in];
+//  res_T res_temp[CONFIG_T::n_in];
+//
+//  for (int bb=0; bb<CONFIG_T::n_batch; bb++) {
+//	#pragma HLS PIPELINE
+//    //for (int ii=0; ii<CONFIG_T::n_in; ii++) {
+//      data_temp[0] = data[bb][0];
+//    //}
+//    sigmoid<data_T, res_T, CONFIG_T>(data_temp, res_temp);
+//    //for (int ii=0; ii<CONFIG_T::n_in; ii++) {
+//      res[bb][0] = res_temp[0];
+//    //}
+//  }
+//}
 
 // *************************************************
 //       Softmax Activation
@@ -323,7 +415,24 @@ void  tanh(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
         res[ii] = (res_T) tanh_table[index];
     }
 }
-
+//GNN Addition
+template<class data_T, class res_T, typename CONFIG_T> //18X4 //9X4 //18X4
+void  tanh_batch(data_T data[CONFIG_T::n_batch][CONFIG_T::n_in], res_T res[CONFIG_T::n_batch][CONFIG_T::n_in])
+{
+  data_T data_temp[CONFIG_T::n_in];
+  res_T res_temp[CONFIG_T::n_in];
+  #pragma HLS PIPELINE//New
+  for (int bb=0; bb<CONFIG_T::n_batch; bb++) {
+	//#pragma HLS PIPELINE  // New Addition to reduce latency, now commenting
+    for (int ii=0; ii<CONFIG_T::n_in; ii++) {
+      data_temp[ii] = data[bb][ii];
+    }
+    tanh<data_T, res_T, CONFIG_T>(data_temp, res_temp);
+    for (int ii=0; ii<CONFIG_T::n_in; ii++) {
+      res[bb][ii] = res_temp[ii];
+    }
+  }
+}
 // *************************************************
 //       Hard sigmoid Activation
 // *************************************************

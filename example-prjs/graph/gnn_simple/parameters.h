@@ -4,11 +4,9 @@
 #include <complex>
 #include "ap_int.h"
 #include "ap_fixed.h"
-#include "nnet_dense.h"
-#include "nnet_conv.h"
-#include "nnet_activation.h"
-#include "nnet_graph.h"
-#include "nnet_common.h"
+#include "../../../hls4ml/templates/vivado/nnet_utils/nnet_activation.h"
+#include "../../../hls4ml/templates/vivado/nnet_utils/nnet_graph.h"
+#include "../../../hls4ml/templates/vivado/nnet_utils/nnet_common.h"
 
 //hls-fpga-machine-learning insert numbers
 typedef ap_fixed<16,6> accum_default_t;
@@ -25,8 +23,8 @@ typedef ap_uint<16> index_t;
 #define N_FEATURES 3
 #define E_FEATURES 4
 //graph_nets simple example:
-#define N_NODES_MAX 10//112
-#define N_EDGES_MAX 20//148
+#define N_NODES_MAX 112
+#define N_EDGES_MAX 148
 
 //hls-fpga-machine-learning insert layer-config
 
@@ -251,8 +249,8 @@ struct graph_config4 : nnet::graph_config {
     static const unsigned io_type = nnet::io_parallel;
   };
   struct dense_config3 : nnet::dense_config {
-    static const n_in = 1;
-    static const n_out = 1;
+    static const unsigned n_in = 1;
+    static const unsigned n_out = 1;
     typedef accum_default_t accum_t;
     typedef bias_default_t bias_t;
     typedef weight_default_t weight_t;

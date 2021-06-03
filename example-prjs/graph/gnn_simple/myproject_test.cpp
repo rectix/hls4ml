@@ -7,7 +7,7 @@
 
 #include "parameters.h"
 #include "myproject.h"
-#include "nnet_helpers.h"
+#include "../../../hls4ml/templates/vivado/nnet_utils/nnet_helpers.h"
 
 
 int main(int argc, char **argv)
