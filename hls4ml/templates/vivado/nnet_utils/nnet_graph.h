@@ -196,7 +196,7 @@ namespace nnet {
       nnet::relu<data_T, res_T, typename CONFIG_T::relu_config2>(L_logits, L[i]);
       */
       if(CONFIG_T::activate_final){
-	data_T L_logits[CONFIG_T::e_out];
+	data_T L_logits[CONFIG_T::n_out];
         #pragma HLS ARRAY_PARTITION variable=L_logits complete dim=0
         if(CONFIG_T::n_layers == 1){
 	  nnet::dense_mult_1lyr<data_T, data_T, CONFIG_T>(l, L_logits, core_edge_w0, core_edge_b0);
@@ -233,7 +233,7 @@ namespace nnet {
   template<class data_T, class res_T, typename CONFIG_T>
     void IN_node_module(
 			data_T    Rn[CONFIG_T::n_node][CONFIG_T::n_features],
-			data_T    Q[CONFIG_T::n_edge][CONFIG_T::n_hidden],
+			data_T    Q[CONFIG_T::n_node][CONFIG_T::e_features],
 			res_T     P[CONFIG_T::n_node][CONFIG_T::n_out],
 			typename CONFIG_T::dense_config1::weight_t  core_node_w0[CONFIG_T::dense_config1::n_in*CONFIG_T::dense_config1::n_out],
 			typename CONFIG_T::dense_config1::bias_t    core_node_b0[CONFIG_T::dense_config1::n_out],
@@ -247,9 +247,9 @@ namespace nnet {
     #pragma HLS PIPELINE II=CONFIG_T::reuse_factor //*CONFIG_T::n_node
     IN_node_loop: for(int i = 0; i < CONFIG_T::n_node; i++){
       #pragma HLS UNROLL
-      data_T p[CONFIG_T::n_hidden + CONFIG_T::n_features];
+      data_T p[CONFIG_T::e_features + CONFIG_T::n_features];
       #pragma HLS ARRAY_PARTITION variable=p complete dim=0
-      nnet::merge<data_T, CONFIG_T::n_hidden, CONFIG_T::n_features>(Q[i], Rn[i], p);
+      nnet::merge<data_T, CONFIG_T::e_features, CONFIG_T::n_features>(Q[i], Rn[i], p);
       /*      
       data_T P0_logits[CONFIG_T::dense_config1::n_out];
       #pragma HLS ARRAY_PARTITION variable=P0_logits complete dim=0

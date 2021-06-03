@@ -16,8 +16,7 @@ int main(int argc, char **argv)
   //hls-fpga-machine-learning insert data
   input_t      N_str[N_NODES_MAX][N_FEATURES];
   input_t      E_str[N_EDGES_MAX][E_FEATURES];
-  index_t      receivers_str[N_EDGES_MAX][1];
-  index_t      senders_str[N_EDGES_MAX][1];
+  index_t      edge_index_str[N_EDGES_MAX][2];
   float        e_expected[N_EDGES_MAX][1];
 
   std::ifstream Nin("tb_input_node_features.dat");
@@ -62,9 +61,9 @@ int main(int argc, char **argv)
   }
   for(int i = 0; i < N_EDGES_MAX; i++){
     if(i < r_in.size()){
-      receivers_str[i][0] = r_in[i];
+      edge_index_str[i][0] = r_in[i];
     }else{
-      receivers_str[i][0] = N_NODES_MAX - 1;
+      edge_index_str[i][0] = N_NODES_MAX - 1;
     }
     //std::cout << "r input = " << r_in[i] << std::endl;
   }
@@ -77,9 +76,9 @@ int main(int argc, char **argv)
   }
   for(int i = 0; i < N_EDGES_MAX; i++){
     if(i < s_in.size()){
-      senders_str[i][0] = s_in[i];
+      edge_index_str[i][1] = s_in[i];
     }else{
-      senders_str[i][0] = N_NODES_MAX - 1;
+      edge_index_str[i][1] = N_NODES_MAX - 1;
     }
     //std::cout << "s input = " << s_in[i] << std::endl;
   }
@@ -105,7 +104,7 @@ int main(int argc, char **argv)
   }
   
   unsigned short size_in, size_out;
-  myproject(N_str, E_str, receivers_str, senders_str, e_str, size_in, size_out);
+  myproject(N_str, E_str, edge_index_str, e_str, size_in, size_out);
     
   std::cout << "e = " << std::endl;
   for(int i=0; i<N_EDGES_MAX; i++){

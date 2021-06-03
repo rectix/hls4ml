@@ -206,6 +206,7 @@ struct graph_config3 : nnet::graph_config {
 struct graph_config4 : nnet::graph_config {
   static const unsigned n_edge = N_EDGES_MAX;
   static const unsigned n_node = N_NODES_MAX;
+  static const unsigned e_features = LATENT;
   static const unsigned n_features = LATENT;
   static const unsigned n_hidden = LATENT;
   static const unsigned n_out = LATENT;
@@ -216,7 +217,7 @@ struct graph_config4 : nnet::graph_config {
   typedef weight_default_t weight_t;
 
   struct dense_config1 : nnet::dense_config {
-    static const unsigned n_in = n_hidden + n_features;
+    static const unsigned n_in = e_features + n_features;
     static const unsigned n_out = LATENT;
     static const unsigned io_type = nnet::io_parallel;
     static const unsigned reuse_factor = REUSE_DENSE;
