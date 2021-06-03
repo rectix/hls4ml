@@ -150,7 +150,7 @@ namespace nnet {
 			data_T    Re[CONFIG_T::n_edge][CONFIG_T::e_features],
 			data_T    Rn[CONFIG_T::n_node][CONFIG_T::n_features],
 			index_T   edge_index[CONFIG_T::n_edge][2],
-			res_T     L[CONFIG_T::n_edge][CONFIG_T::e_out],
+			res_T     L[CONFIG_T::n_edge][CONFIG_T::n_out],
 			res_T     Q[CONFIG_T::n_node][CONFIG_T::n_out],
 			typename CONFIG_T::dense_config1::weight_t  core_edge_w0[CONFIG_T::dense_config1::n_in*CONFIG_T::dense_config1::n_out],
 			typename CONFIG_T::dense_config1::bias_t    core_edge_b0[CONFIG_T::dense_config1::n_out],

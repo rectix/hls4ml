@@ -146,7 +146,6 @@ struct graph_config3 : nnet::graph_config {
   static const unsigned n_features = LATENT;
   static const unsigned e_features = LATENT;
   static const unsigned n_out = LATENT;
-  static const unsigned e_out = LATENT;
   static const bool io_stream = true;
   static const bool activate_final = true;
   static const unsigned reuse_factor = REUSE_GRAPH;
